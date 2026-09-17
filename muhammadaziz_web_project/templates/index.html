@@ -1,0 +1,5320 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MUHAMMADAZIZ WEB SAYTI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+.tests-section{padding:70px 6%;text-align:center}
+.test-courses{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;max-width:1000px;margin:30px auto}
+.test-courses button,.test-actions button{padding:15px 18px;border:0;border-radius:12px;cursor:pointer;font-weight:700}
+.test-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.test-box{background:#111827;color:#fff;width:min(800px,96vw);max-height:90vh;overflow:auto;border-radius:20px;padding:28px;box-shadow:0 0 40px rgba(0,255,255,.18)}
+.test-top{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:20px}
+.test-progress{height:8px;background:#263244;border-radius:20px;overflow:hidden;margin:10px 0 25px}
+.test-progress-bar{height:100%;width:0%;background:#22d3ee;transition:.25s}
+.test-option{display:block;width:100%;text-align:left;margin:10px 0;padding:15px;border:1px solid #334155;background:#182235;color:#fff;border-radius:12px;cursor:pointer}
+.test-option:hover{border-color:#22d3ee}
+.test-option.selected{border-color:#22d3ee;background:#12384a}
+.test-actions{display:flex;justify-content:space-between;gap:12px;margin-top:25px}
+.test-result{text-align:center;padding:20px}
+.test-score{font-size:48px;font-weight:800;margin:15px 0}
+.test-close{float:right;background:none;border:0;color:#fff;font-size:30px;cursor:pointer}
+
+.rating-section{padding:70px 6%;text-align:center}
+.rating-box{max-width:1000px;margin:25px auto;background:rgba(17,24,39,.92);border:1px solid rgba(34,211,238,.25);border-radius:22px;padding:25px;box-shadow:0 0 35px rgba(0,255,255,.10)}
+.student-name-box{max-width:650px;margin:0 auto 20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.student-name-box input{flex:1;min-width:230px;padding:14px 16px;border-radius:12px;border:1px solid #334155;background:#111827;color:#fff;outline:none}
+.student-name-box button,.rating-refresh{padding:14px 20px;border:0;border-radius:12px;cursor:pointer;font-weight:700}
+.rating-table{width:100%;border-collapse:collapse;margin-top:15px;overflow:hidden;border-radius:14px}
+.rating-table th,.rating-table td{padding:13px 10px;border-bottom:1px solid rgba(148,163,184,.15)}
+.rating-table th{color:#22d3ee;background:rgba(34,211,238,.08)}
+.rating-empty{padding:25px;color:#94a3b8}
+.rating-rank{font-weight:800;font-size:18px}
+
+/* === INTERAKTIV DARS SAVOLI === */
+.lesson-check-card{margin-top:22px;padding:22px;border:1px solid rgba(34,211,238,.25);border-radius:18px;background:linear-gradient(145deg,rgba(15,23,42,.96),rgba(30,41,59,.92));box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.lesson-check-card h3{margin:0 0 12px}
+.lesson-check-question{font-size:18px;line-height:1.65;margin:0 0 16px;font-weight:700}
+.lesson-check-answer{width:100%;box-sizing:border-box;min-height:90px;resize:vertical;padding:13px 15px;border-radius:12px;border:1px solid #475569;background:#0f172a;color:#fff;font-size:15px;outline:none}
+.lesson-check-answer:focus{border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.10)}
+.lesson-check-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.lesson-check-actions button{border:0;border-radius:11px;padding:11px 15px;font-weight:700;cursor:pointer}
+.lesson-check-show{background:#22d3ee;color:#07131a}
+.lesson-check-clear{background:#334155;color:#fff}
+.lesson-check-result{display:none;margin-top:14px;padding:15px;border-radius:12px;background:rgba(34,211,238,.08);border-left:4px solid #22d3ee;line-height:1.6}
+.lesson-check-result.show{display:block}
+.lesson-check-hint{font-size:13px;opacity:.7;margin-top:9px}
+
+</style>
+
+<style>
+/* Kirish ism oynasi */
+.entry-name-overlay{position:fixed;inset:0;background:rgba(5,10,25,.88);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px}.entry-name-card{width:min(430px,100%);padding:34px 28px;border-radius:24px;text-align:center;background:rgba(20,28,55,.98);box-shadow:0 20px 70px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.12)}.entry-name-card h2{margin:0 0 10px;font-size:28px}.entry-name-card p{opacity:.8;margin:0 0 22px}.entry-name-card input{width:100%;box-sizing:border-box;padding:14px 16px;border-radius:13px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-size:16px;outline:none;margin-bottom:12px}.entry-name-card button{width:100%;padding:14px;border:0;border-radius:13px;font-size:16px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#667eea,#764ba2);color:white}.entry-name-card .entry-error{min-height:20px;color:#ff8d8d;font-size:14px;margin:5px 0 10px}.entry-name-card .entry-icon{font-size:48px;margin-bottom:8px}</style>
+
+<style id="professional-lessons-style">
+.lesson-section{position:relative}
+.lesson-tools{max-width:1000px;margin:20px auto 10px;padding:16px 20px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px)}
+.lesson-tools-row{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.lesson-progress{height:9px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;margin-top:12px}
+.lesson-progress-bar{height:100%;width:0;background:linear-gradient(90deg,#22d3ee,#667eea);transition:width .35s ease}
+.lesson-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:rgba(34,211,238,.12);color:#67e8f9;font-size:13px;font-weight:700}
+.lesson-content-pro{line-height:1.75}
+.lesson-content-pro .pro-card{margin:18px 0;padding:17px 18px;border-radius:16px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09)}
+.lesson-content-pro .pro-card h3{margin-top:0}
+.lesson-content-pro .practice{border-left:4px solid #22d3ee}
+.lesson-content-pro .check{border-left:4px solid #a78bfa}
+.lesson-content-pro code{padding:3px 7px;border-radius:7px;background:rgba(0,0,0,.25)}
+.lesson-complete-btn{width:100%;margin-top:18px!important}
+.lesson-complete-btn.done{opacity:.8}
+@media(max-width:600px){.lesson-tools{margin-left:12px;margin-right:12px}.lesson-tools-row{font-size:14px}}
+.rating-online-badge{display:inline-block;margin-top:8px;padding:7px 12px;border-radius:999px;background:rgba(34,211,238,.1);color:#67e8f9;font-size:13px;font-weight:700}
+</style>
+
+<style id="online-responsive-style">
+/* ===== TELEFON / PLANSЕT / KOMPYUTER MOSLASHUVI ===== */
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+img,video,iframe{max-width:100%;height:auto}
+button,input,textarea{font:inherit}
+button{touch-action:manipulation}
+@media(max-width:900px){
+  header{padding:14px 4%!important;gap:12px;flex-wrap:wrap}
+  header nav{display:flex;flex-wrap:wrap;gap:8px}
+  header nav a{font-size:14px}
+  .hero{padding:70px 5%!important}
+  .course-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:640px){
+  header{justify-content:center;text-align:center}
+  header .logo{width:100%}
+  header nav{justify-content:center;width:100%}
+  .hero{padding:55px 18px!important}
+  .hero h1{font-size:31px!important;line-height:1.15}
+  .hero h2{font-size:21px!important}
+  .hero p{font-size:15px!important;line-height:1.65}
+  .course-list{grid-template-columns:1fr!important;gap:12px!important}
+  .course{padding:20px!important}
+  .lesson-section{padding:45px 10px!important}
+  .lesson-list{padding:0 2px}
+  .lesson-card{grid-template-columns:56px minmax(0,1fr)!important;gap:10px!important;padding:14px!important}
+  .lesson-card button{grid-column:1/-1;width:100%}
+  .tests-section,.rating-section{padding:45px 12px!important}
+  .test-courses{grid-template-columns:1fr!important}
+  .test-courses button{width:100%;min-height:50px}
+  .test-box{width:calc(100vw - 16px)!important;max-height:94vh!important;padding:20px!important;border-radius:16px!important}
+  .test-top{align-items:flex-start;flex-direction:column}
+  .test-actions{flex-direction:column-reverse}
+  .test-actions button{width:100%;min-height:48px}
+  .rating-box{padding:14px!important}
+  .rating-table{font-size:13px}
+  .rating-table th,.rating-table td{padding:10px 7px}
+  .entry-name-card{padding:28px 20px!important}
+  .entry-name-card h2{font-size:24px!important}
+  #lessonModal{padding:6px!important}
+  #lessonModal .lesson-box{width:calc(100vw - 12px)!important;height:calc(100vh - 12px)!important;max-height:calc(100vh - 12px)!important;padding:22px 18px 34px!important;border-radius:16px!important}
+  #lessonModal .lesson-box h2{font-size:23px!important;line-height:1.3}
+  #lessonModal .lesson-content-pro{font-size:15px;line-height:1.7}
+  #lessonModal .lesson-content-pro .pro-card{padding:15px!important}
+  .lesson-check-question{font-size:16px!important}
+  .lesson-check-actions{flex-direction:column}
+  .lesson-check-actions button{width:100%;min-height:46px}
+}
+@media(max-width:380px){header nav a{font-size:12px}.test-box{padding:16px!important}}
+</style>
+
+<style>
+/* ===== DARS OYNASI: ICHKI SCROLL TUZATISH ===== */
+html.lesson-open, body.lesson-open { overflow: hidden !important; }
+#lessonModal {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    -webkit-overflow-scrolling: auto !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+}
+#lessonModal .lesson-box {
+    width: min(760px, 94vw) !important;
+    height: calc(100vh - 40px) !important;
+    max-height: calc(100vh - 40px) !important;
+    min-height: 0 !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    scrollbar-gutter: stable !important;
+    padding: 28px 34px 40px !important;
+}
+#lessonModal .lesson-box::-webkit-scrollbar { width: 10px; }
+#lessonModal .lesson-box::-webkit-scrollbar-track { background: rgba(255,255,255,.06); border-radius: 10px; }
+#lessonModal .lesson-box::-webkit-scrollbar-thumb { background: rgba(34,211,238,.65); border-radius: 10px; }
+#lessonModal .lesson-box .close-btn {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 20 !important;
+}
+#lessonModal .lesson-content-pro { padding-bottom: 8px; }
+@media (max-width: 600px) {
+    #lessonModal { padding: 8px !important; }
+    #lessonModal .lesson-box {
+        width: 96vw !important;
+        height: calc(100vh - 16px) !important;
+        max-height: calc(100vh - 16px) !important;
+        padding: 22px 18px 30px !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+                         HEADER
+===================================================== -->
+
+<header>
+
+    <div class="logo">
+        MUHAMMADAZIZ
+    </div>
+
+    <nav>
+        <a href="#home">Bosh sahifa</a>
+        <a href="#courses">Kurslar</a>
+        <a href="#lessons">Darslar</a>
+        <a href="#tests">Testlar</a>
+    </nav>
+
+</header>
+
+
+<!-- =====================================================
+                         MAIN
+===================================================== -->
+
+<main id="home">
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero">
+
+        <h1>MUHAMMADAZIZ WEB SAYTI</h1>
+
+        <h2>💻 Kompyuter savodxonligi kursi</h2>
+
+        <p>
+            Kompyuterdan 0 dan foydalanishni o‘rganing.
+            Darslarni o‘qing, amaliy topshiriqlarni bajaring
+            va bilimlaringizni mustahkamlang.
+        </p>
+
+        <button onclick="scrollToCourses()">
+            🚀 Boshlash
+        </button>
+
+    </section>
+
+
+    <!-- =================================================
+                         COURSES
+    ================================================= -->
+
+    <section class="courses" id="courses">
+
+        <h2>Kurslar</h2>
+
+        <p>
+            O‘zingizga kerakli kursni tanlang
+        </p>
+
+
+        <div class="course-list">
+
+
+            <!-- COMPUTER -->
+
+            <div class="course">
+
+                <h3>💻 Kompyuter asoslari</h3>
+
+                <p>
+                    Kompyuterni 0 dan o‘rganish.
+                </p>
+
+                <button onclick="showCourse('computer')">
+                    O‘rganish
+                </button>
+
+            </div>
+
+
+            <!-- KEYBOARD -->
+
+            <div class="course">
+
+                <h3>⌨️ Klaviatura</h3>
+
+                <p>
+                    Klaviatura va tezkor tugmalar.
+                </p>
+
+                <button onclick="showCourse('keyboard')">
+                    O‘rganish
+                </button>
+
+            </div>
+
+
+            <!-- WORD -->
+
+            <div class="course">
+
+                <h3>📝 Microsoft Word</h3>
+
+                <p>
+                    Matn yozish va hujjat tayyorlash.
+                </p>
+
+                <button onclick="showCourse('word')">
+                    O‘rganish
+                </button>
+
+            </div>
+
+
+            <!-- EXCEL -->
+
+            <div class="course">
+
+                <h3>📊 Microsoft Excel</h3>
+
+                <p>
+                    Jadval, formula va hisob-kitoblar.
+                </p>
+
+                <button onclick="showCourse('excel')">
+                    O‘rganish
+                </button>
+
+            </div>
+
+
+            <!-- POWERPOINT -->
+
+            <div class="course">
+
+                <h3>🎞️ PowerPoint</h3>
+
+                <p>
+                    Chiroyli prezentatsiyalar yaratish.
+                </p>
+
+                <button onclick="showCourse('powerpoint')">
+                    O‘rganish
+                </button>
+
+            </div>
+
+
+            <!-- AI -->
+
+            <div class="course">
+
+                <h3>🤖 Sun’iy intellekt</h3>
+
+                <p>
+                    AI, prompt va zamonaviy AI vositalari.
+                </p>
+
+                <button onclick="showCourse('ai')">
+                    O‘rganish
+                </button>
+
+            </div>
+
+
+            <!-- INTERNET -->
+
+            <div class="course">
+
+                <h3>🌐 Internet va xavfsizlik</h3>
+
+                <p>
+                    Internetdan to‘g‘ri va xavfsiz foydalanish.
+                </p>
+
+                <button onclick="showCourse('internet')">
+                    O‘rganish
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+                         LESSONS
+    ================================================= -->
+
+    <section class="lesson-section" id="lessons">
+
+        <h2 id="courseTitle">
+            📚 Kurs darslari
+        </h2>
+
+        <p id="courseDescription">
+            Kerakli kursni tanlang va o‘rganishni boshlang.
+        </p>
+
+        <div class="lesson-tools" id="lessonTools">
+            <div class="lesson-tools-row">
+                <span class="lesson-badge">📚 10 ta dars</span>
+                <strong id="lessonProgressText">0 / 10 dars bajarildi</strong>
+            </div>
+            <div class="lesson-progress"><div class="lesson-progress-bar" id="lessonProgressBar"></div></div>
+        </div>
+
+        <div class="lesson-list" id="lessonList"></div>
+
+    </section>
+
+
+    <!-- =================================================
+                         TESTLAR
+    ================================================= -->
+    <section class="tests-section" id="tests">
+        <h2>📝 25 ta savollik test</h2>
+        <p>Test savollari faqat shu kurs darslaridagi ma'lumotlardan tuziladi.</p>
+
+        <div class="test-courses">
+            <button onclick="startTest('computer')">💻 Kompyuter asoslari</button>
+            <button onclick="startTest('keyboard')">⌨️ Klaviatura</button>
+            <button onclick="startTest('word')">📝 Microsoft Word</button>
+            <button onclick="startTest('excel')">📊 Microsoft Excel</button>
+            <button onclick="startTest('powerpoint')">🎞️ PowerPoint</button>
+            <button onclick="startTest('internet')">🌐 Internet va xavfsizlik</button>
+            <button onclick="startTest('ai')">🤖 Sun’iy intellekt</button>
+        </div>
+
+        <div class="student-name-box">
+            <input id="studentNameInput" type="text" maxlength="40" placeholder="Ismingizni kiriting (reyting uchun)">
+            <button onclick="saveStudentName()">💾 Ismni saqlash</button>
+        </div>
+
+        <p style="opacity:.75">Test topshirganingizdan keyin natijangiz avtomatik ravishda reytingga qo‘shiladi.</p>
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+                       LESSON MODAL
+===================================================== -->
+
+<div class="lesson-modal" id="lessonModal">
+
+    <div class="lesson-box">
+
+        <button
+            class="close-btn"
+            onclick="closeLesson()">
+            ×
+        </button>
+
+        <h2 id="lessonTitle"></h2>
+
+        <div id="lessonContent"></div>
+
+        <button onclick="nextLesson()">
+            Keyingi dars →
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+                       JAVASCRIPT
+===================================================== -->
+
+<script>
+
+
+/* =====================================================
+                       KURSLAR
+===================================================== */
+
+const courses = {
+
+
+/* =========================================================
+   COMPUTER
+========================================================= */
+
+computer: {
+
+    title: "💻 Kompyuter savodxonligi",
+
+    description:
+        "Kompyuterning asosiy qismlari, Windows, fayllar va dasturlar bilan ishlashni o‘rganamiz.",
+
+    lessons: [
+
+        {
+            title: "1-dars: Kompyuter nima?",
+
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Kompyuter — ma’lumotlarni qabul qiladigan,
+                    qayta ishlaydigan, saqlaydigan va foydalanuvchiga
+                    natijani chiqarib beradigan elektron qurilma.
+                </p>
+
+                <p>
+                    Kompyuter yordamida matn yozish, rasm chizish,
+                    video ko‘rish, dasturlash, internetdan foydalanish,
+                    hisob-kitob qilish va boshqa ko‘plab ishlarni bajarish mumkin.
+                </p>
+
+                <p>
+                    Kompyuter ikki katta qismdan iborat:
+                    <b>apparat ta’minoti</b> va
+                    <b>dasturiy ta’minot</b>.
+                </p>
+
+                <ul>
+                    <li>Apparat — kompyuterning ushlab ko‘rish mumkin bo‘lgan qismlari.</li>
+                    <li>Dasturiy ta’minot — kompyuterda ishlaydigan dasturlar.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Klaviatura — apparat.<br>
+                    Microsoft Word — dastur.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Amaliy topshiriq:</b><br>
+                    Kompyuteringizdagi 5 ta apparat qismini
+                    va 5 ta dastur nomini yozib chiqing.
+                </div>
+
+                <div class="tip-box">
+                    <b>💡 Maslahat:</b><br>
+                    Kompyuterda ishlashni o‘rganishda avval
+                    asosiy qismlarni bilib olish juda foydali.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "2-dars: Kompyuter qismlari",
+
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Kompyuter bir nechta muhim qurilmalardan tashkil topadi.
+                    Har bir qurilmaning o‘z vazifasi bor.
+                </p>
+
+                <ul>
+                    <li><b>Monitor</b> — tasvirni ko‘rsatadi.</li>
+                    <li><b>Klaviatura</b> — matn va buyruqlar kiritiladi.</li>
+                    <li><b>Sichqoncha</b> — ekrandagi obyektlarni boshqaradi.</li>
+                    <li><b>Protsessor</b> — hisoblash va buyruqlarni bajarishda ishlaydi.</li>
+                    <li><b>RAM</b> — vaqtinchalik ma’lumotlarni saqlashga yordam beradi.</li>
+                    <li><b>SSD</b> — fayllar va dasturlarni saqlaydi.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Siz Word dasturini ochdingiz.
+                    Klaviatura orqali matn yozasiz,
+                    monitor orqali matnni ko‘rasiz,
+                    protsessor esa dastur buyruqlarini bajaradi.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Amaliy topshiriq:</b><br>
+                    Kompyuteringizdagi monitor, klaviatura,
+                    sichqoncha va saqlash qurilmasini aniqlang.
+                </div>
+
+                <div class="tip-box">
+                    <b>💡 Maslahat:</b><br>
+                    RAM va SSD bir xil narsa emas:
+                    RAM ish jarayonida vaqtinchalik,
+                    SSD esa ma’lumotlarni uzoq muddat saqlaydi.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "3-dars: Windows asoslari",
+
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Windows — kompyuterning ishlashini boshqarishga
+                    yordam beradigan operatsion tizim.
+                </p>
+
+                <p>
+                    Windows orqali dasturlarni ochish,
+                    fayllarni boshqarish, sozlamalarni o‘zgartirish
+                    va boshqa ko‘plab ishlarni bajarish mumkin.
+                </p>
+
+                <ul>
+                    <li><b>Desktop</b> — asosiy ish stoli.</li>
+                    <li><b>Start</b> — dasturlar va qidiruv menyusi.</li>
+                    <li><b>Taskbar</b> — pastki qismdagi boshqaruv paneli.</li>
+                    <li><b>Search</b> — dastur yoki faylni qidirish.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Start tugmasini bosing → Search oynasiga
+                    Word deb yozing → Microsoft Word dasturini oching.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Amaliy topshiriq:</b><br>
+                    Windows Search orqali Calculator dasturini toping
+                    va oching.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "4-dars: Sichqoncha bilan ishlash",
+
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Sichqoncha kompyuterni boshqarishning eng asosiy
+                    vositalaridan biridir.
+                </p>
+
+                <ul>
+                    <li><b>Chap tugma</b> — tanlash va bosish.</li>
+                    <li><b>Ikki marta bosish</b> — fayl yoki dasturni ochish.</li>
+                    <li><b>O‘ng tugma</b> — qo‘shimcha menyuni ochish.</li>
+                    <li><b>G‘ildirak</b> — sahifani yuqoriga/pastga aylantirish.</li>
+                    <li><b>Drag</b> — obyektni bosib turib boshqa joyga olib borish.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Papkani ochish uchun uning ustiga ikki marta
+                    chap tugma bilan bosing.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Amaliy topshiriq:</b><br>
+                    Ish stolida biror papkani tanlang,
+                    o‘ng tugmani bosing va menyuni ko‘rib chiqing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "5-dars: Klaviatura asoslari",
+
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Klaviatura orqali harflar, raqamlar va maxsus
+                    buyruqlarni kompyuterga kiritamiz.
+                </p>
+
+                <ul>
+                    <li><b>Enter</b> — tasdiqlash yoki yangi qator.</li>
+                    <li><b>Backspace</b> — chap tomondagi belgini o‘chirish.</li>
+                    <li><b>Space</b> — bo‘sh joy.</li>
+                    <li><b>Shift</b> — katta harf yoki yuqori belgini yozish.</li>
+                    <li><b>Caps Lock</b> — katta harflar rejimi.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Shift + A → katta A.<br>
+                    Space → so‘zlar orasiga bo‘sh joy.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Amaliy topshiriq:</b><br>
+                    Word yoki Notepad ochib:
+                    "Men kompyuter o‘rganayapman."
+                    jumlasini yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "6-dars: Fayl va papkalar",
+
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Fayl — kompyuterda saqlanadigan ma’lumot.
+                    Papka esa fayllarni tartibli saqlash uchun ishlatiladi.
+                </p>
+
+                <ul>
+                    <li>New Folder — yangi papka yaratish.</li>
+                    <li>Rename — nomini o‘zgartirish.</li>
+                    <li>Copy — nusxa olish.</li>
+                    <li>Paste — nusxani joylashtirish.</li>
+                    <li>Delete — o‘chirish.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Desktop → New Folder → "Darslar" nomini bering.
+                    Uning ichida "Word", "Excel", "PowerPoint"
+                    papkalarini yaratishingiz mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Amaliy topshiriq:</b><br>
+                    "Mening darslarim" nomli papka yarating.
+                    Ichiga 3 ta kichik papka joylashtiring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "7-dars: Dasturlar bilan ishlash",
+
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Dastur — kompyuterda ma’lum bir vazifani bajaruvchi
+                    dasturiy vosita.
+                </p>
+
+                <ul>
+                    <li>Word — matn bilan ishlash.</li>
+                    <li>Excel — jadval va hisob-kitob.</li>
+                    <li>PowerPoint — taqdimot.</li>
+                    <li>Browser — internetdan foydalanish.</li>
+                    <li>Calculator — hisoblash.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Agar referat yozmoqchi bo‘lsangiz — Word.
+                    Hisob-kitob qilmoqchi bo‘lsangiz — Excel.
+                    Taqdimot qilmoqchi bo‘lsangiz — PowerPoint.
+                </div>
+
+                <div class="tip-box">
+                    <b>💡 Maslahat:</b><br>
+                    Keraksiz yoki noma’lum dasturlarni o‘rnatishda
+                    ehtiyot bo‘ling.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "8-dars: Nusxa olish va joylashtirish",
+
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Copy va Paste kompyuterda eng ko‘p ishlatiladigan
+                    buyruqlardan hisoblanadi.
+                </p>
+
+                <p>
+                    Biror matn yoki faylni boshqa joyga nusxalash
+                    uchun avval uni tanlaymiz.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Matnni belgilang → Ctrl + C → boshqa joyga o‘ting
+                    → Ctrl + V.
+                </div>
+
+                <p>
+                    Cut uchun Ctrl + X ishlatiladi.
+                    Bu obyektni bir joydan olib boshqa joyga ko‘chirishga yordam beradi.
+                </p>
+
+                <div class="practice-box">
+                    <b>🎯 Amaliy topshiriq:</b><br>
+                    Notepad'da bir jumla yozing.
+                    Uni Ctrl + C orqali nusxalang va yana bir marta joylashtiring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "9-dars: Kompyuterni to‘g‘ri ishlatish",
+
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Kompyuter bilan ishlaganda xavfsizlik va tartibga
+                    rioya qilish muhim.
+                </p>
+
+                <ul>
+                    <li>Keraksiz dasturlarni ochiq qoldirmang.</li>
+                    <li>Noma’lum fayllarni ehtiyotkorlik bilan oching.</li>
+                    <li>Muhim fayllarning zaxira nusxasini saqlang.</li>
+                    <li>Windows va dasturlarni yangilab turing.</li>
+                    <li>Kompyuterni normal usulda o‘chiring.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Ish tugagach:
+                    fayllarni saqlang → dasturlarni yoping →
+                    Start → Power → Shut down.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Amaliy topshiriq:</b><br>
+                    Kompyuteringizda keraksiz ochiq dasturlarni yopib chiqing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "10-dars: Amaliy loyiha",
+
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Endi oldingi darslarda o‘rgangan bilimlarimizni
+                    bitta kichik loyihada ishlatamiz.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna loyiha:</b>
+
+                    <ol>
+                        <li>Desktopda "Kompyuter darslari" papkasini yarating.</li>
+                        <li>Ichida "Word" papkasini yarating.</li>
+                        <li>"Excel" papkasini yarating.</li>
+                        <li>"PowerPoint" papkasini yarating.</li>
+                        <li>Notepad ochib kichik matn yozing.</li>
+                        <li>Matnni "mening_matinim.txt" deb saqlang.</li>
+                        <li>Faylni Word papkasiga ko‘chiring.</li>
+                    </ol>
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Amaliy topshiriq:</b><br>
+                    Yuqoridagi barcha bosqichlarni o‘zingiz bajaring.
+                </div>
+
+                <div class="tip-box">
+                    <b>🎉 Tabriklaymiz!</b><br>
+                    Kompyuter savodxonligi kursining 10 ta darsini tugatdingiz.
+                </div>
+
+            </div>
+            `
+        }
+
+    ]
+},
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+keyboard: {
+
+    title: "⌨️ Klaviatura",
+
+    description:
+        "Klaviatura tugmalarini va tezkor kombinatsiyalarni o‘rganamiz.",
+
+    lessons: [
+
+        {
+            title: "1-dars: Klaviatura bilan tanishish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Klaviatura — kompyuterga matn va buyruqlar
+                    kiritish uchun ishlatiladigan qurilma.
+                </p>
+
+                <p>
+                    Unda harflar, raqamlar, belgilar va maxsus
+                    funksional tugmalar mavjud.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    A-Z — harflar.<br>
+                    0-9 — raqamlar.<br>
+                    Enter — tasdiqlash.<br>
+                    Space — bo‘sh joy.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Klaviaturadagi Enter, Shift, Ctrl, Alt,
+                    Backspace va Space tugmalarini toping.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "2-dars: Harflar va raqamlar",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Matn yozishda harflar, raqamlar va belgilar
+                    birgalikda ishlatiladi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Muhammadaziz 2011<br>
+                    Bu yerda harflar va raqamlar birga ishlatilgan.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    "Men 9-sinf o‘quvchisiman" jumlasini yozing.
+                    Keyin tug‘ilgan yilingizni yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "3-dars: Shift va Caps Lock",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Shift vaqtincha katta harf yozish yoki
+                    yuqoridagi belgilarni chiqarish uchun ishlatiladi.
+                </p>
+
+                <p>
+                    Caps Lock esa katta harflar rejimini yoqib yoki o‘chirib turadi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Shift + A → A<br>
+                    Caps Lock yoqilgan → MATN
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Ismingizni birinchi harfini katta qilib yozing.
+                    Keyin butun ismingizni katta harflarda yozib ko‘ring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "4-dars: Enter, Space va Backspace",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <ul>
+                    <li>Enter — yangi qator.</li>
+                    <li>Space — bo‘sh joy.</li>
+                    <li>Backspace — chapdagi belgini o‘chirish.</li>
+                    <li>Delete — tanlangan yoki keyingi belgini o‘chirishda ishlatiladi.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    "Salom Dunyo" yozishda ikki so‘z orasidagi
+                    bo‘sh joyni Space beradi.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    3 qatorli matn yozing va Backspace yordamida
+                    bitta xatoni tuzating.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "5-dars: Ctrl kombinatsiyalari",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Eng kerakli kombinatsiyalar</h3>
+
+                <ul>
+                    <li>Ctrl + C — nusxalash.</li>
+                    <li>Ctrl + V — joylashtirish.</li>
+                    <li>Ctrl + X — kesib olish.</li>
+                    <li>Ctrl + Z — oxirgi amalni bekor qilish.</li>
+                    <li>Ctrl + A — hammasini belgilash.</li>
+                    <li>Ctrl + S — saqlash.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Matnni belgilang → Ctrl + C →
+                    boshqa joyga o‘ting → Ctrl + V.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Notepad'da matn yozib, Ctrl + A va Ctrl + C
+                    tugmalarini sinab ko‘ring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "6-dars: Alt va Tab",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Alt + Tab ochiq dasturlar orasida tez almashish imkonini beradi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Chrome ochiq → Word ochiq.
+                    Alt + Tab bosib Word va Chrome orasida almashishingiz mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Chrome va Calculatorni oching.
+                    Alt + Tab yordamida ikkalasi orasida almashing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "7-dars: Windows tugmasi",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Windows tugmasi Start menyusini ochadi.
+                </p>
+
+                <p>
+                    Windows + S qidiruv oynasini ochishga yordam beradi.
+                    Windows + E esa File Explorer oynasini ochadi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Windows + E → File Explorer.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Windows + E ni bosib ko‘ring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "8-dars: Matnni tez tahrirlash",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Klaviatura yordamida matnni tez belgilash,
+                    nusxalash va o‘chirish mumkin.
+                </p>
+
+                <ul>
+                    <li>Shift + Arrow — matnni belgilash.</li>
+                    <li>Ctrl + A — barcha matnni belgilash.</li>
+                    <li>Ctrl + Z — xatoni qaytarish.</li>
+                </ul>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    5 qator matn yozing.
+                    Ctrl + A orqali hammasini belgilang.
+                    Keyin Ctrl + Z yordamida xatoni qaytarishni mashq qiling.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "9-dars: Tez yozish mashqi",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Tez yozish uchun klaviaturaga doim qarab turmasdan
+                    yozishni asta-sekin mashq qilish kerak.
+                </p>
+
+                <p>
+                    Avval aniqlikka, keyin tezlikka e’tibor berish foydali.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Mashq:</b><br>
+                    Bugun men kompyuterda tez yozishni o‘rganaman.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Yuqoridagi gapni 5 marta yozing.
+                    Har safar xatolarni kamaytirishga harakat qiling.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "10-dars: Klaviatura amaliyoti",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>🎯 Yakuniy mashq</h3>
+
+                <p>
+                    Endi barcha asosiy tugmalarni birgalikda ishlatamiz.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Vazifa:</b>
+
+                    <ol>
+                        <li>Notepad yoki Word oching.</li>
+                        <li>5 qator matn yozing.</li>
+                        <li>Biror so‘zni belgilang.</li>
+                        <li>Ctrl + C qiling.</li>
+                        <li>Ctrl + V bilan nusxalang.</li>
+                        <li>Ctrl + Z bilan amalni qaytaring.</li>
+                        <li>Matnni Ctrl + S bilan saqlang.</li>
+                    </ol>
+                </div>
+
+                <div class="tip-box">
+                    <b>🎉 Natija:</b><br>
+                    Klaviaturaning asosiy tugmalari va
+                    tezkor kombinatsiyalarini bilasiz.
+                </div>
+
+            </div>
+            `
+        }
+
+    ]
+},
+
+
+/* =========================================================
+   WORD
+========================================================= */
+
+word: {
+
+    title: "📝 Microsoft Word",
+
+    description:
+        "Word dasturida matn, hujjat, jadval va rasmlar bilan ishlash.",
+
+    lessons: [
+
+        {
+            title: "1-dars: Word dasturi bilan tanishish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Microsoft Word matnli hujjatlar yaratish va tahrirlash
+                    uchun ishlatiladigan dastur.
+                </p>
+
+                <ul>
+                    <li>Referat yozish.</li>
+                    <li>Ariza yaratish.</li>
+                    <li>CV tayyorlash.</li>
+                    <li>Jadval qo‘shish.</li>
+                    <li>Rasm joylashtirish.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Maktab uchun referat tayyorlashda Word'dan foydalanish mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Wordni oching va yangi bo‘sh hujjat yarating.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "2-dars: Yangi hujjat yaratish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Hujjat yaratish</h3>
+
+                <p>
+                    Word ochilgandan keyin Blank Document orqali
+                    yangi hujjat yaratish mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Word → New → Blank Document.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Yangi hujjat ochib:
+                    "Mening birinchi Word hujjatim"
+                    deb yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "3-dars: Matn yozish va tahrirlash",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Word'da matn yozish juda oson.
+                    Matnni keyinchalik o‘zgartirish, o‘chirish
+                    yoki yangi so‘zlar qo‘shish mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    "Men Microsoft Word dasturini o‘rganayapman."
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    O‘zingiz haqingizda 5 ta gap yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "4-dars: Shrift va matn ko‘rinishi",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Formatlash</h3>
+
+                <ul>
+                    <li>Bold — qalin.</li>
+                    <li>Italic — qiya.</li>
+                    <li>Underline — tagiga chizish.</li>
+                    <li>Font Size — harf o‘lchami.</li>
+                    <li>Font Color — matn rangi.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Sarlavhani qalin va kattaroq,
+                    oddiy matnni esa odatiy ko‘rinishda qoldirish mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Hujjatingizdagi sarlavhani qalin,
+                    20 o‘lchamli qilib ko‘ring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "5-dars: Matnni tekislash",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tekislash turlari</h3>
+
+                <ul>
+                    <li>Left — chapga.</li>
+                    <li>Center — markazga.</li>
+                    <li>Right — o‘ngga.</li>
+                    <li>Justify — ikki tomonga tekis.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Referat sarlavhasini Center,
+                    asosiy matnni Justify qilish mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Sarlavhani markazga,
+                    matnni ikki tomonga tekislang.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "6-dars: Ro‘yxatlar",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Ro‘yxat yaratish</h3>
+
+                <p>
+                    Word'da ma’lumotlarni tartibli ko‘rsatish uchun
+                    bullet va numbered list ishlatiladi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b>
+
+                    <ul>
+                        <li>Kompyuter</li>
+                        <li>Klaviatura</li>
+                        <li>Sichqoncha</li>
+                    </ul>
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    "Mening fanlarim" mavzusida 5 ta bandli ro‘yxat yarating.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "7-dars: Jadval yaratish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Jadval</h3>
+
+                <p>
+                    Jadval ma’lumotlarni qator va ustunlarda
+                    tartibli ko‘rsatishga yordam beradi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+
+                    Ism | Fan | Baho<br>
+                    Ali | Matematika | 5<br>
+                    Vali | Informatika | 4
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    3 ustun va 5 qatorli jadval yarating.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "8-dars: Rasm qo‘shish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Word hujjatiga kompyuterdagi rasmni
+                    qo‘shish mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Insert → Pictures → rasmni tanlash.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Hujjatingizga bitta rasm qo‘shing
+                    va uning o‘lchamini o‘zgartiring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "9-dars: Sahifa sozlamalari",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Sahifa</h3>
+
+                <p>
+                    Hujjatni chiroyli ko‘rsatish uchun sahifa o‘lchami,
+                    yo‘nalishi va chetlarini sozlash mumkin.
+                </p>
+
+                <ul>
+                    <li>Margins — sahifa chetlari.</li>
+                    <li>Orientation — Portrait yoki Landscape.</li>
+                    <li>Size — A4 kabi sahifa o‘lchami.</li>
+                </ul>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Sahifani A4 formatida qoldiring va
+                    hujjat chetlarini ko‘rib chiqing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "10-dars: Word amaliy loyiha",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>🎯 Yakuniy loyiha</h3>
+
+                <p>
+                    "Mening maktabim" mavzusida kichik hujjat yarating.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Hujjat tarkibi:</b>
+
+                    <ol>
+                        <li>Sarlavha.</li>
+                        <li>3-5 ta gapdan iborat matn.</li>
+                        <li>Belgili ro‘yxat.</li>
+                        <li>Jadval.</li>
+                        <li>Bitta rasm.</li>
+                    </ol>
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Loyihani .docx formatida saqlang.
+                </div>
+
+                <div class="tip-box">
+                    <b>🎉 Tabriklaymiz!</b><br>
+                    Word kursining 10 ta darsini tugatdingiz.
+                </div>
+
+            </div>
+            `
+        }
+
+    ]
+},
+
+
+/* =========================================================
+   EXCEL
+========================================================= */
+
+excel: {
+
+    title: "📊 Microsoft Excel",
+
+    description:
+        "Excel'da kataklar, formulalar, jadvallar va diagrammalar bilan ishlash.",
+
+    lessons: [
+
+        {
+            title: "1-dars: Excel nima?",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Microsoft Excel jadval yaratish,
+                    hisob-kitob qilish va ma’lumotlarni tahlil qilish
+                    uchun ishlatiladi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    O‘quvchilar baholarini jadvalga yozib,
+                    o‘rtacha bahoni avtomatik hisoblash mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Excelni ochib, yangi Workbook yarating.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "2-dars: Katak, qator va ustun",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Asosiy tushunchalar</h3>
+
+                <ul>
+                    <li>Column — ustun.</li>
+                    <li>Row — qator.</li>
+                    <li>Cell — katak.</li>
+                    <li>A1 — birinchi katak.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    A1 katakka "Ism",
+                    B1 katakka "Baho" yozish mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    A1, B1, C1 kataklarga mos ravishda
+                    Ism, Fan, Baho deb yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "3-dars: Ma’lumot kiritish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Excel kataklariga matn, raqam va sanalarni kiritish mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    A2 → Ali<br>
+                    B2 → Matematika<br>
+                    C2 → 5
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    5 ta o‘quvchi ismini va bahosini jadvalga kiriting.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "4-dars: Oddiy formulalar",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Formula</h3>
+
+                <p>
+                    Excel'da formula odatda = belgisi bilan boshlanadi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    =A1+B1<br>
+                    =A1-B1<br>
+                    =A1*B1<br>
+                    =A1/B1
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    A1 ga 20, B1 ga 5 yozing.
+                    C1 katakka =A1+B1 formulasini yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "5-dars: SUM va AVERAGE",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Funksiyalar</h3>
+
+                <p>
+                    SUM yig‘indini, AVERAGE esa o‘rtacha qiymatni hisoblashda ishlatiladi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    =SUM(A1:A5)<br>
+                    =AVERAGE(A1:A5)
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    5 ta son yozing va ularning yig‘indisini
+                    hamda o‘rtacha qiymatini hisoblang.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "6-dars: MIN va MAX",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    MIN eng kichik,
+                    MAX esa eng katta qiymatni topadi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    =MIN(A1:A10)<br>
+                    =MAX(A1:A10)
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    10 ta son kiriting va eng katta hamda
+                    eng kichik sonni toping.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "7-dars: Jadvalni formatlash",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Format</h3>
+
+                <p>
+                    Jadvalni tushunarli qilish uchun kataklarga
+                    chegaralar, qalin shrift va boshqa formatlar berish mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Sarlavha qatorini Bold qilib,
+                    ustunlarga Border qo‘yish.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    O‘quvchilar jadvalingizni formatlang.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "8-dars: Sort va Filter",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Sort ma’lumotlarni tartiblashga,
+                    Filter esa kerakli ma’lumotlarni ajratib ko‘rsatishga yordam beradi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Baholarni kichikdan kattaga tartiblash.
+                    Faqat 5 baho olganlarni ko‘rsatish.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    O‘quvchilar jadvalingizni baho bo‘yicha tartiblang.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "9-dars: Diagramma",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Diagramma nima?</h3>
+
+                <p>
+                    Diagramma ma’lumotlarni grafik ko‘rinishda
+                    tushunarli ko‘rsatadi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    O‘quvchilarning fanlar bo‘yicha baholarini
+                    ustunli diagrammada ko‘rsatish mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Jadvalingizdan foydalanib oddiy diagramma yarating.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "10-dars: Excel amaliy loyiha",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>🎯 Yakuniy loyiha</h3>
+
+                <p>
+                    "O‘quvchilar baholari" jadvalini yarating.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Jadval:</b>
+
+                    <ol>
+                        <li>Ism</li>
+                        <li>Matematika</li>
+                        <li>Informatika</li>
+                        <li>Ingliz tili</li>
+                        <li>O‘rtacha baho</li>
+                    </ol>
+
+                    <p>
+                        O‘rtacha bahoni AVERAGE yordamida hisoblang.
+                    </p>
+                </div>
+
+                <div class="tip-box">
+                    <b>🎉 Tabriklaymiz!</b><br>
+                    Excel kursining 10 ta darsini tugatdingiz.
+                </div>
+
+            </div>
+            `
+        }
+
+    ]
+},
+
+
+/* =========================================================
+   POWERPOINT
+========================================================= */
+
+powerpoint: {
+
+    title: "🎞️ PowerPoint",
+
+    description:
+        "Chiroyli va tushunarli taqdimot yaratishni o‘rganamiz.",
+
+    lessons: [
+
+        {
+            title: "1-dars: PowerPoint nima?",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    PowerPoint taqdimotlar yaratish uchun ishlatiladi.
+                    Taqdimot bir nechta slayddan tashkil topadi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Maktabda "Kiberxavfsizlik" mavzusida
+                    10 slaydli taqdimot yaratish mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    PowerPointni oching va Blank Presentation yarating.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "2-dars: Slayd yaratish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Slayd</h3>
+
+                <p>
+                    Har bir slayd ma’lum bir mavzu yoki ma’lumotni ko‘rsatadi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    1-slayd — Sarlavha.<br>
+                    2-slayd — Mavzu haqida ma’lumot.<br>
+                    3-slayd — Rasmlar.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    3 ta slayd yarating.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "3-dars: Dizayn va mavzular",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Dizayn</h3>
+
+                <p>
+                    Design bo‘limidagi Theme yordamida
+                    taqdimotning umumiy ko‘rinishini o‘zgartirish mumkin.
+                </p>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    3 ta slaydli taqdimotingizga Theme tanlang.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "4-dars: Matn bilan ishlash",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Slaydda juda ko‘p matn bo‘lishi taqdimotni
+                    o‘qishni qiyinlashtirishi mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Sarlavha katta,
+                    asosiy fikrlar esa qisqa punktlar ko‘rinishida bo‘lsin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Bitta slaydga sarlavha va 4 ta qisqa punkt yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "5-dars: Rasm va shakllar",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    PowerPointga rasm, ikonka va shakllar qo‘shish mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Kiberxavfsizlik slaydiga qalqon yoki kompyuter rasmi qo‘shish.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Slaydga 2 ta shakl va 1 ta rasm qo‘shing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "6-dars: Transition",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Transition</h3>
+
+                <p>
+                    Transition bir slayddan boshqasiga o‘tish effektidir.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Slayd 1 → Slayd 2 o‘tishida Fade effektidan foydalanish.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Slaydlaringizga bitta Transition qo‘shing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "7-dars: Animation",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Animation</h3>
+
+                <p>
+                    Animation slayddagi obyektlarning paydo bo‘lishi
+                    yoki harakatlanish effektlarini boshqaradi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Sarlavha avval,
+                    keyin asosiy punktlar paydo bo‘lishi mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Biror matnga oddiy Animation qo‘shing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "8-dars: Jadval va diagramma",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    PowerPointga jadval va diagrammalar qo‘shib,
+                    ma’lumotlarni tushunarli ko‘rsatish mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Sinfdagi fanlar bo‘yicha o‘rtacha baholarni
+                    diagrammada ko‘rsatish.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Bitta jadval yoki diagramma qo‘shing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "9-dars: Taqdimotni namoyish qilish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Tayyor taqdimotni Slide Show orqali
+                    katta ekranda ko‘rsatish mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    F5 tugmasi orqali taqdimotni boshidan boshlash mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Taqdimotingizni Slide Show rejimida ko‘rib chiqing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "10-dars: PowerPoint amaliy loyiha",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>🎯 Yakuniy loyiha</h3>
+
+                <p>
+                    5-6 slayddan iborat "Kiberxavfsizlik" taqdimotini yarating.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Slaydlar:</b>
+
+                    <ol>
+                        <li>Sarlavha.</li>
+                        <li>Kiberxavfsizlik nima?</li>
+                        <li>Kuchli parol.</li>
+                        <li>Phishing.</li>
+                        <li>Internet xavfsizligi.</li>
+                        <li>Xulosa.</li>
+                    </ol>
+                </div>
+
+                <div class="tip-box">
+                    <b>🎉 Tabriklaymiz!</b><br>
+                    PowerPoint kursining 10 ta darsini tugatdingiz.
+                </div>
+
+            </div>
+            `
+        }
+
+    ]
+},
+
+
+/* =========================================================
+   AI
+========================================================= */
+
+ai: {
+
+    title: "🤖 Sun’iy intellekt",
+
+    description:
+        "Sun’iy intellekt va AI vositalaridan samarali foydalanishni o‘rganamiz.",
+
+    lessons: [
+
+        {
+            title: "1-dars: Sun’iy intellekt nima?",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Sun’iy intellekt — kompyuter tizimlarining
+                    ma’lumotlardan foydalanib turli vazifalarni bajarishiga
+                    imkon beradigan texnologiyalar sohasi.
+                </p>
+
+                <p>
+                    AI matn yozish, tarjima, rasm yaratish,
+                    kod yozishda yordam berish va boshqa vazifalarda ishlatiladi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    AI'ga "Excel haqida tushuntir" deb yozsangiz,
+                    u mavzuni tushuntirishga harakat qiladi.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    AI ishlatiladigan 5 ta sohani yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "2-dars: AI bilan savol berish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Prompt</h3>
+
+                <p>
+                    AI'ga yozilgan topshiriq yoki savol prompt deb ataladi.
+                </p>
+
+                <div class="example-box">
+                    <b>❌ Noaniq:</b><br>
+                    Excelni ayt.<br><br>
+
+                    <b>✅ Aniq:</b><br>
+                    Excelda SUM formulasini 0 dan boshlab
+                    oddiy misol bilan tushuntir.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    AI uchun 3 ta aniq prompt yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "3-dars: Yaxshi prompt tuzish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Prompt tuzilishi</h3>
+
+                <p>
+                    Yaxshi promptda vazifa, mavzu va kerakli natija
+                    aniq ko‘rsatilishi foydali.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    "Men 9-sinf o‘quvchisiman.
+                    Kiberxavfsizlik mavzusini oddiy o‘zbek tilida
+                    5 ta punkt bilan tushuntir."
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    O‘zingiz o‘rganayotgan mavzu bo‘yicha
+                    aniq prompt yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "4-dars: AI yordamida matn",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    AI matn yaratish, qayta yozish,
+                    reja tuzish va mavzuni tushuntirishda yordam berishi mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    "Kompyuter xavfsizligi haqida 5 bandli reja tuz."
+                </div>
+
+                <div class="important-box">
+                    <b>⚠️ Muhim:</b><br>
+                    AI bergan ma’lumotni tekshirish kerak.
+                    AI har doim ham to‘g‘ri javob bermasligi mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Biror mavzu uchun AI yordamida reja tuzdirib ko‘ring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "5-dars: AI yordamida rasm",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Ayrim AI vositalari yozilgan tavsif asosida
+                    yangi rasmlar yaratishi mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna prompt:</b><br>
+                    "Futuristik kompyuter laboratoriyasi,
+                    zamonaviy texnologiyalar, ko‘k neon uslub."
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    O‘zingizga kerakli rasm uchun batafsil tavsif yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "6-dars: AI va dasturlash",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    AI dasturlashni o‘rganishda kodni tushuntirish,
+                    xatolarni topish va misollar berishda yordam berishi mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    "C tilida ikkita sonni qo‘shadigan
+                    juda oddiy dastur yoz va har bir qatorini tushuntir."
+                </div>
+
+                <div class="important-box">
+                    <b>⚠️ Muhim:</b><br>
+                    Tayyor kodni shunchaki ko‘chirib olishdan ko‘ra,
+                    uning qanday ishlashini tushunish foydaliroq.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    AI'dan oddiy kod so‘rang va kodning ishlashini tushuntirishini talab qiling.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "7-dars: AI bilan o‘qish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 AI o‘qishda qanday yordam beradi?</h3>
+
+                <ul>
+                    <li>Mavzuni sodda tushuntirish.</li>
+                    <li>Misollar keltirish.</li>
+                    <li>Test savollari yaratish.</li>
+                    <li>Reja tuzish.</li>
+                    <li>Xatolarni tushuntirish.</li>
+                </ul>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    "Menga Excel bo‘yicha 10 ta test tuz.
+                    Javoblarni hozircha ko‘rsatma."
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    O‘zingiz o‘qiyotgan mavzu bo‘yicha 5 ta test tuzdiring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "8-dars: AI javoblarini tekshirish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Nega tekshirish kerak?</h3>
+
+                <p>
+                    AI ba’zan noto‘g‘ri yoki eskirgan ma’lumot berishi mumkin.
+                    Shuning uchun muhim ma’lumotlarni ishonchli manbalar orqali tekshirish kerak.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    AI biror sana yoki fakt aytdi.
+                    Uni darslik, rasmiy sayt yoki boshqa ishonchli manbadan tekshiring.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    AI bergan bitta faktni boshqa manbadan tekshirib ko‘ring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "9-dars: AI xavfsizligi",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Xavfsizlik</h3>
+
+                <p>
+                    AI bilan suhbatlashganda shaxsiy va maxfiy ma’lumotlarni
+                    ehtiyot qilish kerak.
+                </p>
+
+                <ul>
+                    <li>Parollarni yubormang.</li>
+                    <li>Bank ma’lumotlarini yubormang.</li>
+                    <li>Maxfiy hujjatlarni ehtiyot qiling.</li>
+                    <li>AI javobini tekshiring.</li>
+                </ul>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    AI bilan ishlashning 5 ta xavfsizlik qoidasini yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "10-dars: AI amaliy loyiha",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>🎯 Yakuniy loyiha</h3>
+
+                <p>
+                    AI yordamida "Kiberxavfsizlik" mavzusida
+                    kichik o‘quv loyihasi tayyorlang.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Loyiha tarkibi:</b>
+
+                    <ol>
+                        <li>Mavzu rejasini AI yordamida tuzish.</li>
+                        <li>Har bir bo‘lim haqida qisqa ma’lumot olish.</li>
+                        <li>Misollar so‘rash.</li>
+                        <li>Olingan ma’lumotlarni tekshirish.</li>
+                        <li>Natijani Word yoki PowerPointga joylashtirish.</li>
+                    </ol>
+                </div>
+
+                <div class="tip-box">
+                    <b>🎉 Tabriklaymiz!</b><br>
+                    AI kursining 10 ta darsini tugatdingiz.
+                </div>
+
+            </div>
+            `
+        }
+
+    ]
+},
+
+
+/* =========================================================
+   INTERNET
+========================================================= */
+
+internet: {
+
+    title: "🌐 Internet",
+
+    description:
+        "Internetdan foydalanish, qidirish va xavfsizlik qoidalarini o‘rganamiz.",
+
+    lessons: [
+
+        {
+            title: "1-dars: Internet nima?",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Internet — butun dunyodagi qurilmalar va
+                    tarmoqlarni bog‘lab turuvchi katta tarmoq.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Internet orqali:</b>
+                    <ul>
+                        <li>Ma’lumot qidirish.</li>
+                        <li>Video ko‘rish.</li>
+                        <li>Email yuborish.</li>
+                        <li>Onlayn dars o‘qish.</li>
+                        <li>Saytlar bilan ishlash.</li>
+                    </ul>
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Internetdan foydalanadigan 5 ta xizmatni yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "2-dars: Brauzer",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Brauzer nima?</h3>
+
+                <p>
+                    Brauzer internetdagi saytlarni ochish uchun ishlatiladi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Misollar:</b><br>
+                    Chrome, Edge, Firefox va boshqa brauzerlar.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Kompyuteringizdagi brauzerni oching va
+                    yangi tab yarating.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "3-dars: Internetda qidirish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Qidiruv</h3>
+
+                <p>
+                    Qidiruv tizimida aniq so‘zlardan foydalanish
+                    kerakli natijani tezroq topishga yordam beradi.
+                </p>
+
+                <div class="example-box">
+                    <b>❌ Noaniq:</b> kompyuter<br><br>
+                    <b>✅ Aniqroq:</b>
+                    Windows 11 klaviatura tezkor tugmalari
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Internetdan "Excel SUM formulasi" haqida ma’lumot qidiring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "4-dars: Sayt va havola",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Sayt internetdagi ma’lumot joylashgan sahifa yoki sahifalar to‘plamidir.
+                    Havola esa boshqa sahifaga olib borishi mumkin.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Biror maqoladagi ko‘k rangli bosiladigan matn
+                    boshqa sahifani ochishi mumkin.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Biror saytga kirib, 3 ta havolani kuzating.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "5-dars: Kuchli parol",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Parol</h3>
+
+                <p>
+                    Kuchli parolni taxmin qilish qiyinroq bo‘ladi.
+                    Har bir muhim hisob uchun alohida parol ishlatish foydali.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Yaxshi odat:</b><br>
+                    Uzunroq va turli belgilar aralashmasidan
+                    tashkil topgan paroldan foydalanish.
+                </div>
+
+                <div class="important-box">
+                    <b>⚠️ Muhim:</b><br>
+                    Parolingizni boshqa odamlarga yubormang.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Haqiqiy parolingizni yozmasdan,
+                    kuchli parol qanday bo‘lishi kerakligini 5 bandda yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "6-dars: Ikki bosqichli himoya",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 2FA</h3>
+
+                <p>
+                    Ikki bosqichli tasdiqlash hisobni qo‘shimcha
+                    himoya qatlamiga ega qiladi.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Parol kiritilgandan keyin telefon yoki
+                    autentifikator orqali qo‘shimcha tasdiqlash.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    O‘zingiz foydalanadigan muhim hisoblarda
+                    2FA mavjudligini tekshiring.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "7-dars: Phishing nima?",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Tushuntirish</h3>
+
+                <p>
+                    Phishing — odamlarni aldab,
+                    maxfiy ma’lumotlarini olishga urinish usuli.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Misol:</b><br>
+                    Sizga "Hisobingiz bloklandi, darhol shu havolaga kiring"
+                    degan shubhali xabar kelishi mumkin.
+                </div>
+
+                <ul>
+                    <li>Havolani tekshiring.</li>
+                    <li>Shoshilmasdan o‘ylang.</li>
+                    <li>Parolni shubhali saytlarga kiritmang.</li>
+                </ul>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Phishing xabarining 5 ta belgisini yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "8-dars: Fayl yuklab olish",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Download</h3>
+
+                <p>
+                    Internetdan fayl yuklab olayotganda
+                    uning manbasiga e’tibor berish kerak.
+                </p>
+
+                <div class="important-box">
+                    <b>⚠️ Ehtiyot bo‘ling:</b><br>
+                    Noma’lum saytlar yoki shubhali fayllarni
+                    ochishda ehtiyotkorlik zarur.
+                </div>
+
+                <div class="example-box">
+                    <b>💡 Namuna:</b><br>
+                    Dastur yuklab olayotganda uning
+                    rasmiy manbasidan foydalanish xavfsizroq.
+                </div>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Biror dastur uchun rasmiy sayt va
+                    noma’lum yuklab olish saytining farqini ko‘rib chiqing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "9-dars: Internetdagi shaxsiy ma’lumotlar",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>📘 Maxfiylik</h3>
+
+                <p>
+                    Internetga joylashtirilgan ma’lumotlar
+                    boshqa odamlar tomonidan ko‘rilishi yoki saqlanishi mumkin.
+                </p>
+
+                <ul>
+                    <li>Telefon raqamiga ehtiyot bo‘ling.</li>
+                    <li>Parollarni oshkor qilmang.</li>
+                    <li>Shaxsiy hujjatlarni yuborishda ehtiyot bo‘ling.</li>
+                    <li>Noma’lum odamlar bilan shaxsiy ma’lumotlarni bo‘lishmang.</li>
+                </ul>
+
+                <div class="practice-box">
+                    <b>🎯 Topshiriq:</b><br>
+                    Internetda hech qachon oshkor qilmaslik kerak
+                    bo‘lgan 5 ta ma’lumotni yozing.
+                </div>
+
+            </div>
+            `
+        },
+
+
+        {
+            title: "10-dars: Internet xavfsizligi loyihasi",
+            content: `
+            <div class="lesson-content-box">
+
+                <h3>🎯 Yakuniy loyiha</h3>
+
+                <p>
+                    "Internetdan xavfsiz foydalanish" mavzusida
+                    kichik qo‘llanma tayyorlang.
+                </p>
+
+                <div class="example-box">
+                    <b>💡 Qo‘llanmada quyidagilar bo‘lsin:</b>
+
+                    <ol>
+                        <li>Kuchli parol.</li>
+                        <li>2FA.</li>
+                        <li>Phishing.</li>
+                        <li>Noma’lum fayllardan ehtiyot bo‘lish.</li>
+                        <li>Shaxsiy ma’lumotlarni himoya qilish.</li>
+                    </ol>
+                </div>
+
+                <div class="tip-box">
+                    <b>🎉 Tabriklaymiz!</b><br>
+                    Internet kursining 10 ta darsini tugatdingiz.
+                </div>
+
+            </div>
+            `
+        }
+
+    ]
+}
+
+};
+
+
+/* =====================================================
+                  O'ZGARUVCHILAR
+===================================================== */
+
+let currentCourse = "computer";
+
+let currentLesson = 0;
+
+
+/* =====================================================
+                    KURSNI OCHISH
+===================================================== */
+
+const lessonProfessional = {
+computer: [
+  ["Kompyuter tushunchasini anglash", "Kompyuter ma’lumotni qabul qiladi, qayta ishlaydi, saqlaydi va natijani chiqaradi.", "Desktopda Word yoki Notepadni ochib, kompyuterdan nima uchun foydalanishingizni 3 bandda yozing.", "Kompyuterning 4 ta asosiy vazifasini ayta olasizmi?"],
+  ["Asosiy qurilmalarni farqlash", "Monitor, klaviatura, sichqoncha, printer va SSD/HDD kabi qurilmalarning vazifalarini ajrating.", "Kompyuteringizdagi 5 ta qurilmani topib, har birining vazifasini yozing.", "Qaysi qurilma tasvirni ko‘rsatadi? Ma’lumotni qaysi qurilma saqlaydi?"],
+  ["Windows interfeysini tushunish", "Desktop, Start, Taskbar va Search Windows bilan ishlashning asosiy qismlaridir.", "Start menyusidan Calculator va Notepadni toping. Search orqali biror dasturni qidiring.", "Start menyusi va Taskbar nima uchun kerak?"],
+  ["Sichqonchani boshqarish", "Chap tugma tanlash, ikki marta bosish ochish, o‘ng tugma esa kontekst menyusini chiqarish uchun ishlatiladi.", "Bir faylni bir marta tanlang, ikki marta oching va o‘ng tugma menyusini ko‘ring.", "Double-click qachon ishlatiladi?"],
+  ["Klaviatura asoslarini mustahkamlash", "Harflar, raqamlar, Enter, Space, Backspace va boshqa tugmalar matn kiritishda ishlatiladi.", "Notepadga 2–3 gap yozing va Backspace hamda Enterdan foydalanib ko‘ring.", "Space va Backspace vazifasi nimada farq qiladi?"],
+  ["Fayl va papkalarni tartiblash", "Papka fayllarni tartibli saqlaydi. Fayllarni yaratish, ko‘chirish, nusxalash va nomlash mumkin.", "Desktopda ‘Kompyuter kursi’ papkasini yarating va ichiga ‘Darslar’ papkasini qo‘shing.", "Copy va Move o‘rtasidagi farq nima?"],
+  ["Dasturlarni vazifasiga ko‘ra tanlash", "Word hujjat, Excel jadval, PowerPoint taqdimot, brauzer esa internet bilan ishlashda qo‘llanadi.", "Kompyuteringizda 3 ta dastur oching va har birining nima uchun ishlatilishini yozing.", "Jadval yaratish uchun qaysi dastur qulay?"],
+  ["Copy, Cut va Paste", "Copy asl nusxani qoldiradi, Cut esa tanlangan ma’lumotni ko‘chirishga tayyorlaydi; Paste esa joylashtiradi.", "Bir matnni Ctrl+C bilan nusxalang, boshqa joyga Ctrl+V bilan qo‘ying. Keyin Ctrl+Xni sinang.", "Ctrl+C va Ctrl+X farqi nima?"],
+  ["Kompyuterdan xavfsiz foydalanish", "Qurilmani ehtiyot qilish, noma’lum fayllardan saqlanish va ishni to‘g‘ri yakunlash muhim.", "Ish joyingizni tekshiring: kabellar, shamollatish va ekran holatini ko‘rib chiqing.", "Nega noma’lum fayl yoki dasturga ehtiyotkorlik bilan qarash kerak?"],
+  ["Yakuniy amaliy loyihani bajarish", "Kurs davomida o‘rganilgan Windows, fayl, papka va dastur ko‘nikmalarini bitta topshiriqda birlashtiring.", "‘Mening loyiham’ papkasini yarating, ichida 3 ta fayl hosil qiling va ularni nomlab tartiblang.", "Kursdagi qaysi 3 ko‘nikmani mustaqil bajara olasiz?"]
+],
+keyboard: [
+  ["Klaviatura tuzilishini bilish", "Klaviatura harf, raqam, boshqaruv va maxsus tugmalardan tashkil topadi.", "Klaviaturada Enter, Space, Shift, Ctrl, Alt, Tab va Esc tugmalarini toping.", "Enter va Esc qanday vazifalarda ishlatiladi?"],
+  ["Harflar va raqamlarni tez kiritish", "Harflar matn, raqamlar esa sonli ma’lumotlarni kiritish uchun ishlatiladi.", "Notepadda ism, familiya va 1 dan 20 gacha raqamlarni yozing.", "Raqamlar qaysi turdagi ma’lumotni ifodalashi mumkin?"],
+  ["Shift va Caps Lock", "Shift odatda bitta katta harf yoki yuqori belgini, Caps Lock esa katta harflar rejimini boshqaradi.", "Shift bilan bitta katta harf yozing, keyin Caps Lockni yoqib bir nechta so‘z yozing.", "Shift va Caps Lockning asosiy farqi nima?"],
+  ["Enter, Space va Backspace", "Enter yangi qator, Space bo‘sh joy, Backspace esa kursorning chap tomonidagi belgini o‘chirishga xizmat qiladi.", "Bir necha qatorli matn yozib, uchala tugmani alohida sinab ko‘ring.", "Backspace qaysi tomondagi belgini o‘chiradi?"],
+  ["Ctrl kombinatsiyalarini ishlatish", "Ctrl boshqa tugmalar bilan birga tezkor buyruqlarni bajarishga yordam beradi.", "Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+Z va Ctrl+Ani bir matnda sinab ko‘ring.", "Ctrl+Z nima qiladi?"],
+  ["Alt va Tab bilan almashish", "Alt+Tab ochiq oynalar orasida tez almashish uchun ishlatiladi.", "Brauzer va Notepadni ochib, Alt+Tab bilan ular orasida almashing.", "Alt+Tab nima uchun foydali?"],
+  ["Windows tugmasi", "Windows tugmasi Start menyusini ochadi va ayrim kombinatsiyalar tizim vositalariga tez kirish imkonini beradi.", "Windows tugmasini bosing va Search orqali biror dastur toping.", "Windows tugmasi odatda qaysi menyuni ochadi?"],
+  ["Matnni tez tahrirlash", "Home, End, Ctrl+Left/Right va Backspace/Delete kabi tugmalar matn bo‘ylab harakatlanish va tahrirlashni tezlashtiradi.", "Bir gap yozib, Home va End bilan boshiga va oxiriga o‘ting.", "Home va End tugmalari nima qiladi?"],
+  ["Tez yozish ko‘nikmasi", "Tez yozishda aniqlik, to‘g‘ri barmoq joylashuvi va muntazam mashq muhim.", "5 daqiqa davomida xatosiz matn ko‘chirishga harakat qiling; tezlikdan oldin aniqlikka e’tibor bering.", "Tez yozishda nima muhimroq: faqat tezlikmi yoki aniqlik hammi?"],
+  ["Klaviatura bo‘yicha yakuniy amaliyot", "Tezkor tugmalar va matn kiritish ko‘nikmalarini bitta mashqda birlashtiring.", "Matn yozing, uni belgilang, nusxalang, boshqa joyga qo‘ying va saqlang.", "Kamida 5 ta tezkor kombinatsiyani mustaqil ayta olasizmi?"]
+],
+word: [
+  ["Word interfeysini bilish", "Word matnli hujjatlarni yaratish, tahrirlash va formatlash uchun ishlatiladi.", "Wordni ochib, Ribbon, hujjat maydoni va tezkor saqlash tugmasini toping.", "Word asosan qanday turdagi ishlar uchun ishlatiladi?"],
+  ["Yangi hujjat yaratish", "Yangi hujjatni bo‘sh sahifadan yoki tayyor shablondan boshlash mumkin.", "New/Blank document orqali yangi hujjat oching va unga sarlavha yozing.", "Yangi hujjat yaratishdan maqsad nima?"],
+  ["Matn yozish va tahrirlash", "Matnni belgilash, o‘chirish, nusxalash va ko‘chirish Wordning asosiy amallaridir.", "3 paragraf yozing va bir jumlani Ctrl+C/Ctrl+V orqali takrorlang.", "Matnni boshqa joyga ko‘chirish uchun qaysi amallar kerak?"],
+  ["Shrift va matn ko‘rinishi", "Font, size, Bold, Italic, Underline va rang matnning ko‘rinishini boshqaradi.", "Sarlavhani qalin va kattaroq qiling, bitta so‘zni Italic va boshqasini Underline qiling.", "Bold va Italic o‘rtasidagi farq nima?"],
+  ["Matnni tekislash", "Matn chap, markaz, o‘ng yoki ikki tomonga tekislanishi mumkin.", "Sarlavhani markazga, asosiy matnni chapga tekislang.", "Center va Left Align qachon ishlatiladi?"],
+  ["Ro‘yxatlar yaratish", "Bullets va Numbering ma’lumotlarni tartibli va o‘qilishi qulay ko‘rinishda beradi.", "Kundalik vazifalaringizdan 5 ta bandli ro‘yxat yarating.", "Bulleted list va numbered list qachon farq qiladi?"],
+  ["Jadval bilan ishlash", "Jadval ma’lumotlarni qator va ustunlarda tartibli ko‘rsatishga yordam beradi.", "3 ustun va 4 qatorli jadval yarating va uni ma’lumot bilan to‘ldiring.", "Jadvaldagi qator va ustun nima?"],
+  ["Rasm qo‘shish", "Rasm hujjatni tushunarli va ko‘rgazmali qilishi mumkin; uning o‘lchami va joylashuvini sozlash mumkin.", "Hujjatga bitta rasm qo‘shib, o‘lchamini o‘zgartiring va matn bilan joylashuvini ko‘ring.", "Rasmni hujjatga qo‘shish qaysi menyu orqali bajariladi?"],
+  ["Sahifa sozlamalari", "Page Size, Margin, Orientation, Header, Footer va Page Number hujjat ko‘rinishini boshqaradi.", "Sahifani Landscapega o‘tkazing, marginni ko‘ring va sahifa raqamini qo‘shing.", "Portrait va Landscape nimani o‘zgartiradi?"],
+  ["Word yakuniy loyiha", "Matn, formatlash, ro‘yxat, jadval, rasm va sahifa sozlamalarini bir hujjatda qo‘llang.", "‘Mening IT loyiham’ nomli 1–2 sahifali hujjat yarating va uni saqlang.", "Professional hujjatda qaysi elementlardan foydalandingiz?"]
+],
+excel: [
+  ["Excel bilan tanishish", "Excel ma’lumotlarni jadval ko‘rinishida saqlash, hisoblash va tahlil qilishga yordam beradi.", "Excelni ochib, Workbook, Worksheet va asosiy jadval maydonini toping.", "Excelning asosiy vazifasi nima?"],
+  ["Katak, qator va ustun", "Cell katak, Row qator, Column ustun deb ataladi; katak manzili masalan A1 bo‘lishi mumkin.", "A1, B2 va C5 kataklariga turli ma’lumot kiriting.", "B2 nimani anglatadi?"],
+  ["Ma’lumot kiritish", "Katakka matn, son, sana va boshqa qiymatlar kiritish mumkin.", "Ism, yosh va fan nomlaridan iborat kichik jadval tuzing.", "Katakka qanday turdagi ma’lumotlar kiritish mumkin?"],
+  ["Oddiy formulalar", "Excel formulalari odatda = belgisi bilan boshlanadi va kataklar bilan hisoblash bajaradi.", "A1 va B1ga son yozib, C1da =A1+B1 formulasini sinang.", "Formula nima uchun = belgisi bilan boshlanadi?"],
+  ["SUM va AVERAGE", "SUM yig‘indini, AVERAGE esa o‘rtacha qiymatni hisoblash uchun ishlatiladi.", "5 ta son kiriting va ularning SUM hamda AVERAGE natijasini hisoblang.", "SUM va AVERAGE vazifalari qanday farq qiladi?"],
+  ["MIN va MAX", "MIN eng kichik, MAX esa eng katta qiymatni topadi.", "Bir nechta son kiriting va MIN hamda MAX formulasini qo‘llang.", "MAX qanday qiymatni qaytaradi?"],
+  ["Jadvalni formatlash", "Formatlash shrift, chegara, tekislash va son ko‘rinishini o‘zgartirish orqali jadvalni tushunarli qiladi.", "Sarlavhani qalin qiling, ustun kengligini moslang va jadvalga border bering.", "Formatlash hisob-kitob natijasini o‘zgartiradimi?"],
+  ["Sort va Filter", "Sort ma’lumotlarni tartiblaydi, Filter esa kerakli yozuvlarni ajratib ko‘rsatishga yordam beradi.", "Ismlar va ballardan jadval tuzib, ball bo‘yicha tartiblang va filter qo‘llang.", "Sort va Filterning farqi nima?"],
+  ["Diagramma yaratish", "Diagramma sonli ma’lumotlarni ko‘rgazmali tarzda ko‘rsatadi.", "3–5 ta qiymatdan iborat jadval tuzib, undan ustunli diagramma yarating.", "Diagramma qachon foydali?"],
+  ["Excel yakuniy loyiha", "Ma’lumot kiritish, formulalar, formatlash, filter va diagrammani bitta jadvalda qo‘llang.", "‘O‘quvchilar natijalari’ jadvalini yarating: ism, ball, o‘rtacha natija va diagramma.", "Loyihada qaysi formulalardan foydalandingiz?"]
+],
+powerpoint: [
+  ["PowerPoint tushunchasi", "PowerPoint slaydlar asosida taqdimot yaratish uchun ishlatiladi.", "PowerPointni ochib, yangi presentation yarating va mavjud slaydlarni ko‘ring.", "Taqdimot nima uchun ishlatiladi?"],
+  ["Slayd yaratish", "Slayd taqdimotning alohida sahifasi bo‘lib, unda matn, rasm, shakl va boshqa obyektlar bo‘lishi mumkin.", "3 ta slayd yarating: sarlavha, asosiy ma’lumot va xulosa.", "Bir taqdimotda bir nechta slayd bo‘lishi mumkinmi?"],
+  ["Dizayn va Theme", "Theme rang, shrift va umumiy ko‘rinishni bir xil uslubda boshqarishga yordam beradi.", "Bir nechta Theme variantini ko‘rib, taqdimotingizga mosini tanlang.", "Theme nima uchun kerak?"],
+  ["Slaydda matn", "Qisqa sarlavha va tushunarli punktlar taqdimotni o‘qishni osonlashtiradi.", "Bir slaydga 3–5 ta asosiy punkt yozing va sarlavha qo‘ying.", "Nega slaydga juda ko‘p matn joylash yaxshi emas?"],
+  ["Rasm va shakllar", "Pictures va Shapes ma’lumotni ko‘rgazmali tushuntirishga yordam beradi.", "Slaydga rasm va kamida 2 ta shakl qo‘shing.", "Rasm va shakl taqdimotni qanday yaxshilashi mumkin?"],
+  ["Transition", "Transition bir slayddan ikkinchisiga o‘tish paytidagi effektni boshqaradi.", "Ikki slaydga transition qo‘shib, Slide Showda tekshiring.", "Transition qachon ko‘rinadi?"],
+  ["Animation", "Animation slayd ichidagi obyektlarning paydo bo‘lishi yoki harakatini boshqaradi.", "Bitta sarlavha va bitta rasmga sodda animation qo‘shing.", "Animation va Transition farqi nima?"],
+  ["Jadval va diagramma", "Jadval ma’lumotni tartiblaydi, diagramma esa uni ko‘rgazmali ko‘rsatadi.", "Bir slaydga kichik jadval va unga mos diagramma joylashtiring.", "Diagramma qanday ma’lumotni ko‘rsatishda qulay?"],
+  ["Taqdimotni namoyish qilish", "Slide Show taqdimotni auditoriyaga to‘liq ekran rejimida ko‘rsatishga imkon beradi.", "Taqdimotingizni boshidan oxirigacha namoyish qilib, slaydlar orasida o‘ting.", "Slide Show nima uchun kerak?"],
+  ["PowerPoint yakuniy loyiha", "Dizayn, matn, rasm, animation va taqdimot namoyishini yagona loyihada qo‘llang.", "‘Kiberxavfsizlik’ mavzusida kamida 5 slaydli taqdimot yarating.", "Taqdimotingizda qaysi elementlardan foydalandingiz?"]
+],
+ai: [
+  ["Sun’iy intellekt tushunchasi", "AI kompyuter tizimlariga ayrim murakkab vazifalarni bajarishda yordam beradigan texnologiyalar umumiy nomidir.", "AI ishlatiladigan 3 ta kundalik xizmatni toping va vazifasini yozing.", "AI qaysi turdagi vazifalarda yordam berishi mumkin?"],
+  ["AI bilan aniq savol berish", "AI javobining foydaliligi ko‘pincha berilgan topshiriqning aniqligi va kontekstiga bog‘liq.", "Bir mavzuda umumiy va aniq ikki xil savol yozib, farqini kuzating.", "Savolda kontekst berish nima uchun foydali?"],
+  ["Yaxshi prompt tuzish", "Prompt — AIga beriladigan topshiriq yoki ko‘rsatma. Maqsad, kontekst, format va cheklovlarni aniq yozish foydali.", "‘Menga o‘zbek tilida, 5 bandli, sodda tushuntirish ber’ kabi prompt tuzing.", "Yaxshi promptning kamida 3 ta qismini ayting."],
+  ["AI yordamida matn", "AI reja, izoh, xulosa yoki matn loyihasini tayyorlashda yordam berishi mumkin; natijani tekshirish kerak.", "Bir dars mavzusida AI yordamida qisqa reja tuzdirib, uni o‘zingiz tahrir qiling.", "AI yozgan matnni nega tekshirish kerak?"],
+  ["AI yordamida rasm", "Rasm generatsiyasi vositalari matnli tavsif asosida vizual g‘oyalar yaratishi mumkin.", "Bir mavzu uchun obyekt, uslub, fon va formatni ko‘rsatadigan rasm prompti yozing.", "Rasm promptida qanday detallarni aniq ko‘rsatish mumkin?"],
+  ["AI va dasturlash", "AI kod yozish, tushuntirish va xatolarni topishda yordamchi bo‘lishi mumkin, ammo kodni ishga tushirib tekshirish muhim.", "Oddiy bir dastur vazifasini yozib, AI bergan kodning har bir qismini tushunishga harakat qiling.", "AI yozgan kodni tekshirish nima uchun kerak?"],
+  ["AI bilan o‘qish", "AI mavzuni sodda tushuntirish, misollar berish va mashq tuzishda yordam berishi mumkin.", "O‘zingiz bilmagan mavzuni ‘0 dan tushuntir, keyin 5 ta mashq ber’ shaklida so‘rang.", "AI o‘qishda qanday yordamchi bo‘la oladi?"],
+  ["AI javoblarini tekshirish", "AI ba’zan xato yoki to‘liq bo‘lmagan javob berishi mumkin. Muhim ma’lumotni ishonchli manba bilan tekshirish kerak.", "AI bergan bitta faktni darslik yoki ishonchli manba bilan solishtiring.", "AI javobini tekshirishning bir usulini ayting."],
+  ["AI bilan xavfsiz ishlash", "Parol, maxfiy hujjat yoki boshqa shaxsiy ma’lumotlarni noma’lum xizmatlarga yuborishda ehtiyot bo‘lish kerak.", "AIga yuborish xavfsiz bo‘lmagan ma’lumotlarga 3 ta misol yozing.", "Nega maxfiy ma’lumotlarni ehtiyot qilish kerak?"],
+  ["AI yakuniy loyiha", "Prompt yozish, natijani tekshirish va AI yordamidan mas’uliyatli foydalanish ko‘nikmalarini birlashtiring.", "Bir mavzu tanlab, AI yordamida reja, qisqa matn va savollar tayyorlang; keyin hammasini o‘zingiz tekshiring.", "AI bilan ishlashda eng muhim qoida nima deb o‘ylaysiz?"]
+],
+internet: [
+  ["Internet tushunchasi", "Internet butun dunyodagi ko‘plab qurilmalar va tarmoqlarni bog‘laydigan global tarmoqdir.", "Internetdan foydalanadigan 5 ta xizmatni yozing: qidiruv, video, pochta va hokazo.", "Internet nima?"],
+  ["Brauzer bilan ishlash", "Brauzer web-sahifalarni ochish, qidirish va ulardan foydalanish uchun xizmat qiladi.", "Brauzerni oching, yangi tab yarating va bitta saytga kiring.", "Brauzer va internet bir xil tushunchami?"],
+  ["Samarali qidirish", "Aniq kalit so‘zlar qidiruv natijalarini toraytirishga yordam beradi.", "Bir mavzuni 3 xil kalit so‘z bilan qidirib, natijalarni taqqoslang.", "Qidiruv so‘rovini aniq qilish nima beradi?"],
+  ["Sayt va havolalar", "URL web-manzilni bildiradi, havola esa boshqa sahifaga yoki resursga olib borishi mumkin.", "Bir saytda ichki va tashqi havolalarni topishga harakat qiling.", "Havola nima uchun kerak?"],
+  ["Kuchli parol", "Kuchli parolni uzun, taxmin qilish qiyin va boshqa akkauntlardan alohida saqlash foydali.", "O‘zingizning haqiqiy parolingizni yozmasdan, kuchli parol qanday bo‘lishini misol sifatida tasvirlang.", "Nega bir xil parolni hamma joyda ishlatish xavfli?"],
+  ["Ikki bosqichli himoya", "2FA akkauntga kirishda paroldan tashqari qo‘shimcha tasdiqlash bosqichini qo‘shadi.", "Siz foydalanadigan xizmatlarda 2FA sozlamasi mavjudligini ko‘rib chiqing; kodni hech kimga bermang.", "2FA nimani qo‘shimcha himoya qiladi?"],
+  ["Phishingni aniqlash", "Phishing — foydalanuvchini aldab, parol yoki boshqa ma’lumotlarini olishga qaratilgan firibgarlik usuli.", "Shubhali xabarda jo‘natuvchi, havola va imlo xatolarini tekshirish ro‘yxatini tuzing.", "Shubhali havolani bosishdan oldin nima qilish kerak?"],
+  ["Faylni xavfsiz yuklab olish", "Faylni ishonchli manbadan yuklash va noma’lum dasturlarni ishga tushirishda ehtiyot bo‘lish muhim.", "Biror fayl yuklashdan oldin sayt manzili va fayl nomini tekshirish odatini mashq qiling.", "Noma’lum faylni yuklashda qanday ehtiyot chorasi kerak?"],
+  ["Shaxsiy ma’lumotlarni himoya qilish", "Ism, telefon, manzil, parol va akkaunt ma’lumotlari kabi axborotlarni internetda ehtiyotkorlik bilan ulashish kerak.", "Internetda ommaga oshkor qilmaslik kerak bo‘lgan 5 turdagi ma’lumotni yozing.", "Qaysi ma’lumotlarni begona odamlarga yubormaslik kerak?"],
+  ["Internet xavfsizligi loyihasi", "Qidiruv, parol, 2FA, phishing va shaxsiy ma’lumotlarni himoya qilish bo‘yicha bilimlarni birlashtiring.", "‘Xavfsiz internet’ nomli 1 sahifalik qoida yoki taqdimot tayyorlang.", "Internetda xavfsiz ishlashning 5 ta qoidasini ayta olasizmi?"]
+]
+};
+
+function getLessonProfessional(courseName,index){
+  return (lessonProfessional[courseName]||[])[index] || ["Dars maqsadi","Ushbu darsdagi asosiy tushunchalarni o‘zlashtiring.","Darsdagi mavzuni kompyuterda mustaqil sinab ko‘ring.","Bugun nimani o‘rgandingiz?"];
+}
+
+function lessonKey(){ return `muhammadaziz_done_${currentCourse}`; }
+function getDoneLessons(){ try{return JSON.parse(localStorage.getItem(lessonKey())||'[]');}catch(e){return [];} }
+function updateLessonProgress(){
+  const done=getDoneLessons(); const total=courses[currentCourse].lessons.length;
+  const pct=Math.round(done.length/total*100);
+  const bar=document.getElementById('lessonProgressBar'); const text=document.getElementById('lessonProgressText');
+  if(bar) bar.style.width=pct+'%'; if(text) text.textContent=`${done.length} / ${total} dars bajarildi · ${pct}%`;
+}
+function completeCurrentLesson(){
+  const done=getDoneLessons();
+  if(!done.includes(currentLesson)) done.push(currentLesson);
+  localStorage.setItem(lessonKey(),JSON.stringify(done.sort((a,b)=>a-b)));
+  updateLessonProgress();
+  const btn=document.getElementById('lessonCompleteBtn');
+  if(btn){btn.classList.add('done');btn.textContent='✅ Dars bajarildi';}
+}
+
+function showCourse(courseName) {
+
+    currentCourse = courseName;
+
+    currentLesson = 0;
+
+    const course = courses[courseName];
+
+
+    document.getElementById("courseTitle").innerHTML =
+        course.title;
+
+
+    document.getElementById("courseDescription").innerHTML =
+        course.description;
+
+
+    const lessonList =
+        document.getElementById("lessonList");
+
+
+    lessonList.innerHTML = "";
+
+
+    course.lessons.forEach((lesson, index) => {
+
+        const completed = getDoneLessons().includes(index);
+        lessonList.innerHTML += `
+
+            <div class="lesson">
+
+                <span>
+                    ${String(index + 1).padStart(2, "0")}
+                </span>
+
+                <div>
+
+                    <h3>
+                        ${lesson.title}
+                    </h3>
+
+                    <p>
+                        ${getLessonDescription(index)}
+                    </p>
+
+                </div>
+
+                <button
+                    onclick="openLesson(${index})">
+
+                    ${completed ? '✅ Qayta o‘qish' : 'Boshlash'}
+
+                </button>
+
+            </div>
+
+        `;
+
+    });
+
+    updateLessonProgress();
+
+
+    document.getElementById("lessons")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+/* =====================================================
+                    DARS TAVSIFI
+===================================================== */
+
+function getLessonDescription(index) {
+
+    const descriptions = {
+
+        computer: [
+            "Kompyuterning nima ekanini va asosiy tushunchalarni o‘rganing.",
+            "Kompyuterning asosiy qismlari va vazifalari.",
+            "Windows ish stoli, Start va Search bilan ishlash.",
+            "Sichqonchaning asosiy tugmalari va harakatlari.",
+            "Klaviaturaning asosiy tugmalari.",
+            "Fayl va papkalarni yaratish va boshqarish.",
+            "Dasturlar va ularning vazifalari.",
+            "Copy, Paste va Cut buyruqlari.",
+            "Kompyuterdan xavfsiz va to‘g‘ri foydalanish.",
+            "O‘rgangan bilimlarni amaliy loyihada qo‘llash."
+        ],
+
+        keyboard: [
+            "Klaviaturaning umumiy tuzilishi.",
+            "Harflar va raqamlarni yozish.",
+            "Shift va Caps Lock bilan ishlash.",
+            "Enter, Space va Backspace.",
+            "Ctrl kombinatsiyalari.",
+            "Alt + Tab orqali dasturlarni almashtirish.",
+            "Windows tugmasi va foydali kombinatsiyalar.",
+            "Matnni tez tahrirlash.",
+            "Tez yozish mashqlari.",
+            "Klaviatura bo‘yicha yakuniy amaliyot."
+        ],
+
+        word: [
+            "Microsoft Word dasturi bilan tanishish.",
+            "Yangi hujjat yaratish.",
+            "Matn yozish va tahrirlash.",
+            "Shrift va matn ko‘rinishini o‘zgartirish.",
+            "Matnni tekislash.",
+            "Ro‘yxatlar bilan ishlash.",
+            "Jadval yaratish.",
+            "Hujjatga rasm qo‘shish.",
+            "Sahifa sozlamalari.",
+            "Word bo‘yicha yakuniy loyiha."
+        ],
+
+        excel: [
+            "Excel dasturi va uning vazifalari.",
+            "Katak, qator va ustun.",
+            "Jadvalga ma’lumot kiritish.",
+            "Oddiy formulalar.",
+            "SUM va AVERAGE.",
+            "MIN va MAX.",
+            "Jadvalni formatlash.",
+            "Sort va Filter.",
+            "Diagramma yaratish.",
+            "Excel bo‘yicha yakuniy loyiha."
+        ],
+
+        powerpoint: [
+            "PowerPoint va taqdimot tushunchasi.",
+            "Slayd yaratish.",
+            "Dizayn va Theme.",
+            "Slaydda matn bilan ishlash.",
+            "Rasm va shakllar.",
+            "Transition effektlari.",
+            "Animation effektlari.",
+            "Jadval va diagrammalar.",
+            "Taqdimotni namoyish qilish.",
+            "PowerPoint yakuniy loyihasi."
+        ],
+
+        ai: [
+            "Sun’iy intellektning asosiy tushunchalari.",
+            "AI'ga to‘g‘ri savol berish.",
+            "Yaxshi prompt tuzish.",
+            "AI yordamida matn bilan ishlash.",
+            "AI yordamida rasm yaratish tushunchasi.",
+            "AI va dasturlash.",
+            "AI yordamida o‘qish.",
+            "AI javoblarini tekshirish.",
+            "AI bilan xavfsiz ishlash.",
+            "AI bo‘yicha yakuniy loyiha."
+        ],
+
+        internet: [
+            "Internetning asosiy tushunchalari.",
+            "Brauzerlar bilan ishlash.",
+            "Internetda samarali qidirish.",
+            "Sayt va havolalar.",
+            "Kuchli parol yaratish.",
+            "Ikki bosqichli himoya.",
+            "Phishingdan himoyalanish.",
+            "Fayllarni xavfsiz yuklab olish.",
+            "Shaxsiy ma’lumotlarni himoya qilish.",
+            "Internet xavfsizligi bo‘yicha loyiha."
+        ]
+
+    };
+
+    const courseDescriptions = descriptions[courses[currentCourse] ? currentCourse : "computer"];
+
+    return courseDescriptions?.[index] || "Darsni o‘rganing.";
+}
+
+
+/* =====================================================
+                    DARSNI OCHISH
+===================================================== */
+
+function openLesson(number) {
+
+    const course =
+        courses[currentCourse];
+
+    const lesson =
+        course.lessons[number];
+
+
+    currentLesson = number;
+
+
+    document.getElementById("lessonTitle").innerHTML =
+        lesson.title;
+
+
+    const pro = getLessonProfessional(currentCourse, number);
+    const done = getDoneLessons().includes(number);
+    document.getElementById("lessonContent").innerHTML = `
+        <div class="lesson-content-pro">
+            <div class="pro-card">
+                <h3>🎯 Dars maqsadi</h3>
+                <p>${pro[0]}</p>
+            </div>
+            ${lesson.content}
+            <div class="pro-card"><h3>💡 Muhim tushuncha</h3><p>${pro[1]}</p></div>
+            <div class="pro-card practice"><h3>🧪 Amaliy topshiriq</h3><p>${pro[2]}</p></div>
+            <div class="lesson-check-card">
+                <h3>❓ O‘zingizni tekshiring</h3>
+                <p class="lesson-check-question">${pro[3]}</p>
+                <textarea id="lessonCheckAnswer" class="lesson-check-answer" placeholder="Javobingizni shu yerga yozing..."></textarea>
+                <div class="lesson-check-actions">
+                    <button class="lesson-check-show" onclick="showLessonAnswer()">💡 Javobni ko‘rsatish</button>
+                    <button class="lesson-check-clear" onclick="clearLessonAnswer()">🗑️ Tozalash</button>
+                </div>
+                <div class="lesson-check-result" id="lessonCheckResult"></div>
+                <div class="lesson-check-hint">Avval o‘zingiz javob bering, keyin javobni tekshiring.</div>
+            </div>
+            <button id="lessonCompleteBtn" class="lesson-complete-btn ${done?'done':''}" onclick="completeCurrentLesson()">${done?'✅ Dars bajarildi':'✅ Darsni bajarilgan deb belgilash'}</button>
+        </div>`;
+
+
+    const modal = document.getElementById("lessonModal");
+    const box = modal.querySelector(".lesson-box");
+    modal.style.display = "flex";
+    document.documentElement.classList.add("lesson-open");
+    document.body.classList.add("lesson-open");
+    if (box) box.scrollTop = 0;
+
+}
+
+
+/* =====================================================
+              DARS SAVOLINI BOSHQARISH
+===================================================== */
+
+function showLessonAnswer() {
+    const result = document.getElementById("lessonCheckResult");
+    if (!result) return;
+
+    const pro = getLessonProfessional(currentCourse, currentLesson);
+    const userAnswer = (document.getElementById("lessonCheckAnswer")?.value || "").trim();
+
+    result.innerHTML = `
+        <b>📘 Asosiy javob:</b><br>
+        ${pro[1]}
+        <br><br>
+        <b>🧪 Amaliyotdagi kutilgan natija:</b><br>
+        ${pro[2]}
+        ${userAnswer ? `<br><br><b>✍️ Sizning javobingiz:</b><br>${escapeLessonText(userAnswer)}` : ""}
+    `;
+    result.classList.add("show");
+}
+
+function clearLessonAnswer() {
+    const input = document.getElementById("lessonCheckAnswer");
+    const result = document.getElementById("lessonCheckResult");
+    if (input) input.value = "";
+    if (result) {
+        result.innerHTML = "";
+        result.classList.remove("show");
+    }
+}
+
+function escapeLessonText(text) {
+    return text.replace(/[&<>"']/g, function(ch) {
+        return ({
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#039;"
+        })[ch];
+    });
+}
+
+
+/* =====================================================
+                    KEYINGI DARS
+===================================================== */
+
+function nextLesson() {
+
+    const total =
+        courses[currentCourse].lessons.length;
+
+
+    if (currentLesson < total - 1) {
+
+        openLesson(currentLesson + 1);
+
+    }
+
+    else {
+
+        closeLesson();
+
+        alert(
+            "🎉 Bu kursdagi barcha 10 ta darsni tugatdingiz!"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+                    DARSNI YOPISH
+===================================================== */
+
+function closeLesson() {
+
+    document.getElementById("lessonModal").style.display = "none";
+    document.documentElement.classList.remove("lesson-open");
+    document.body.classList.remove("lesson-open");
+
+}
+
+
+/* =====================================================
+                    BOSHLASH
+===================================================== */
+
+function scrollToCourses() {
+
+    document.getElementById("courses")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+/* =====================================================
+              MODALNI TASHQARIDAN YOPISH
+===================================================== */
+
+window.onclick = function(event) {
+
+    const modal =
+        document.getElementById("lessonModal");
+
+
+    if (event.target === modal) {
+
+        closeLesson();
+
+    }
+
+};
+
+
+/* =====================================================
+          DARS OYNASIDA MOUSE SCROLLNI BOSHQARISH
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const box = document.querySelector("#lessonModal .lesson-box");
+    if (!box) return;
+
+    box.addEventListener("wheel", function (event) {
+        // Sichqoncha g‘ildiragi faqat dars oynasini aylantirsin.
+        event.preventDefault();
+        event.stopPropagation();
+        box.scrollTop += event.deltaY;
+    }, { passive: false });
+
+    box.addEventListener("scroll", function (event) {
+        event.stopPropagation();
+    }, { passive: true });
+});
+
+/* =====================================================
+                 BOSHLANG‘ICH KURS
+===================================================== */
+
+showCourse("computer");
+
+
+const questionBank = {
+  "computer": [
+    {
+      "q": "Kompyuter nima?",
+      "a": "Ma'lumotlarni qabul qilish, qayta ishlash, saqlash va chiqarish uchun ishlatiladigan elektron qurilma.",
+      "o": [
+        "Faqat o‘yin qurilmasi",
+        "Internet kabeli",
+        "Printer",
+        "Operatsion tizim"
+      ]
+    },
+    {
+      "q": "Kompyuter yordamida qaysi ishni bajarish mumkin?",
+      "a": "Hujjat yaratish",
+      "o": [
+        "Faqat musiqa eshitish",
+        "Faqat qo‘ng‘iroq qilish",
+        "Faqat rasm ko‘rish",
+        "Faqat fayl o‘chirish"
+      ]
+    },
+    {
+      "q": "Kompyuter yordamida qaysi ishni bajarish mumkin?",
+      "a": "Dasturlash",
+      "o": [
+        "Faqat qog‘oz chiqarish",
+        "Faqat elektr berish",
+        "Faqat klaviatura tozalash",
+        "Faqat monitorni yoqish"
+      ]
+    },
+    {
+      "q": "Monitorning vazifasi nima?",
+      "a": "Tasvirni ko‘rsatish.",
+      "o": [
+        "Ma'lumot saqlash",
+        "Matn kiritish",
+        "Hujjatni qog‘ozga chiqarish",
+        "Ovoz yozish"
+      ]
+    },
+    {
+      "q": "Klaviatura nima uchun ishlatiladi?",
+      "a": "Ma'lumot kiritish.",
+      "o": [
+        "Tasvir chiqarish",
+        "Ma'lumotni qog‘ozga chiqarish",
+        "Internetni o‘chirish",
+        "Faylni saqlash"
+      ]
+    },
+    {
+      "q": "Sichqoncha nima uchun kerak?",
+      "a": "Kompyuterni boshqarish uchun.",
+      "o": [
+        "Faqat ovoz eshitish",
+        "Faqat chop etish",
+        "Ma'lumot saqlash",
+        "Slayd yaratish"
+      ]
+    },
+    {
+      "q": "Printer nima qiladi?",
+      "a": "Hujjatni qog‘ozga chiqaradi.",
+      "o": [
+        "Tasvirni ekranga chiqaradi",
+        "Faylni ko‘chiradi",
+        "Internetga ulaydi",
+        "Matnni tarjima qiladi"
+      ]
+    },
+    {
+      "q": "SSD/HDD vazifasi nima?",
+      "a": "Ma'lumotlarni saqlash.",
+      "o": [
+        "Tasvir ko‘rsatish",
+        "Matn kiritish",
+        "Oyna yopish",
+        "Ovoz eshittirish"
+      ]
+    },
+    {
+      "q": "Windows nima?",
+      "a": "Kompyuterni boshqarish uchun ishlatiladigan operatsion tizim.",
+      "o": [
+        "Qidiruv tizimi",
+        "Printer dasturi",
+        "Matn formati",
+        "Brauzer tugmasi"
+      ]
+    },
+    {
+      "q": "Windowsning asosiy qismlaridan biri qaysi?",
+      "a": "Desktop",
+      "o": [
+        "SUM",
+        "Pictures",
+        "Cell",
+        "Workbook"
+      ]
+    },
+    {
+      "q": "Windowsda dasturlar va buyruqlarni topishga yordam beradigan qism qaysi?",
+      "a": "Start menyusi",
+      "o": [
+        "SSD",
+        "Margin",
+        "Row",
+        "Printer"
+      ]
+    },
+    {
+      "q": "Windowsda pastki boshqaruv qismi nima deb ataladi?",
+      "a": "Taskbar",
+      "o": [
+        "Worksheet",
+        "Header",
+        "Cell",
+        "Search engine"
+      ]
+    },
+    {
+      "q": "Windowsda qidirish uchun qaysi qism bor?",
+      "a": "Search",
+      "o": [
+        "SUM",
+        "Footer",
+        "Landscape",
+        "SSD"
+      ]
+    },
+    {
+      "q": "Fayl nima?",
+      "a": "Kompyuterda saqlanadigan ma'lumot.",
+      "o": [
+        "Fayllar saqlanadigan papka",
+        "Faqat monitor",
+        "Operatsion tizim",
+        "Klaviatura tugmasi"
+      ]
+    },
+    {
+      "q": "Papka nima uchun ishlatiladi?",
+      "a": "Fayllarni tartibli saqlash uchun.",
+      "o": [
+        "Tasvir chiqarish",
+        "Matn yozish",
+        "Internet qidirish",
+        "Chop etish"
+      ]
+    },
+    {
+      "q": "Fayllar bilan ishlashda qaysi amal mavjud?",
+      "a": "Nusxalash",
+      "o": [
+        "Animatsiya berish",
+        "Slayd namoyishi",
+        "SUM hisoblash",
+        "Margin o‘zgartirish"
+      ]
+    },
+    {
+      "q": "Fayl nomini o‘zgartirish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Faqat printer orqali",
+        "Faqat internet bilan",
+        "Yo‘q",
+        "Faqat Excelda"
+      ]
+    },
+    {
+      "q": "Fayl yoki papkani olib tashlash qaysi amal?",
+      "a": "O‘chirish",
+      "o": [
+        "Nusxalash",
+        "Ko‘chirish",
+        "Qidirish",
+        "Formatlash"
+      ]
+    },
+    {
+      "q": "Brauzer asosan nima uchun ishlatiladi?",
+      "a": "Internet uchun.",
+      "o": [
+        "Jadval hisoblash",
+        "Slayd yaratish",
+        "Matn formatlash",
+        "Qog‘oz chiqarish"
+      ]
+    },
+    {
+      "q": "Word dasturi nima uchun?",
+      "a": "Hujjatlar uchun.",
+      "o": [
+        "Jadvallar uchun",
+        "Internet uchun",
+        "Dasturlash uchun",
+        "Printer uchun"
+      ]
+    },
+    {
+      "q": "Excel nima uchun ishlatiladi?",
+      "a": "Jadvallar uchun.",
+      "o": [
+        "Prezentatsiya uchun",
+        "Faqat internet uchun",
+        "Faqat rasm uchun",
+        "Ovoz uchun"
+      ]
+    },
+    {
+      "q": "PowerPoint nima uchun?",
+      "a": "Prezentatsiya uchun.",
+      "o": [
+        "Hujjatlarni chop etish uchun",
+        "Fayl saqlash uchun",
+        "Brauzer sifatida",
+        "Klaviatura boshqaruvi uchun"
+      ]
+    },
+    {
+      "q": "VS Code nima uchun ishlatiladi?",
+      "a": "Dasturlash uchun.",
+      "o": [
+        "Hujjat chop etish",
+        "Internet qidirish",
+        "Rasm skanerlash",
+        "Ovoz yozish"
+      ]
+    },
+    {
+      "q": "Amaliyot darsida Desktopda qanday papka yaratish topshirilgan?",
+      "a": "Amaliyot",
+      "o": [
+        "Test",
+        "Word",
+        "Dars",
+        "Kompyuter"
+      ]
+    },
+    {
+      "q": "Amaliyot papkasi ichida qanday matn fayli yaratish topshirilgan?",
+      "a": "Test",
+      "o": [
+        "Amaliyot",
+        "Word",
+        "Excel",
+        "Dars"
+      ]
+    }
+  ],
+  "keyboard": [
+    {
+      "q": "Klaviatura nima uchun ishlatiladi?",
+      "a": "Kompyuterga matn va buyruqlar kiritish uchun.",
+      "o": [
+        "Tasvir chiqarish",
+        "Fayl saqlash",
+        "Hujjat chop etish",
+        "Internet ulash"
+      ]
+    },
+    {
+      "q": "Qaysi biri asosiy klaviatura tugmasi?",
+      "a": "Enter",
+      "o": [
+        "SUM",
+        "Cell",
+        "Margin",
+        "Desktop"
+      ]
+    },
+    {
+      "q": "Space tugmasi klaviaturada bormi?",
+      "a": "Ha",
+      "o": [
+        "Faqat Excelda",
+        "Faqat Wordda",
+        "Yo‘q",
+        "Faqat brauzerda"
+      ]
+    },
+    {
+      "q": "Backspace nima bilan bog‘liq?",
+      "a": "Klaviaturaning asosiy tugmalaridan biri.",
+      "o": [
+        "Excel funksiyasi",
+        "Brauzer",
+        "Windows menyusi",
+        "Printer"
+      ]
+    },
+    {
+      "q": "Ctrl tugmasi nima qiladi?",
+      "a": "Boshqa tugmalar bilan birgalikda tezkor buyruqlarni bajaradi.",
+      "o": [
+        "Faqat katta harf yozadi",
+        "Faqat oynani yopadi",
+        "Faqat internetni ochadi",
+        "Faqat ovozni boshqaradi"
+      ]
+    },
+    {
+      "q": "Ctrl + C nima qiladi?",
+      "a": "Nusxa oladi",
+      "o": [
+        "Joylashtiradi",
+        "Kesadi",
+        "Bekor qiladi",
+        "Saqlaydi"
+      ]
+    },
+    {
+      "q": "Ctrl + V nima qiladi?",
+      "a": "Joylashtiradi",
+      "o": [
+        "Nusxa oladi",
+        "Kesadi",
+        "Qidiradi",
+        "Chop etadi"
+      ]
+    },
+    {
+      "q": "Ctrl + X nima qiladi?",
+      "a": "Kesish",
+      "o": [
+        "Nusxa olish",
+        "Joylashtirish",
+        "Bekor qilish",
+        "Saqlash"
+      ]
+    },
+    {
+      "q": "Ctrl + Z nima qiladi?",
+      "a": "Bekor qilish",
+      "o": [
+        "Qaytarish",
+        "Nusxa olish",
+        "Yangi hujjat",
+        "Qidirish"
+      ]
+    },
+    {
+      "q": "Ctrl + Y nima qiladi?",
+      "a": "Qaytarish",
+      "o": [
+        "Bekor qilish",
+        "Joylashtirish",
+        "Chop etish",
+        "Oyna yopish"
+      ]
+    },
+    {
+      "q": "Ctrl + A nima qiladi?",
+      "a": "Hammasini belgilash",
+      "o": [
+        "Saqlash",
+        "Qidirish",
+        "Kesish",
+        "Yangi tab"
+      ]
+    },
+    {
+      "q": "Ctrl + S nima qiladi?",
+      "a": "Saqlash",
+      "o": [
+        "Qidirish",
+        "Nusxa olish",
+        "Chop etish",
+        "Oyna yopish"
+      ]
+    },
+    {
+      "q": "Ctrl + P nima qiladi?",
+      "a": "Chop etish",
+      "o": [
+        "Saqlash",
+        "Yangi hujjat",
+        "Qidirish",
+        "Joylashtirish"
+      ]
+    },
+    {
+      "q": "Ctrl + F nima qiladi?",
+      "a": "Qidirish",
+      "o": [
+        "Fayl ochish",
+        "Saqlash",
+        "Oyna yopish",
+        "Nusxa olish"
+      ]
+    },
+    {
+      "q": "Ctrl + N nima qiladi?",
+      "a": "Yangi hujjat",
+      "o": [
+        "Fayl ochish",
+        "Chop etish",
+        "Manzil satrini tanlash",
+        "Qidirish"
+      ]
+    },
+    {
+      "q": "Ctrl + O nima qiladi?",
+      "a": "Fayl ochish",
+      "o": [
+        "Yangi hujjat",
+        "Saqlash",
+        "Tab yopish",
+        "Bekor qilish"
+      ]
+    },
+    {
+      "q": "Ctrl + W nima qiladi?",
+      "a": "Oynani yopish",
+      "o": [
+        "Yangi tab",
+        "Saqlash",
+        "Qidirish",
+        "Nusxa olish"
+      ]
+    },
+    {
+      "q": "Ctrl + L brauzerda nima qiladi?",
+      "a": "Manzil satrini tanlaydi",
+      "o": [
+        "Sahifani yangilaydi",
+        "Tabni yopadi",
+        "Yangi tab ochadi",
+        "Faylni saqlaydi"
+      ]
+    },
+    {
+      "q": "Ctrl + T brauzerda nima qiladi?",
+      "a": "Yangi tab",
+      "o": [
+        "Tabni yopadi",
+        "Sahifani yangilaydi",
+        "Yopilgan tabni qaytaradi",
+        "Manzil satrini tanlaydi"
+      ]
+    },
+    {
+      "q": "Ctrl + Shift + T nima qiladi?",
+      "a": "Yopilgan tabni qaytaradi",
+      "o": [
+        "Yangi tab ochadi",
+        "Tabni yopadi",
+        "Sahifani yangilaydi",
+        "Manzil satrini tanlaydi"
+      ]
+    },
+    {
+      "q": "Ctrl + R nima qiladi?",
+      "a": "Sahifani yangilaydi",
+      "o": [
+        "Yangi tab ochadi",
+        "Tabni yopadi",
+        "Nusxa oladi",
+        "Fayl ochadi"
+      ]
+    },
+    {
+      "q": "Shift nima uchun ishlatiladi?",
+      "a": "Katta harf yozish",
+      "o": [
+        "Tabni yopish",
+        "Fayl saqlash",
+        "Qidirish",
+        "Chop etish"
+      ]
+    },
+    {
+      "q": "Alt + Tab nima qiladi?",
+      "a": "Oynalar orasida almashish",
+      "o": [
+        "Oynani yopish",
+        "Yangi hujjat",
+        "Nusxa olish",
+        "Sahifani yangilash"
+      ]
+    },
+    {
+      "q": "Tab nima qiladi?",
+      "a": "Keyingi maydonga o‘tish",
+      "o": [
+        "Oldingi maydonga qaytish",
+        "Oynani yopish",
+        "Nusxa olish",
+        "Saqlash"
+      ]
+    },
+    {
+      "q": "Alt + F4 nima qiladi?",
+      "a": "Oynani yopish",
+      "o": [
+        "Yangi tab",
+        "Qidirish",
+        "Nusxa olish",
+        "Sahifani yangilash"
+      ]
+    }
+  ],
+  "word": [
+    {
+      "q": "Microsoft Word nima uchun ishlatiladi?",
+      "a": "Matnli hujjatlar yaratish va tahrirlash uchun.",
+      "o": [
+        "Jadval hisoblash",
+        "Prezentatsiya yaratish",
+        "Internet qidirish",
+        "Kompyuterni boshqarish"
+      ]
+    },
+    {
+      "q": "Wordda qaysi ishni bajarish mumkin?",
+      "a": "Matn yozish",
+      "o": [
+        "Faqat jadval hisoblash",
+        "Faqat internet qidirish",
+        "Faqat animatsiya",
+        "Faqat fayl skanerlash"
+      ]
+    },
+    {
+      "q": "Wordda hujjatni saqlash mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Faqat Excelda",
+        "Faqat PowerPointda",
+        "Yo‘q",
+        "Faqat brauzerda"
+      ]
+    },
+    {
+      "q": "Wordda hujjatni nima qilish mumkin?",
+      "a": "Chop etish",
+      "o": [
+        "Faqat internetga ulash",
+        "Faqat ovoz yozish",
+        "Faqat kompyuter yig‘ish",
+        "Faqat video montaj"
+      ]
+    },
+    {
+      "q": "Wordda matn bilan qanday ishlarni bajarish mumkin?",
+      "a": "Yozish, o‘chirish, belgilash va ko‘chirish.",
+      "o": [
+        "Faqat hisoblash",
+        "Faqat slayd ko‘rsatish",
+        "Faqat qidirish",
+        "Faqat internet ulash"
+      ]
+    },
+    {
+      "q": "Matnni boshqa joyga ko‘chirishda qaysi kombinatsiya berilgan?",
+      "a": "Ctrl + C va Ctrl + V",
+      "o": [
+        "Ctrl + S va Ctrl + P",
+        "Ctrl + T va Ctrl + R",
+        "Alt + Tab va Alt + F4",
+        "Ctrl + N va Ctrl + O"
+      ]
+    },
+    {
+      "q": "Bold qanday matn?",
+      "a": "Qalin matn",
+      "o": [
+        "Qiya matn",
+        "Tagi chizilgan",
+        "Rangli matn",
+        "Katta sahifa"
+      ]
+    },
+    {
+      "q": "Italic qanday matn?",
+      "a": "Qiya matn",
+      "o": [
+        "Qalin matn",
+        "Tagi chizilgan",
+        "Yangi matn",
+        "Jadval"
+      ]
+    },
+    {
+      "q": "Underline qanday matn?",
+      "a": "Tagi chizilgan",
+      "o": [
+        "Qiya matn",
+        "Qalin matn",
+        "Rasmli matn",
+        "Yashirin matn"
+      ]
+    },
+    {
+      "q": "Wordda matn o‘lchamini o‘zgartirish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Faqat Excelda",
+        "Yo‘q",
+        "Faqat brauzerda",
+        "Faqat PowerPointda"
+      ]
+    },
+    {
+      "q": "Wordda matn rangini o‘zgartirish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Excelda",
+        "Faqat Windowsda",
+        "Faqat printerda"
+      ]
+    },
+    {
+      "q": "Wordga jadval qo‘shish uchun qaysi yo‘l berilgan?",
+      "a": "Insert → Table",
+      "o": [
+        "Design → Table",
+        "File → Table",
+        "Home → Table",
+        "View → Table"
+      ]
+    },
+    {
+      "q": "Wordga rasm qo‘shish uchun qaysi yo‘l berilgan?",
+      "a": "Insert → Pictures",
+      "o": [
+        "Design → Pictures",
+        "File → Pictures",
+        "View → Pictures",
+        "Home → Pictures"
+      ]
+    },
+    {
+      "q": "Word hujjatida jadval kataklarini tahrirlash mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Excelda",
+        "Faqat PowerPointda",
+        "Faqat brauzerda"
+      ]
+    },
+    {
+      "q": "Sahifa o‘lchami Wordda sozlanadimi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Excelda",
+        "Faqat Windowsda",
+        "Faqat Chrome'da"
+      ]
+    },
+    {
+      "q": "Margin nimaga tegishli?",
+      "a": "Sahifa sozlamalariga",
+      "o": [
+        "Klaviatura tugmasiga",
+        "Internet qidiruviga",
+        "Excel formulasiga",
+        "PowerPoint animatsiyasiga"
+      ]
+    },
+    {
+      "q": "Portrait va Landscape nimaga tegishli?",
+      "a": "Sahifa yo‘nalishiga",
+      "o": [
+        "Matn rangiga",
+        "Klaviaturaga",
+        "Brauzerga",
+        "Fayl nomiga"
+      ]
+    },
+    {
+      "q": "Wordda sahifa raqami qo‘shish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Excelda",
+        "Faqat brauzerda",
+        "Faqat Windowsda"
+      ]
+    },
+    {
+      "q": "Header va Footer nimaga tegishli?",
+      "a": "Sahifa sozlamalariga",
+      "o": [
+        "Klaviaturaga",
+        "Internetga",
+        "Excel formulasiga",
+        "PowerPoint animatsiyasiga"
+      ]
+    },
+    {
+      "q": "Word amaliyotida nima yaratish topshirilgan?",
+      "a": "O‘zingiz haqingizda kichik hujjat",
+      "o": [
+        "5 ta mahsulot jadvali",
+        "5 ta slayd",
+        "Internet qidiruvi",
+        "Papka va matn fayli"
+      ]
+    },
+    {
+      "q": "Amaliyotda sarlavha qanday bo‘lishi kerak?",
+      "a": "Qalin va katta",
+      "o": [
+        "Faqat qiya",
+        "Faqat tagi chizilgan",
+        "Faqat kichik",
+        "Rasmsiz"
+      ]
+    },
+    {
+      "q": "Word amaliyotida hujjatga nima qo‘shish topshirilgan?",
+      "a": "Rasm",
+      "o": [
+        "Video",
+        "Audio",
+        "Excel formulasi",
+        "Brauzer tablari"
+      ]
+    },
+    {
+      "q": "Word amaliyotida oxirida nima qilish kerak?",
+      "a": "Hujjatni saqlash",
+      "o": [
+        "Tab ochish",
+        "Sahifani yangilash",
+        "Printer sotib olish",
+        "Internetni o‘chirish"
+      ]
+    },
+    {
+      "q": "Matnni formatlashda qaysi amal mavjud?",
+      "a": "Matn rangini o‘zgartirish",
+      "o": [
+        "SUM ishlatish",
+        "Slayd namoyishi",
+        "Tab ochish",
+        "Papka yaratish"
+      ]
+    },
+    {
+      "q": "Wordning asosiy vazifasi qaysi?",
+      "a": "Matnli hujjatlar bilan ishlash",
+      "o": [
+        "Jadval hisoblash",
+        "Internet sahifalarini ko‘rish",
+        "Slayd animatsiyasi",
+        "Fayl saqlash qurilmasi"
+      ]
+    }
+  ],
+  "excel": [
+    {
+      "q": "Excel nima uchun ishlatiladi?",
+      "a": "Jadval va hisob-kitoblar bilan ishlash uchun.",
+      "o": [
+        "Matnli hujjatlar uchun",
+        "Prezentatsiya uchun",
+        "Brauzer sifatida",
+        "Faqat rasm uchun"
+      ]
+    },
+    {
+      "q": "Workbook nima?",
+      "a": "Excel bilan bog‘liq asosiy tushunchalardan biri.",
+      "o": [
+        "Klaviatura tugmasi",
+        "Brauzer",
+        "Printer",
+        "Word formati"
+      ]
+    },
+    {
+      "q": "Worksheet nimaga tegishli?",
+      "a": "Excelga",
+      "o": [
+        "Wordga",
+        "PowerPointga",
+        "Windowsga",
+        "Brauzerga"
+      ]
+    },
+    {
+      "q": "Row nima?",
+      "a": "Excelning asosiy tushunchalaridan biri.",
+      "o": [
+        "Klaviatura tugmasi",
+        "Internet brauzeri",
+        "Word formati",
+        "Printer"
+      ]
+    },
+    {
+      "q": "Column nima?",
+      "a": "Excelning asosiy tushunchalaridan biri.",
+      "o": [
+        "PowerPoint animatsiyasi",
+        "Klaviatura",
+        "Brauzer",
+        "Windows menyusi"
+      ]
+    },
+    {
+      "q": "Cell nima?",
+      "a": "Excelning asosiy tushunchalaridan biri.",
+      "o": [
+        "Word sahifasi",
+        "Brauzer tablari",
+        "Printer qismi",
+        "Windows oynasi"
+      ]
+    },
+    {
+      "q": "Excelda har bir katakning nima bo‘ladi?",
+      "a": "O‘z manzili",
+      "o": [
+        "O‘z paroli",
+        "O‘z brauzeri",
+        "O‘z printeri",
+        "O‘z animatsiyasi"
+      ]
+    },
+    {
+      "q": "Qaysi biri katak manziliga misol?",
+      "a": "A1",
+      "o": [
+        "SUM",
+        "Ctrl+C",
+        "Portrait",
+        "Desktop"
+      ]
+    },
+    {
+      "q": "Qaysi biri katak manziliga misol?",
+      "a": "B2",
+      "o": [
+        "Insert",
+        "Bold",
+        "Google",
+        "Taskbar"
+      ]
+    },
+    {
+      "q": "Katakka nimalar yozish mumkin?",
+      "a": "Matn, son yoki formula",
+      "o": [
+        "Faqat rasm",
+        "Faqat video",
+        "Faqat parol",
+        "Faqat animatsiya"
+      ]
+    },
+    {
+      "q": "Excel formulalari qaysi belgi bilan boshlanadi?",
+      "a": "=",
+      "o": [
+        "#",
+        "@",
+        "&",
+        "%"
+      ]
+    },
+    {
+      "q": "=A1+B1 nima qiladi?",
+      "a": "Qo‘shish",
+      "o": [
+        "Ayirish",
+        "Ko‘paytirish",
+        "Bo‘lish",
+        "Qidirish"
+      ]
+    },
+    {
+      "q": "=A1-B1 nima qiladi?",
+      "a": "Ayirish",
+      "o": [
+        "Qo‘shish",
+        "Ko‘paytirish",
+        "Bo‘lish",
+        "Saqlash"
+      ]
+    },
+    {
+      "q": "=A1*B1 nima qiladi?",
+      "a": "Ko‘paytirish",
+      "o": [
+        "Qo‘shish",
+        "Ayirish",
+        "Bo‘lish",
+        "Chop etish"
+      ]
+    },
+    {
+      "q": "=A1/B1 nima qiladi?",
+      "a": "Bo‘lish",
+      "o": [
+        "Qo‘shish",
+        "Ayirish",
+        "Ko‘paytirish",
+        "Qidirish"
+      ]
+    },
+    {
+      "q": "SUM nima qiladi?",
+      "a": "Bir nechta sonlarni qo‘shadi.",
+      "o": [
+        "Fayl ochadi",
+        "Matnni qalin qiladi",
+        "Slayd yaratadi",
+        "Tab ochadi"
+      ]
+    },
+    {
+      "q": "=SUM(A1:A10) nimani hisoblaydi?",
+      "a": "A1 dan A10 gacha bo‘lgan qiymatlarni qo‘shadi.",
+      "o": [
+        "Faqat A1 ni",
+        "Faqat A10 ni",
+        "B1 dan B10 gacha",
+        "A1 dan B10 gacha"
+      ]
+    },
+    {
+      "q": "Excelda katak rangini o‘zgartirish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Wordda",
+        "Faqat PowerPointda",
+        "Faqat Windowsda"
+      ]
+    },
+    {
+      "q": "Excelda chegara qo‘yish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Wordda",
+        "Faqat brauzerda",
+        "Faqat PowerPointda"
+      ]
+    },
+    {
+      "q": "Excelda ustun kengligini o‘zgartirish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Wordda",
+        "Faqat Windowsda",
+        "Faqat brauzerda"
+      ]
+    },
+    {
+      "q": "Excelda son formatlarini tanlash mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat PowerPointda",
+        "Faqat Wordda",
+        "Faqat brauzerda"
+      ]
+    },
+    {
+      "q": "Excel amaliyotida nechta mahsulot nomi va narxini kiritish topshirilgan?",
+      "a": "5 ta",
+      "o": [
+        "2 ta",
+        "3 ta",
+        "10 ta",
+        "20 ta"
+      ]
+    },
+    {
+      "q": "Mahsulotlar jadvalida jami narx nima yordamida hisoblanadi?",
+      "a": "Formula yordamida",
+      "o": [
+        "Rasm yordamida",
+        "Brauzer yordamida",
+        "Printer yordamida",
+        "Klaviatura tugmasi yordamida"
+      ]
+    },
+    {
+      "q": "Amaliyotdagi jami formula qaysi?",
+      "a": "=SUM(B2:B6)",
+      "o": [
+        "=A1+B1",
+        "=SUM(A1:A10)",
+        "=A1*B1",
+        "=B1/B2"
+      ]
+    },
+    {
+      "q": "Excelning asosiy yo‘nalishi qaysi?",
+      "a": "Jadval, formula va hisob-kitoblar",
+      "o": [
+        "Faqat matn",
+        "Faqat slayd",
+        "Faqat internet",
+        "Faqat rasmlar"
+      ]
+    }
+  ],
+  "powerpoint": [
+    {
+      "q": "PowerPoint nima uchun ishlatiladi?",
+      "a": "Prezentatsiya va slaydlar yaratish uchun.",
+      "o": [
+        "Jadval hisoblash",
+        "Matnli hujjat",
+        "Internet qidirish",
+        "Fayl saqlash"
+      ]
+    },
+    {
+      "q": "PowerPointda nimalar yaratish mumkin?",
+      "a": "Dars, loyiha va hisobot taqdimotlari",
+      "o": [
+        "Faqat papka",
+        "Faqat Excel formulasi",
+        "Faqat brauzer",
+        "Faqat printer hujjati"
+      ]
+    },
+    {
+      "q": "PowerPointda yangi slayd qo‘shish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Excelda",
+        "Faqat Wordda",
+        "Faqat brauzerda"
+      ]
+    },
+    {
+      "q": "New Slide nima bilan bog‘liq?",
+      "a": "Yangi slayd qo‘shish bilan",
+      "o": [
+        "Tab yopish",
+        "Fayl saqlash",
+        "Matn qidirish",
+        "Sahifa yangilash"
+      ]
+    },
+    {
+      "q": "Layout nima?",
+      "a": "PowerPointdagi slayd bilan bog‘liq buyruqlardan biri.",
+      "o": [
+        "Excel formulasi",
+        "Brauzer tugmasi",
+        "Windows qismi",
+        "Printer funksiyasi"
+      ]
+    },
+    {
+      "q": "Duplicate Slide nima qiladi?",
+      "a": "Slaydni nusxalashga xizmat qiladi.",
+      "o": [
+        "Slaydni yangilaydi",
+        "Tab ochadi",
+        "Faylni chop etadi",
+        "Matnni qidiradi"
+      ]
+    },
+    {
+      "q": "Delete Slide nima qiladi?",
+      "a": "Slaydni o‘chirishga xizmat qiladi.",
+      "o": [
+        "Slayd qo‘shadi",
+        "Fayl saqlaydi",
+        "Tabni qaytaradi",
+        "Rasm qidiradi"
+      ]
+    },
+    {
+      "q": "Slaydda matnning nimalarini o‘zgartirish mumkin?",
+      "a": "Shriftini, o‘lchamini va joylashuvini",
+      "o": [
+        "Faqat rangini",
+        "Faqat fayl nomini",
+        "Faqat parolini",
+        "Faqat internet manzilini"
+      ]
+    },
+    {
+      "q": "Tayyor dizaynlar qaysi bo‘limda?",
+      "a": "Design",
+      "o": [
+        "Insert",
+        "Search",
+        "Taskbar",
+        "SUM"
+      ]
+    },
+    {
+      "q": "Insert → Pictures nima uchun?",
+      "a": "Rasm qo‘shish uchun",
+      "o": [
+        "Shakl qo‘shish",
+        "Animatsiya berish",
+        "Slayd o‘chirish",
+        "Dizayn tanlash"
+      ]
+    },
+    {
+      "q": "Insert → Shapes nima uchun?",
+      "a": "Shakl qo‘shish uchun",
+      "o": [
+        "Rasm o‘chirish",
+        "Slayd namoyishi",
+        "Matn qidirish",
+        "Fayl saqlash"
+      ]
+    },
+    {
+      "q": "Insert → Icons nima uchun?",
+      "a": "Ikonka qo‘shish uchun",
+      "o": [
+        "Jadval hisoblash",
+        "Tab ochish",
+        "Sahifa yangilash",
+        "Oyna yopish"
+      ]
+    },
+    {
+      "q": "Animations nima uchun?",
+      "a": "Obyektlarga animatsiya berish uchun.",
+      "o": [
+        "Slaydni o‘chirish",
+        "Fayl saqlash",
+        "Internet qidirish",
+        "Matn chop etish"
+      ]
+    },
+    {
+      "q": "Slide Show nima uchun?",
+      "a": "Prezentatsiyani namoyish qilish uchun.",
+      "o": [
+        "Jadval hisoblash",
+        "Faylni ko‘chirish",
+        "Matnni formatlash",
+        "Papka yaratish"
+      ]
+    },
+    {
+      "q": "PowerPoint amaliyotida qanday mavzu berilgan?",
+      "a": "Mening kelajakdagi kasbim",
+      "o": [
+        "Kompyuter asoslari",
+        "Internet xavfsizligi",
+        "Excel formulalari",
+        "Klaviatura"
+      ]
+    },
+    {
+      "q": "Amaliyotda kamida nechta slayd yaratish kerak?",
+      "a": "5 ta",
+      "o": [
+        "2 ta",
+        "3 ta",
+        "10 ta",
+        "20 ta"
+      ]
+    },
+    {
+      "q": "Amaliyot slaydlariga nima qo‘shish kerak?",
+      "a": "Matn, rasm va dizayn",
+      "o": [
+        "Faqat formula",
+        "Faqat jadval",
+        "Faqat parol",
+        "Faqat fayl nomi"
+      ]
+    },
+    {
+      "q": "Prezentatsiya oxirida nima orqali ko‘rib chiqiladi?",
+      "a": "Slide Show",
+      "o": [
+        "SUM",
+        "Taskbar",
+        "Ctrl + C",
+        "Insert Table"
+      ]
+    },
+    {
+      "q": "PowerPointda slaydlar tartibini o‘zgartirish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Wordda",
+        "Faqat Excelda",
+        "Faqat brauzerda"
+      ]
+    },
+    {
+      "q": "PowerPointda slaydni o‘chirish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Wordda",
+        "Faqat Windowsda",
+        "Faqat Excelda"
+      ]
+    },
+    {
+      "q": "PowerPointda rasm qo‘shish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Excelda",
+        "Faqat brauzerda",
+        "Faqat klaviaturada"
+      ]
+    },
+    {
+      "q": "PowerPointda shakl qo‘shish mumkinmi?",
+      "a": "Ha",
+      "o": [
+        "Yo‘q",
+        "Faqat Wordda",
+        "Faqat Excelda",
+        "Faqat Windowsda"
+      ]
+    },
+    {
+      "q": "Design bo‘limi nimaga yordam beradi?",
+      "a": "Tayyor dizaynlarni tanlashga",
+      "o": [
+        "Formula yozishga",
+        "Internet qidirishga",
+        "Fayl o‘chirishga",
+        "Tab ochishga"
+      ]
+    },
+    {
+      "q": "Animations orqali nima beriladi?",
+      "a": "Obyektlarga animatsiya",
+      "o": [
+        "Sahifaga parol",
+        "Faylga nom",
+        "Katakka formula",
+        "Brauzerga tab"
+      ]
+    },
+    {
+      "q": "PowerPointning asosiy vazifasi qaysi?",
+      "a": "Prezentatsiya yaratish",
+      "o": [
+        "Jadval hisoblash",
+        "Matnli hujjat yaratish",
+        "Internet sahifalarini ko‘rish",
+        "Fayl saqlash"
+      ]
+    }
+  ],
+  "internet": [
+    {
+      "q": "Internet nima?",
+      "a": "Dunyodagi kompyuter va qurilmalarni bog‘lovchi global tarmoq.",
+      "o": [
+        "Faqat brauzer",
+        "Faqat dastur",
+        "Faqat printer",
+        "Faqat fayl"
+      ]
+    },
+    {
+      "q": "Internet orqali nima qilish mumkin?",
+      "a": "Ma'lumot izlash",
+      "o": [
+        "Faqat printer ishlatish",
+        "Faqat Excel formulasi",
+        "Faqat slayd o‘chirish",
+        "Faqat papka yaratish"
+      ]
+    },
+    {
+      "q": "Internet orqali yana nima qilish mumkin?",
+      "a": "Muloqot qilish",
+      "o": [
+        "Faqat klaviatura almashtirish",
+        "Faqat monitor sozlash",
+        "Faqat fayl nomini o‘zgartirish",
+        "Faqat printer ulash"
+      ]
+    },
+    {
+      "q": "Brauzer nima uchun ishlatiladi?",
+      "a": "Internet sahifalarini ko‘rish uchun.",
+      "o": [
+        "Jadval hisoblash",
+        "Hujjat chop etish",
+        "Kompyuterni saqlash",
+        "Slayd yaratish"
+      ]
+    },
+    {
+      "q": "Qaysi biri brauzer?",
+      "a": "Google Chrome",
+      "o": [
+        "Excel",
+        "Word",
+        "PowerPoint",
+        "Windows"
+      ]
+    },
+    {
+      "q": "Qaysi biri brauzer?",
+      "a": "Microsoft Edge",
+      "o": [
+        "SUM",
+        "SSD",
+        "Word",
+        "PowerPoint"
+      ]
+    },
+    {
+      "q": "Qaysi biri brauzer?",
+      "a": "Mozilla Firefox",
+      "o": [
+        "Excel",
+        "Printer",
+        "Taskbar",
+        "Cell"
+      ]
+    },
+    {
+      "q": "Qidiruv tizimlari nima qiladi?",
+      "a": "Internetdagi ma'lumotlarni topishga yordam beradi.",
+      "o": [
+        "Faylni chop etadi",
+        "Kompyuterni o‘chiradi",
+        "Slayd yaratadi",
+        "Katak formatlaydi"
+      ]
+    },
+    {
+      "q": "Qidiruvda qanday kalit so‘zlardan foydalanish foydali?",
+      "a": "Aniq va qisqa",
+      "o": [
+        "Juda uzun va noaniq",
+        "Faqat raqamlar",
+        "Faqat emoji",
+        "Faqat bitta harf"
+      ]
+    },
+    {
+      "q": "Qaysi biri qidiruv tizimi?",
+      "a": "Google",
+      "o": [
+        "Word",
+        "Excel",
+        "PowerPoint",
+        "Windows"
+      ]
+    },
+    {
+      "q": "Qaysi biri qidiruv tizimi?",
+      "a": "Bing",
+      "o": [
+        "Chrome",
+        "Word",
+        "Excel",
+        "PowerPoint"
+      ]
+    },
+    {
+      "q": "Qaysi biri qidiruv tizimi?",
+      "a": "Yahoo",
+      "o": [
+        "Edge",
+        "Word",
+        "Excel",
+        "Windows"
+      ]
+    },
+    {
+      "q": "Kuchli parol nima uchun kerak?",
+      "a": "Hisobingizni himoya qilishga yordam beradi.",
+      "o": [
+        "Internetni tezlatish",
+        "Slayd yaratish",
+        "Printer ishlatish",
+        "Faylni formatlash"
+      ]
+    },
+    {
+      "q": "Parol qanday bo‘lishi kerak?",
+      "a": "Uzunroq",
+      "o": [
+        "Juda qisqa",
+        "Faqat ism",
+        "Faqat bitta raqam",
+        "Faqat bitta harf"
+      ]
+    },
+    {
+      "q": "Parolda nima qilish tavsiya etilgan?",
+      "a": "Turli belgilarni aralashtirish",
+      "o": [
+        "Faqat ism yozish",
+        "Faqat tug‘ilgan sana",
+        "Faqat bitta belgi",
+        "Parolni hammaga berish"
+      ]
+    },
+    {
+      "q": "Muhim hisoblar uchun qanday parol ishlatish kerak?",
+      "a": "Alohida parol",
+      "o": [
+        "Hamma joyda bir xil",
+        "Faqat ism",
+        "Faqat 1234",
+        "Boshqaning paroli"
+      ]
+    },
+    {
+      "q": "Parolni kimga berish kerak?",
+      "a": "Hech kimga",
+      "o": [
+        "Do‘stga",
+        "Begona odamga",
+        "Noma'lum saytga",
+        "Hammaga"
+      ]
+    },
+    {
+      "q": "Phishing nima?",
+      "a": "Foydalanuvchini aldab, maxfiy ma'lumotlarini olishga qaratilgan firibgarlik usuli.",
+      "o": [
+        "Qidiruv tizimi",
+        "Brauzer",
+        "Excel funksiyasi",
+        "Word formati"
+      ]
+    },
+    {
+      "q": "Phishingda nimadan ehtiyot bo‘lish kerak?",
+      "a": "Shubhali havolalardan",
+      "o": [
+        "Ishonchli darslardan",
+        "Oddiy matndan",
+        "Klaviaturadan",
+        "Monitorдан"
+      ]
+    },
+    {
+      "q": "Noma'lum fayllar bilan nima qilish kerak?",
+      "a": "Ehtiyot bo‘lish va yuklamaslik",
+      "o": [
+        "Darhol ochish",
+        "Hammaga yuborish",
+        "Parol berish",
+        "Qayta-qayta yuklash"
+      ]
+    },
+    {
+      "q": "Soxta login sahifalari nimaga misol?",
+      "a": "Phishing/firibgarlik xavfiga",
+      "o": [
+        "Excel funksiyasiga",
+        "PowerPoint dizayniga",
+        "Word formatiga",
+        "Windows qismiga"
+      ]
+    },
+    {
+      "q": "Shoshiltiruvchi xabarlar nimadan darak berishi mumkin?",
+      "a": "Firibgarlikdan ehtiyot bo‘lish kerakligidan",
+      "o": [
+        "Excel formulasi",
+        "PowerPoint animatsiyasi",
+        "Printer muammosi",
+        "Klaviatura tugmasi"
+      ]
+    },
+    {
+      "q": "Shubhali havolalarni nima qilish kerak?",
+      "a": "Ochmaslik",
+      "o": [
+        "Darhol ochish",
+        "Hammaga yuborish",
+        "Parol kiritish",
+        "Yuklab olish"
+      ]
+    },
+    {
+      "q": "Muhim hisoblarda nima ishlatish tavsiya etiladi?",
+      "a": "Qo‘shimcha himoya",
+      "o": [
+        "Bir xil parol",
+        "Noma'lum fayl",
+        "Shubhali havola",
+        "Soxta login"
+      ]
+    },
+    {
+      "q": "Internet xavfsizligi qanday odat?",
+      "a": "Har kuni amal qilinadigan odat.",
+      "o": [
+        "Faqat bir marta kerak",
+        "Faqat o‘yinda kerak",
+        "Faqat Wordda kerak",
+        "Faqat Excelda kerak"
+      ]
+    }
+  ],
+  "ai": [
+    {
+      "q": "AI nimani anglatadi?",
+      "a": "Sun’iy intellekt",
+      "o": [
+        "Internet dasturi",
+        "Kompyuter kabeli",
+        "Operatsion tizim"
+      ]
+    },
+    {
+      "q": "Prompt nima?",
+      "a": "AI ga beriladigan topshiriq yoki savol",
+      "o": [
+        "Printer turi",
+        "Internet kabeli",
+        "Monitor sozlamasi"
+      ]
+    },
+    {
+      "q": "Yaxshi prompt qanday bo‘ladi?",
+      "a": "Aniq va tushunarli",
+      "o": [
+        "Juda noaniq",
+        "Faqat bitta so‘zdan",
+        "Ma’nosiz"
+      ]
+    },
+    {
+      "q": "AI yordamida matn bilan nima qilish mumkin?",
+      "a": "Matn yaratish va tahrirlash",
+      "o": [
+        "Faqat monitorni yoqish",
+        "Faqat printer ulash",
+        "Elektr tokini ishlab chiqarish"
+      ]
+    },
+    {
+      "q": "AI yordamida rasm yaratishda nima kerak?",
+      "a": "Aniq tasvirlangan prompt",
+      "o": [
+        "Faqat klaviatura",
+        "Printer qog‘ozi",
+        "Internet kabeli"
+      ]
+    },
+    {
+      "q": "AI dasturlashda qanday yordam beradi?",
+      "a": "Kod yozish va tushuntirish",
+      "o": [
+        "Kompyuter qismini almashtirish",
+        "Elektr ta’minotini tuzatish",
+        "Monitorni tozalash"
+      ]
+    },
+    {
+      "q": "AI dan o‘qishda qanday foydalanish mumkin?",
+      "a": "Mavzuni tushuntirish va mashq tuzdirish",
+      "o": [
+        "Faqat o‘yin o‘ynash",
+        "Faqat video ko‘rish",
+        "Faqat fayl o‘chirish"
+      ]
+    },
+    {
+      "q": "AI javobidagi muhim ma’lumot bilan nima qilish kerak?",
+      "a": "Tekshirish",
+      "o": [
+        "Ko‘r-ko‘rona ishonish",
+        "Darhol tarqatish",
+        "Tekshirmaslik"
+      ]
+    },
+    {
+      "q": "AI bilan ishlaganda shaxsiy parolni berish kerakmi?",
+      "a": "Yo‘q, maxfiy ma’lumotlarni bermaslik kerak",
+      "o": [
+        "Ha, har doim berish kerak",
+        "Faqat do‘stga yuborish kerak",
+        "Hammaga yuborish kerak"
+      ]
+    },
+    {
+      "q": "AI bo‘yicha amaliy loyihaning maqsadi nima?",
+      "a": "O‘rganilgan AI ko‘nikmalarini amalda qo‘llash",
+      "o": [
+        "Faqat kompyuterni o‘chirish",
+        "Faqat fayl ko‘chirish",
+        "Faqat klaviaturani tekshirish"
+      ]
+    },
+    {
+      "q": "Sun’iy intellekt nima?",
+      "a": "Ma’lumot asosida vazifalarni bajarishga yordam beradigan texnologiya.",
+      "o": [
+        "Printer qurilmasi",
+        "Klaviatura tugmasi",
+        "Fayl turi"
+      ]
+    },
+    {
+      "q": "AI ga beriladigan aniq topshiriq nima deyiladi?",
+      "a": "Prompt.",
+      "o": [
+        "Papka",
+        "Slayd",
+        "Formula"
+      ]
+    },
+    {
+      "q": "Yaxshi prompt qanday bo‘ladi?",
+      "a": "Aniq va tushunarli topshiriq berilgan prompt.",
+      "o": [
+        "Faqat bitta so‘z",
+        "Tasodifiy belgilar",
+        "Noma’lum fayl"
+      ]
+    },
+    {
+      "q": "AI yordamida matn bilan nima qilish mumkin?",
+      "a": "Matn yaratish, tahrirlash yoki tushuntirishga yordam olish mumkin.",
+      "o": [
+        "Monitorni almashtirish",
+        "Tok ishlab chiqarish",
+        "Printer siyohini to‘ldirish"
+      ]
+    },
+    {
+      "q": "AI yordamida rasm yaratishda nima kerak bo‘lishi mumkin?",
+      "a": "Rasmni tasvirlab beruvchi aniq prompt.",
+      "o": [
+        "Faqat klaviatura",
+        "Faqat printer",
+        "Faqat papka"
+      ]
+    },
+    {
+      "q": "AI dasturlashda qanday yordam beradi?",
+      "a": "Kod yozish va kodni tushuntirishga yordam beradi.",
+      "o": [
+        "Kompyuterni o‘chiradi",
+        "Monitorni tozalaydi",
+        "Internet kabelini yasaydi"
+      ]
+    },
+    {
+      "q": "AI o‘qishda qanday yordam beradi?",
+      "a": "Mavzuni tushuntirish, misol va mashqlar berishda yordam beradi.",
+      "o": [
+        "Faqat o‘yin ochadi",
+        "Faqat fayl o‘chiradi",
+        "Faqat rasm chop etadi"
+      ]
+    },
+    {
+      "q": "AI javobini nega tekshirish kerak?",
+      "a": "Muhim ma’lumotlarda xato bo‘lishi mumkinligi uchun.",
+      "o": [
+        "Kompyuterni tezlatish uchun",
+        "Monitorni kattalashtirish uchun",
+        "Klaviaturani yoqish uchun"
+      ]
+    },
+    {
+      "q": "AI bilan ishlaganda shaxsiy ma’lumotlarga qanday munosabatda bo‘lish kerak?",
+      "a": "Maxfiy ma’lumotlarni ehtiyot qilish kerak.",
+      "o": [
+        "Hammaga yuborish kerak",
+        "Ochiq tarqatish kerak",
+        "Har joyga joylash kerak"
+      ]
+    },
+    {
+      "q": "AI loyihasi nimani mustahkamlaydi?",
+      "a": "O‘rganilgan AI usullarini amalda qo‘llashni.",
+      "o": [
+        "Faqat tez yozishni",
+        "Faqat printer ishlatishni",
+        "Faqat fayl ko‘chirishni"
+      ]
+    },
+    {
+      "q": "Promptga kontekst qo‘shishning foydasi nima?",
+      "a": "AI topshiriq maqsadini yaxshiroq tushunadi.",
+      "o": [
+        "Internet tezlashadi",
+        "Monitor yorishadi",
+        "Printer tezlashadi"
+      ]
+    },
+    {
+      "q": "Noaniq prompt qanday natija berishi mumkin?",
+      "a": "Keraksiz yoki noaniq javob.",
+      "o": [
+        "Har doim bir xil javob",
+        "Kompyuter o‘chishi",
+        "Printer buzilishi"
+      ]
+    },
+    {
+      "q": "AI vositasini tanlashda nimaga qarash kerak?",
+      "a": "Vazifa va kerakli natijaga mosligiga.",
+      "o": [
+        "Faqat logotipiga",
+        "Faqat rangiga",
+        "Faqat nom uzunligiga"
+      ]
+    },
+    {
+      "q": "AI dan namuna so‘rash nima beradi?",
+      "a": "Mavzuni amaliy misol orqali tushunishga yordam beradi.",
+      "o": [
+        "Faylni o‘chiradi",
+        "Internetni uzadi",
+        "Monitorni o‘chiradi"
+      ]
+    },
+    {
+      "q": "AI natijasidan foydalanishda eng muhim odatlardan biri qaysi?",
+      "a": "Natijani tekshirish va xavfsizlikka rioya qilish.",
+      "o": [
+        "Barcha javobga tekshirmasdan ishonish",
+        "Parol yuborish",
+        "Maxfiy ma’lumot tarqatish"
+      ]
+    }
+  ]
+};
+
+
+let testState = {course:null, questions:[], index:0, answers:[], score:0};
+
+function shuffle(arr){
+    const a=[...arr];
+    for(let i=a.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+}
+
+function startTest(courseName){
+    const savedName = (localStorage.getItem("muhammadaziz_student_name") || "").trim();
+    if(!savedName){
+        const overlay=document.getElementById('entryNameOverlay');
+        if(overlay) overlay.style.display='flex';
+        return;
+    }
+    const bank = questionBank[courseName];
+    if(!bank || bank.length < 25){
+        alert("Bu kurs uchun 25 ta savol mavjud emas.");
+        return;
+    }
+    testState = {
+        course: courseName,
+        questions: shuffle(bank).slice(0,25),
+        index:0,
+        answers:Array(25).fill(null),
+        score:0
+    };
+    document.getElementById("testModal").style.display="flex";
+    renderQuestion();
+}
+
+function renderQuestion(){
+    const q = testState.questions[testState.index];
+    const options = shuffle([q.a,...q.o]).slice(0,4);
+    const selected = testState.answers[testState.index];
+
+    document.getElementById("testTitle").textContent =
+        courses[testState.course].title + " — Test";
+    document.getElementById("testNumber").textContent =
+        `Savol ${testState.index+1} / 25`;
+    document.getElementById("testQuestion").textContent = q.q;
+    document.getElementById("testProgressBar").style.width =
+        `${((testState.index+1)/25)*100}%`;
+
+    const box=document.getElementById("testOptions");
+    box.innerHTML="";
+    options.forEach(option=>{
+        const b=document.createElement("button");
+        b.className="test-option";
+        b.textContent=option;
+        if(selected===option) b.classList.add("selected");
+        b.onclick=()=>{
+            testState.answers[testState.index]=option;
+            [...box.children].forEach(x=>x.classList.remove("selected"));
+            b.classList.add("selected");
+        };
+        box.appendChild(b);
+    });
+
+    document.getElementById("prevTestBtn").style.visibility =
+        testState.index===0 ? "hidden":"visible";
+    document.getElementById("nextTestBtn").textContent =
+        testState.index===24 ? "✅ Testni yakunlash":"Keyingi →";
+}
+
+function nextTestQuestion(){
+    if(testState.answers[testState.index]===null){
+        alert("Avval javobni tanlang.");
+        return;
+    }
+    if(testState.index===24){
+        finishTest();
+        return;
+    }
+    testState.index++;
+    renderQuestion();
+}
+
+function prevTestQuestion(){
+    if(testState.index>0){
+        testState.index--;
+        renderQuestion();
+    }
+}
+
+async function finishTest(){
+    let score=0;
+    testState.questions.forEach((q,i)=>{
+        if(testState.answers[i]===q.a) score++;
+    });
+    testState.score=score;
+    const percent=Math.round(score/25*100);
+    const xp=score*5;
+    const course=testState.course;
+    const name=(localStorage.getItem("muhammadaziz_student_name")||"Noma’lum").trim();
+
+    try{
+        const response=await fetch('/api/rating',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({name,course,score})
+        });
+        if(!response.ok) throw new Error('server');
+        await renderRating();
+    }catch(error){
+        alert("Natijani serverga saqlashda muammo bo‘ldi. Internetni tekshirib, qayta urinib ko‘ring.");
+    }
+
+    document.getElementById("testQuestionArea").style.display="none";
+    document.getElementById("testResult").style.display="block";
+    document.getElementById("resultScore").textContent=`${score} / 25`;
+    document.getElementById("resultPercent").textContent=`${percent}%`;
+    document.getElementById("resultXP").textContent=`+${xp} XP`;
+    document.getElementById("resultMessage").textContent =
+        percent>=90 ? "🏆 Ajoyib natija!" :
+        percent>=70 ? "👏 Juda yaxshi!" :
+        percent>=50 ? "👍 Yaxshi, yana takrorlab ko‘ring." :
+        "📚 Darslarni yana bir bor o‘qib chiqing.";
+}
+
+function saveStudentName(){
+    const input=document.getElementById("studentNameInput");
+    const name=(input?.value||"").trim();
+    if(!name){ alert("Ismingizni kiriting."); return; }
+    localStorage.setItem("muhammadaziz_student_name",name.slice(0,40));
+    input.value=name.slice(0,40);
+    alert("Ism saqlandi!");
+}
+
+async function renderRating(){
+    const box=document.getElementById("ratingContent");
+    if(!box) return;
+    const input=document.getElementById("studentNameInput");
+    const saved=localStorage.getItem("muhammadaziz_student_name")||"";
+    if(input && saved) input.value=saved;
+    try{
+        const response=await fetch('/api/rating',{cache:'no-store'});
+        if(!response.ok) throw new Error('server');
+        const data=await response.json();
+        if(!data.length){
+            box.innerHTML='<div class="rating-empty">🏆 Hozircha reytingda natija yo‘q. Birinchi bo‘lib test topshiring!</div>';
+            return;
+        }
+        box.innerHTML=`<div style="overflow-x:auto"><table class="rating-table">
+            <thead><tr><th>№</th><th>O‘quvchi</th><th>Kurs</th><th>Natija</th><th>Foiz</th><th>XP</th></tr></thead>
+            <tbody>${data.slice(0,50).map((r,i)=>`<tr>
+                <td class="rating-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</td>
+                <td><b>${escapeRating(r.name)}</b></td>
+                <td>${courseTitle(r.course)}</td>
+                <td><b>${r.score} / ${r.total}</b></td>
+                <td>${r.percent}%</td>
+                <td>+${r.xp}</td>
+            </tr>`).join('')}</tbody>
+        </table></div>`;
+    }catch(error){
+        box.innerHTML='<div class="rating-empty">⚠️ Reyting serveriga ulanib bo‘lmadi. Internetni tekshiring.</div>';
+    }
+}
+
+function closeTest(){
+    document.getElementById("testModal").style.display="none";
+    document.getElementById("testQuestionArea").style.display="block";
+    document.getElementById("testResult").style.display="none";
+}
+
+window.addEventListener("click",function(e){
+    const m=document.getElementById("testModal");
+    if(e.target===m) closeTest();
+});
+
+</script>
+
+
+<section class="rating-section" id="rating">
+    <h2>🏆 O‘quvchilar reytingi</h2>
+    <p>Test natijalari bo‘yicha umumiy reyting</p><div class="rating-online-badge">🌐 Umumiy online reyting — barcha qurilmalarda bir xil</div>
+    <div class="rating-box">
+        <button class="rating-refresh" onclick="renderRating()">🔄 Reytingni yangilash</button>
+        <div id="ratingContent"></div>
+    </div>
+</section>
+
+<div class="test-modal" id="testModal">
+  <div class="test-box">
+    <button class="test-close" onclick="closeTest()">×</button>
+    <div class="test-top">
+      <h2 id="testTitle">Test</h2>
+      <strong id="testNumber">Savol 1 / 25</strong>
+    </div>
+    <div class="test-progress"><div class="test-progress-bar" id="testProgressBar"></div></div>
+
+    <div id="testQuestionArea">
+      <h3 id="testQuestion"></h3>
+      <div id="testOptions"></div>
+      <div class="test-actions">
+        <button id="prevTestBtn" onclick="prevTestQuestion()">← Oldingi</button>
+        <button id="nextTestBtn" onclick="nextTestQuestion()">Keyingi →</button>
+      </div>
+    </div>
+
+    <div id="testResult" class="test-result" style="display:none">
+      <h2>🎉 Test yakunlandi!</h2>
+      <div class="test-score" id="resultScore">0 / 25</div>
+      <p>Natija: <b id="resultPercent">0%</b></p>
+      <p>XP: <b id="resultXP">+0 XP</b></p>
+      <h3 id="resultMessage"></h3>
+      <button onclick="closeTest()">Yopish</button>
+      <button onclick="startTest(testState.course)">🔄 Qayta topshirish</button>
+    </div>
+  </div>
+</div>
+
+<script>window.addEventListener("DOMContentLoaded",renderRating);</script>
+
+<div class="entry-name-overlay" id="entryNameOverlay">
+  <div class="entry-name-card">
+    <div class="entry-icon">👋</div>
+    <h2>Saytga xush kelibsiz!</h2>
+    <p>Davom etish uchun ismingizni kiriting.</p>
+    <input id="entryNameInput" type="text" maxlength="40" autocomplete="name" placeholder="Ismingizni kiriting..." onkeydown="if(event.key==='Enter') enterSite()">
+    <div class="entry-error" id="entryNameError"></div>
+    <button onclick="enterSite()">🚀 Saytga kirish</button>
+  </div>
+</div>
+
+<script>
+function enterSite(){
+ const input=document.getElementById('entryNameInput');
+ const error=document.getElementById('entryNameError');
+ const name=(input.value||'').trim().slice(0,40);
+ if(!name){ error.textContent='Iltimos, ismingizni kiriting.'; input.focus(); return; }
+ localStorage.setItem('muhammadaziz_student_name',name);
+ const mainInput=document.getElementById('studentNameInput'); if(mainInput) mainInput.value=name;
+ const overlay=document.getElementById('entryNameOverlay'); overlay.style.display='none';
+}
+window.addEventListener('DOMContentLoaded',function(){
+ const saved=localStorage.getItem('muhammadaziz_student_name')||'';
+ const input=document.getElementById('entryNameInput');
+ const mainInput=document.getElementById('studentNameInput');
+ if(saved){ if(input) input.value=saved; if(mainInput) mainInput.value=saved; }
+ else if(input){ input.focus(); }
+});
+</script>
+</body>
+
+</html>
