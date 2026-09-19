@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin panel — Muhammadaziz</title>
+<style>
+body{margin:0;background:#07111f;color:#eef7ff;font-family:Arial,sans-serif;padding:24px}
+.wrap{max-width:1200px;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+button{padding:10px 15px;border:0;border-radius:9px;background:#18d9ff;color:#001018;font-weight:700;cursor:pointer}
+.logout{background:#ff5f6d;color:#fff}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:20px 0}.card{background:#101d30;padding:20px;border-radius:15px}.num{font-size:30px;font-weight:800}
+.tablebox{overflow:auto;background:#101d30;border-radius:15px;padding:10px}table{width:100%;border-collapse:collapse;min-width:760px}th,td{padding:12px;border-bottom:1px solid #26384e;text-align:left}th{color:#18d9ff}.penalty{color:#ff6978;font-weight:800}.ok{color:#66e3a4;font-weight:700}
+@media(max-width:700px){.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><div><h1>👑 Admin panel</h1><p>O‘quvchilar test natijalari</p></div><div><button onclick="loadData()">🔄 Yangilash</button> <form style="display:inline" method="post" action="/admin/logout"><button class="logout">Chiqish</button></form></div></div>
+<div class="cards"><div class="card"><div>👥 Jami natija</div><div class="num" id="all">0</div></div><div class="card"><div>❌ Jarimalar</div><div class="num" id="penalties">0</div></div><div class="card"><div>🏆 Eng yuqori natija</div><div class="num" id="best">0 / 25</div></div></div>
+<div class="tablebox"><table><thead><tr><th>O‘quvchi</th><th>Kurs</th><th>Natija</th><th>Foiz</th><th>XP</th><th>Holat</th><th>Sana</th></tr></thead><tbody id="rows"><tr><td colspan="7">Yuklanmoqda...</td></tr></tbody></table></div>
+</div>
+<script>
+async function loadData(){
+ const r=await fetch('/api/admin/ratings',{cache:'no-store'});
+ if(!r.ok){location.href='/admin';return;}
+ const data=await r.json();
+ document.getElementById('all').textContent=data.length;
+ document.getElementById('penalties').textContent=data.filter(x=>x.penalty).length;
+ document.getElementById('best').textContent=data.length?Math.max(...data.map(x=>x.score))+' / 25':'0 / 25';
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ document.getElementById('rows').innerHTML=data.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.course)}</td><td><b>${x.score} / ${x.total}</b></td><td>${x.percent}%</td><td>+${x.xp}</td><td class="${x.penalty?'penalty':'ok'}">${x.penalty?'❌ JARIMA':'✅ Oddiy'}</td><td>${esc(x.date)}</td></tr>`).join('')||'<tr><td colspan="7">Natija yo‘q.</td></tr>';
+}
+loadData();
+</script>
+</body>
+</html>
