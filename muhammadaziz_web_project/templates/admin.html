@@ -86,17 +86,17 @@ function render() {
   document.getElementById("cards").innerHTML =
     '<div class="card"><small>Jami natijalar</small><b>' + s.total_results + '</b></div>' +
     '<div class="card red"><small>Jarimalar soni (&lt; ' + s.min_pass_score + ' ta to‘g‘ri)</small><b>' + s.fines_count + '</b></div>' +
-    '<div class="card red"><small>Jami jarima</small><b>' + money(s.fines_total) + '</b></div>' +
-    '<div class="card"><small>To‘lanmagan jarima</small><b>' + money(s.unpaid_total) + '</b></div>';
+    '<div class="card red"><small>Pul jarimalari jami</small><b>' + money(s.fines_total) + '</b></div>' +
+    '<div class="card"><small>Bajarilmagan jarimalar</small><b>' + s.unresolved_count + '</b></div>';
 
-  var filters = [["all", "Hammasi"], ["fined", "Faqat jarimalilar"], ["unpaid", "To‘lanmagan jarimalar"]];
+  var filters = [["all", "Hammasi"], ["fined", "Faqat jarimalilar"], ["unpaid", "Bajarilmagan"]];
   document.getElementById("toolbar").innerHTML = filters.map(function (f) {
     return '<button class="' + (FILTER === f[0] ? "active" : "") + '" onclick="setFilter(\'' + f[0] + '\')">' + f[1] + '</button>';
   }).join("");
 
   var rows = RESULTS.filter(function (r) {
-    if (FILTER === "fined") return r.fine > 0;
-    if (FILTER === "unpaid") return r.fine > 0 && !r.fine_paid;
+    if (FILTER === "fined") return !!r.penalty_label;
+    if (FILTER === "unpaid") return !!r.penalty_label && !r.fine_paid;
     return true;
   });
 
@@ -109,12 +109,12 @@ function render() {
     '<table><thead><tr><th>Sana</th><th>O‘quvchi</th><th>Kurs</th><th>Natija</th>' +
     '<th>Xabar</th><th>Jarima</th><th>Holat</th></tr></thead><tbody>' +
     rows.map(function (r) {
-      var fineCell = r.fine > 0 ? '<span class="badge fine">' + money(r.fine) + '</span>' : '<span class="muted">—</span>';
-      var status = r.fine > 0
+      var fineCell = r.penalty_label ? '<span class="badge fine">' + esc(r.penalty_label) + '</span>' : '<span class="muted">—</span>';
+      var status = r.penalty_label
         ? '<button onclick="togglePaid(' + r.id + ',' + (!r.fine_paid) + ')">' +
-          (r.fine_paid ? '<span class="badge paid">To‘langan ✓</span>' : '<span class="badge fine">To‘lanmagan</span>') + '</button>'
+          (r.fine_paid ? '<span class="badge paid">Bajarildi ✓</span>' : '<span class="badge fine">Bajarilmagan</span>') + '</button>'
         : '<span class="badge ok">Jarima yo‘q</span>';
-      return '<tr class="' + (r.fine > 0 ? "fined" : "") + '">' +
+      return '<tr class="' + (r.penalty_label ? "fined" : "") + '">' +
         '<td class="muted">' + fmtDate(r.date) + '</td>' +
         '<td><b>' + esc(r.name) + '</b></td>' +
         '<td>' + esc(r.course_name) + '</td>' +

@@ -17,6 +17,9 @@
 .test-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;align-items:center;justify-content:center;padding:20px}
 .test-box{background:#111827;color:#fff;width:min(800px,96vw);max-height:90vh;overflow:auto;border-radius:20px;padding:28px;box-shadow:0 0 40px rgba(0,255,255,.18)}
 .test-top{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:20px}
+.test-timer{color:#22d3ee;white-space:nowrap}
+.test-timer-warning{color:#f87171!important;animation:testTimerBlink 1s infinite}
+@keyframes testTimerBlink{50%{opacity:.4}}
 .test-progress{height:8px;background:#263244;border-radius:20px;overflow:hidden;margin:10px 0 25px}
 .test-progress-bar{height:100%;width:0%;background:#22d3ee;transition:.25s}
 .test-option{display:block;width:100%;text-align:left;margin:10px 0;padding:15px;border:1px solid #334155;background:#182235;color:#fff;border-radius:12px;cursor:pointer}
@@ -5070,110 +5073,119 @@ const questionBank = {
   "ctrl": [
     {
       "q": "Ctrl + C nima qiladi?",
-      "a": "Nusxa oladi",
+      "a": "Nusxa oladi (Copy)",
       "o": [
-        "O‘chiradi",
-        "Saqlaydi",
-        "Joylashtiradi"
+        "Kesib oladi (Cut)",
+        "Joylashtiradi (Paste)",
+        "Saqlaydi (Save)"
       ]
     },
     {
       "q": "Ctrl + V nima qiladi?",
-      "a": "Joylashtiradi",
+      "a": "Joylashtiradi (Paste)",
       "o": [
-        "Kesadi",
-        "Nusxa oladi",
-        "Qidiradi"
+        "Nusxa oladi (Copy)",
+        "Kesib oladi (Cut)",
+        "Bekor qiladi (Undo)"
       ]
     },
     {
       "q": "Ctrl + X nima qiladi?",
-      "a": "Kesib oladi",
+      "a": "Kesib oladi (Cut)",
       "o": [
-        "Saqlaydi",
-        "Yangilaydi",
-        "Chop etadi"
+        "Nusxa oladi (Copy)",
+        "Joylashtiradi (Paste)",
+        "Chop etadi (Print)"
       ]
     },
     {
       "q": "Ctrl + Z nima qiladi?",
-      "a": "Oxirgi amalni bekor qiladi",
+      "a": "Oxirgi amalni bekor qiladi (Undo)",
       "o": [
-        "Qidiradi",
+        "Amalni qaytaradi (Redo)",
         "Saqlaydi",
-        "Yopadi"
-      ]
-    },
-    {
-      "q": "Ctrl + Y nima qiladi?",
-      "a": "Bekor qilingan amalni qaytaradi",
-      "o": [
-        "Faylni yopadi",
-        "Nusxa oladi",
         "Qidiradi"
       ]
     },
     {
+      "q": "Ctrl + Y nima qiladi?",
+      "a": "Bekor qilingan amalni qaytaradi (Redo)",
+      "o": [
+        "Amalni bekor qiladi (Undo)",
+        "Nusxa oladi",
+        "Fayl ochadi"
+      ]
+    },
+    {
       "q": "Ctrl + A nima qiladi?",
-      "a": "Hammasini belgilaydi",
+      "a": "Hammasini belgilaydi (Select All)",
       "o": [
         "Bitta so‘zni belgilaydi",
-        "Oynani yopadi",
+        "Hammasini o‘chiradi",
         "Saqlaydi"
       ]
     },
     {
       "q": "Ctrl + S nima qiladi?",
-      "a": "Saqlaydi",
+      "a": "Saqlaydi (Save)",
       "o": [
-        "Qidiradi",
         "Chop etadi",
+        "Qidiradi",
         "O‘chiradi"
       ]
     },
     {
       "q": "Ctrl + P nima qiladi?",
-      "a": "Chop etish oynasini ochadi",
+      "a": "Chop etadi (Print)",
       "o": [
-        "Nusxa oladi",
-        "Yangi tab ochadi",
-        "Qidiradi"
-      ]
-    },
-    {
-      "q": "Ctrl + F nima uchun ishlatiladi?",
-      "a": "Qidirish uchun",
-      "o": [
-        "Saqlash uchun",
-        "Yopish uchun",
-        "Nusxa olish uchun"
-      ]
-    },
-    {
-      "q": "Ctrl + N nima qiladi?",
-      "a": "Yangi hujjat yoki oyna yaratadi",
-      "o": [
-        "Tarixni ochadi",
-        "Faylni yopadi",
-        "Sahifani yangilaydi"
-      ]
-    },
-    {
-      "q": "Ctrl + O nima qiladi?",
-      "a": "Fayl ochadi",
-      "o": [
-        "Faylni o‘chiradi",
         "Saqlaydi",
+        "Nusxa oladi",
+        "Yangi oyna ochadi"
+      ]
+    },
+    {
+      "q": "Ctrl + F nima qiladi?",
+      "a": "Qidiradi (Find)",
+      "o": [
+        "Saqlaydi",
+        "Chop etadi",
+        "Nusxa oladi"
+      ]
+    },
+    {
+      "q": "Ctrl + H nima qiladi?",
+      "a": "Topish va almashtiradi (Find & Replace)",
+      "o": [
+        "Faylni saqlaydi",
+        "Yangi oyna ochadi",
         "Chop etadi"
       ]
     },
     {
-      "q": "Ctrl + W nima qiladi?",
-      "a": "Joriy oyna yoki tabni yopadi",
+      "q": "Ctrl + N nima qiladi?",
+      "a": "Yangi fayl yoki oyna yaratadi",
       "o": [
-        "Yangi tab ochadi",
+        "Faylni ochadi",
+        "Faylni yopadi",
+        "Faylni o‘chiradi"
+      ]
+    },
+    {
+      "q": "Ctrl + O nima qiladi?",
+      "a": "Fayl ochadi (Open)",
+      "o": [
+        "Faylni yopadi",
+        "Faylni saqlaydi",
+        "Yangi fayl yaratadi"
+      ]
+    },
+    {
+      "q": "Ctrl + W nima qiladi?",
+      "a": "Oyna yoki tabni yopadi",
+      "o": [
+        "Yangi oyna ochadi",
         "Saqlaydi",
-        "Qidiradi"
+        "Nusxa oladi"
       ]
     },
     {
@@ -5187,20 +5199,20 @@ const questionBank = {
     },
     {
       "q": "Ctrl + Shift + T brauzerda nima qiladi?",
-      "a": "Yopilgan tabni qaytaradi",
+      "a": "Yopilgan tabni qayta ochadi",
       "o": [
         "Yangi tab ochadi",
-        "Sahifani yopadi",
-        "Kompyuterni o‘chiradi"
+        "Tabni yopadi",
+        "Bookmark qiladi"
       ]
     },
     {
       "q": "Ctrl + Tab brauzerda nima qiladi?",
       "a": "Keyingi tabga o‘tadi",
       "o": [
+        "Oldingi tabga o‘tadi",
         "Tabni yopadi",
-        "Yangi tab ochadi",
-        "Sahifani saqlaydi"
+        "Yangi tab ochadi"
       ]
     },
     {
@@ -5209,12 +5221,21 @@ const questionBank = {
       "o": [
         "Keyingi tabga o‘tadi",
         "Tabni yopadi",
-        "Yangi oyna ochadi"
+        "Sahifani yangilaydi"
+      ]
+    },
+    {
+      "q": "Ctrl + D brauzerda nima qiladi?",
+      "a": "Sahifani bookmark qiladi",
+      "o": [
+        "Sahifani o‘chiradi",
+        "Yangi tab ochadi",
+        "Tarixni ochadi"
       ]
     },
     {
       "q": "Ctrl + R brauzerda nima qiladi?",
-      "a": "Sahifani yangilaydi",
+      "a": "Sahifani yangilaydi (Refresh)",
       "o": [
         "Sahifani yopadi",
         "Qidiradi",
@@ -5222,52 +5243,16 @@ const questionBank = {
       ]
     },
     {
-      "q": "Ctrl + Shift + R brauzerda nima qiladi?",
-      "a": "Sahifani keshsiz (to‘liq) yangilaydi",
-      "o": [
-        "Oddiy nusxa oladi",
-        "Tabni yopadi",
-        "Tarixni ochadi"
-      ]
-    },
-    {
       "q": "Ctrl + L brauzerda nima qiladi?",
-      "a": "Manzil satrini belgilaydi",
+      "a": "Manzil (address) qatorini belgilaydi",
       "o": [
         "Tabni yopadi",
         "Tarixni o‘chiradi",
-        "Faylni saqlaydi"
+        "Bookmark qiladi"
       ]
     },
     {
-      "q": "Ctrl + D brauzerda odatda nima qiladi?",
-      "a": "Sahifani xatcho‘pga (bookmark) saqlaydi",
-      "o": [
-        "Sahifani o‘chiradi",
-        "Yangi tab ochadi",
-        "Kompyuterni bloklaydi"
-      ]
-    },
-    {
-      "q": "Ctrl + J Chrome brauzerida nimani ochadi?",
-      "a": "Yuklab olishlar (Downloads)",
-      "o": [
-        "Sozlamalar",
-        "Tarix",
-        "Xatcho‘plar"
-      ]
-    },
-    {
-      "q": "Ctrl + H Chrome brauzerida nimani ochadi?",
-      "a": "Tarix (History)",
-      "o": [
-        "Yuklab olishlar",
-        "Sozlamalar",
-        "Yangi tab"
-      ]
-    },
-    {
-      "q": "Ctrl + (+) tugmalari nima qiladi?",
+      "q": "Ctrl + (+) brauzerda nima qiladi?",
       "a": "Sahifani kattalashtiradi",
       "o": [
         "Sahifani kichraytiradi",
@@ -5276,7 +5261,7 @@ const questionBank = {
       ]
     },
     {
-      "q": "Ctrl + (−) tugmalari nima qiladi?",
+      "q": "Ctrl + (−) brauzerda nima qiladi?",
       "a": "Sahifani kichraytiradi",
       "o": [
         "Sahifani kattalashtiradi",
@@ -5286,11 +5271,74 @@ const questionBank = {
     },
     {
       "q": "Ctrl + 0 brauzerda nima qiladi?",
-      "a": "Masshtabni 100% ga qaytaradi",
+      "a": "Masshtabni 100% holatga qaytaradi",
       "o": [
         "Sahifani yopadi",
         "Yangi tab ochadi",
         "Tarixni ochadi"
+      ]
+    },
+    {
+      "q": "Ctrl + B matnda nima qiladi?",
+      "a": "Matnni qalin (Bold) qiladi",
+      "o": [
+        "Qiya (Italic) qiladi",
+        "Tagiga chizadi",
+        "O‘chiradi"
+      ]
+    },
+    {
+      "q": "Ctrl + I matnda nima qiladi?",
+      "a": "Matnni qiya (Italic) qiladi",
+      "o": [
+        "Qalin (Bold) qiladi",
+        "Tagiga chizadi",
+        "Saqlaydi"
+      ]
+    },
+    {
+      "q": "Ctrl + U matnda nima qiladi?",
+      "a": "Matn tagiga chizadi (Underline)",
+      "o": [
+        "Qalin qiladi",
+        "Qiya qiladi",
+        "O‘chiradi"
+      ]
+    },
+    {
+      "q": "Ctrl + ← nima qiladi?",
+      "a": "Oldingi so‘zga o‘tadi",
+      "o": [
+        "Keyingi so‘zga o‘tadi",
+        "Butun qatorni tanlaydi",
+        "Faylni ochadi"
+      ]
+    },
+    {
+      "q": "Ctrl + → nima qiladi?",
+      "a": "Keyingi so‘zga o‘tadi",
+      "o": [
+        "Oldingi so‘zga o‘tadi",
+        "Faylni yopadi",
+        "Nusxa oladi"
+      ]
+    },
+    {
+      "q": "Ctrl + Backspace nima qiladi?",
+      "a": "Oldingi so‘zni o‘chiradi",
+      "o": [
+        "Keyingi so‘zni o‘chiradi",
+        "Butun qatorni o‘chiradi",
+        "Faylni o‘chiradi"
+      ]
+    },
+    {
+      "q": "Ctrl + Delete nima qiladi?",
+      "a": "Keyingi so‘zni o‘chiradi",
+      "o": [
+        "Oldingi so‘zni o‘chiradi",
+        "Butun matnni o‘chiradi",
+        "Faylni o‘chiradi"
       ]
     }
   ]
@@ -5298,6 +5346,37 @@ const questionBank = {
 
 
 let testState = {course:null, questions:[], index:0, answers:[], score:0};
+let testTimerId = null;
+const TEST_TIME_LIMIT_SECONDS = 20 * 60; // 20 daqiqa
+
+function formatTestTime(totalSeconds){
+    const s = Math.max(0, Math.round(totalSeconds));
+    const m = Math.floor(s/60);
+    const r = s%60;
+    return `${m}:${r<10?"0":""}${r}`;
+}
+
+function tickTestTimer(){
+    if(!testState.endTime) return;
+    const remaining = (testState.endTime - Date.now())/1000;
+    const box = document.getElementById("testTimer");
+    if(box){
+        box.textContent = `⏳ ${formatTestTime(remaining)}`;
+        box.classList.toggle("test-timer-warning", remaining<=60);
+    }
+    if(remaining<=0){
+        clearInterval(testTimerId);
+        testTimerId=null;
+        if(!testState.finishing){
+            alert("Test uchun ajratilgan 20 daqiqa tugadi. Javoblaringiz avtomatik yuboriladi.");
+            finishTest();
+        }
+    }
+}
+
+function stopTestTimer(){
+    if(testTimerId){ clearInterval(testTimerId); testTimerId=null; }
+}
 
 function shuffle(arr){
     const a=[...arr];
@@ -5325,11 +5404,16 @@ function startTest(courseName){
         questions: shuffle(bank).slice(0,25),
         index:0,
         answers:Array(25).fill(null),
-        score:0
+        score:0,
+        finishing:false,
+        endTime: Date.now() + TEST_TIME_LIMIT_SECONDS*1000
     };
     document.getElementById("testQuestionArea").style.display="block";
     document.getElementById("testResult").style.display="none";
     document.getElementById("testModal").style.display="flex";
+    stopTestTimer();
+    tickTestTimer();
+    testTimerId = setInterval(tickTestTimer, 250);
     renderQuestion();
 }
 
@@ -5390,6 +5474,7 @@ function prevTestQuestion(){
 async function finishTest(){
     if(testState.finishing) return;   // ikki marta bosilsa, natija ikki marta yozilmasin
     testState.finishing=true;
+    stopTestTimer();
     let score=0;
     testState.questions.forEach((q,i)=>{
         if(testState.answers[i]===q.a) score++;
@@ -5427,8 +5512,8 @@ async function finishTest(){
 
     const fineBox=document.getElementById("resultFine");
     if(fineBox){
-        if(serverData && serverData.fine>0){
-            fineBox.textContent=`⚠️ Jarima: ${String(serverData.fine).replace(/\B(?=(\d{3})+(?!\d))/g," ")} so‘m (25 tadan kamida 10 ta to‘g‘ri javob kerak edi).`;
+        if(serverData && serverData.penalty_label){
+            fineBox.textContent=`⚠️ Jarima: ${serverData.penalty_label} (25 tadan kamida 10 ta to‘g‘ri javob kerak edi).`;
             fineBox.style.display="block";
         }else{
             fineBox.style.display="none";
@@ -5497,6 +5582,7 @@ async function renderRating(){
 }
 
 function closeTest(){
+    stopTestTimer();
     document.getElementById("testModal").style.display="none";
     document.getElementById("testQuestionArea").style.display="block";
     document.getElementById("testResult").style.display="none";
@@ -5524,6 +5610,7 @@ window.addEventListener("click",function(e){
     <button class="test-close" onclick="closeTest()">×</button>
     <div class="test-top">
       <h2 id="testTitle">Test</h2>
+      <strong id="testTimer" class="test-timer">⏳ 20:00</strong>
       <strong id="testNumber">Savol 1 / 25</strong>
     </div>
     <div class="test-progress"><div class="test-progress-bar" id="testProgressBar"></div></div>

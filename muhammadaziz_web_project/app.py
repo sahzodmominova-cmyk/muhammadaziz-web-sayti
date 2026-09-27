@@ -1,5 +1,6 @@
 import hmac
 import os
+import random
 import sqlite3
 from datetime import datetime
 from functools import wraps
@@ -14,10 +15,20 @@ DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-# ---- Jarima qoidasi ------------------------------------------------------
+# ---- Jarima qoidasi -------------------------------------------------------
+# 25 tadan shundan KAM to'g'ri javob bo'lsa, quyidagi ro'yxatdan bitta jarima
+# TASODIFIY tanlanadi (pul jarimasi yoki vazifa-jarima bo'lishi mumkin).
+# "amount" > 0 bo'lgani pul jarimasi hisoblanadi, "amount" == 0 bo'lgani esa
+# vazifa-jarima (pulsiz) hisoblanadi.
 TOTAL_QUESTIONS = 25
-MIN_PASS_SCORE = 10      # shundan KAM to'g'ri javob bo'lsa jarima yoziladi
-FINE_AMOUNT = 10000      # so'mda
+MIN_PASS_SCORE = 10
+PENALTIES = [
+    {"amount": 5000, "label": "5 000 so‘m jarima"},
+    {"amount": 10000, "label": "10 000 so‘m jarima"},
+    {"amount": 0, "label": "2 ta dars davomida kompyuterga o‘tirmaslik"},
+    {"amount": 0, "label": "1 hafta davomida telefonda o‘yin o‘ynamaslik"},
+    {"amount": 0, "label": "Sinf doskasini 2 kun tozalash"},
+]
 
 # ---- Admin panel paroli (Render'da Environment Variable sifatida qo'ying) --
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "").strip()
@@ -61,6 +72,7 @@ def init_db():
             # Eski bazaga jarima ustunlarini xavfsiz qo'shish
             cur.execute("ALTER TABLE ratings ADD COLUMN IF NOT EXISTS fine INTEGER NOT NULL DEFAULT 0")
             cur.execute("ALTER TABLE ratings ADD COLUMN IF NOT EXISTS fine_paid INTEGER NOT NULL DEFAULT 0")
+            cur.execute("ALTER TABLE ratings ADD COLUMN IF NOT EXISTS penalty_label TEXT NOT NULL DEFAULT ''")
         else:
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS ratings (
@@ -79,6 +91,8 @@ def init_db():
                 cur.execute("ALTER TABLE ratings ADD COLUMN fine INTEGER NOT NULL DEFAULT 0")
             if "fine_paid" not in cols:
                 cur.execute("ALTER TABLE ratings ADD COLUMN fine_paid INTEGER NOT NULL DEFAULT 0")
+            if "penalty_label" not in cols:
+                cur.execute("ALTER TABLE ratings ADD COLUMN penalty_label TEXT NOT NULL DEFAULT ''")
         conn.commit()
     finally:
         conn.close()
@@ -100,11 +114,11 @@ def money(value):
     return f"{int(value):,}".replace(",", " ")
 
 
-def build_message(name, course, score, total, fine):
+def build_message(name, course, score, total, penalty_label):
     course_name = COURSE_NAMES.get(course, course)
     text = f"{name} — {course_name}: {score}/{total} to‘g‘ri."
-    if fine:
-        return f"{text} Jarima: {money(fine)} so‘m."
+    if penalty_label:
+        return f"{text} Jarima: {penalty_label}."
     return f"{text} Jarima yo‘q."
 
 
@@ -183,7 +197,11 @@ def add_rating():
     total = TOTAL_QUESTIONS
     percent = round(score / total * 100)
     xp = score * 5
-    fine = FINE_AMOUNT if score < MIN_PASS_SCORE else 0
+
+    penalty = random.choice(PENALTIES) if score < MIN_PASS_SCORE else None
+    fine = penalty["amount"] if penalty else 0
+    penalty_label = penalty["label"] if penalty else ""
+
     now = datetime.now().astimezone().isoformat(timespec="seconds")
 
     conn = get_conn()
@@ -191,21 +209,22 @@ def add_rating():
         cur = conn.cursor()
         if is_postgres():
             cur.execute("""
-                INSERT INTO ratings (name, course, score, total, percent, xp, fine)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """, (name, course, score, total, percent, xp, fine))
+                INSERT INTO ratings (name, course, score, total, percent, xp, fine, penalty_label)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (name, course, score, total, percent, xp, fine, penalty_label))
         else:
             cur.execute("""
-                INSERT INTO ratings (name, course, score, total, percent, xp, created_at, fine)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """, (name, course, score, total, percent, xp, now, fine))
+                INSERT INTO ratings (name, course, score, total, percent, xp, created_at, fine, penalty_label)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (name, course, score, total, percent, xp, now, fine, penalty_label))
         conn.commit()
     finally:
         conn.close()
     return jsonify({
         "ok": True,
         "fine": fine,
-        "message": build_message(name, course, score, total, fine),
+        "penalty_label": penalty_label,
+        "message": build_message(name, course, score, total, penalty_label),
     })
 
 
@@ -225,14 +244,16 @@ def admin_results():
     try:
         cur = conn.cursor()
         cur.execute("""
-            SELECT id, name, course, score, total, percent, xp, created_at, fine, fine_paid
+            SELECT id, name, course, score, total, percent, xp, created_at,
+                   fine, fine_paid, penalty_label
             FROM ratings
             ORDER BY id DESC
             LIMIT 500
         """)
         results = []
         for row in cur.fetchall():
-            rid, name, course, score, total, percent, xp, created_at, fine, fine_paid = tuple(row)
+            (rid, name, course, score, total, percent, xp, created_at,
+             fine, fine_paid, penalty_label) = tuple(row)
             if hasattr(created_at, "isoformat"):
                 created_at = created_at.isoformat()
             results.append({
@@ -240,25 +261,28 @@ def admin_results():
                 "course_name": COURSE_NAMES.get(course, course),
                 "score": score, "total": total, "percent": percent, "xp": xp,
                 "date": created_at, "fine": fine, "fine_paid": bool(fine_paid),
-                "message": build_message(name, course, score, total, fine),
+                "penalty_label": penalty_label or "",
+                "message": build_message(name, course, score, total, penalty_label),
             })
 
         cur.execute("""
             SELECT COUNT(*),
-                   COALESCE(SUM(CASE WHEN fine > 0 THEN 1 ELSE 0 END), 0),
+                   COALESCE(SUM(CASE WHEN penalty_label <> '' THEN 1 ELSE 0 END), 0),
                    COALESCE(SUM(fine), 0),
-                   COALESCE(SUM(CASE WHEN fine_paid = 0 THEN fine ELSE 0 END), 0)
+                   COALESCE(SUM(CASE WHEN fine_paid = 0 THEN fine ELSE 0 END), 0),
+                   COALESCE(SUM(CASE WHEN penalty_label <> '' AND fine_paid = 0 THEN 1 ELSE 0 END), 0)
             FROM ratings
         """)
-        total_count, fines_count, fines_total, unpaid_total = (int(x) for x in tuple(cur.fetchone()))
+        (total_count, penalties_count, money_total,
+         unpaid_money_total, unresolved_count) = (int(x) for x in tuple(cur.fetchone()))
         return jsonify({
             "summary": {
                 "total_results": total_count,
-                "fines_count": fines_count,
-                "fines_total": fines_total,
-                "unpaid_total": unpaid_total,
+                "fines_count": penalties_count,
+                "fines_total": money_total,
+                "unpaid_total": unpaid_money_total,
+                "unresolved_count": unresolved_count,
                 "min_pass_score": MIN_PASS_SCORE,
-                "fine_amount": FINE_AMOUNT,
             },
             "results": results,
         })
@@ -276,7 +300,10 @@ def admin_mark_paid(rid):
     conn = get_conn()
     try:
         cur = conn.cursor()
-        cur.execute(sql("UPDATE ratings SET fine_paid = ? WHERE id = ? AND fine > 0"), (paid, rid))
+        cur.execute(
+            sql("UPDATE ratings SET fine_paid = ? WHERE id = ? AND penalty_label <> ''"),
+            (paid, rid),
+        )
         changed = cur.rowcount
         conn.commit()
     finally:
