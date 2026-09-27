@@ -1,0 +1,148 @@
+{% raw %}<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin panel — test natijalari</title>
+<style>
+  :root { --bg:#f4f6fb; --card:#fff; --text:#1c2333; --muted:#667085; --line:#e4e7ee;
+          --red:#d92d20; --green:#12a150; --blue:#2563eb; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0f1420; --card:#171e2e; --text:#e8ecf5; --muted:#98a2b8; --line:#2a3348; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         background:var(--bg); color:var(--text); }
+  header { padding:18px 20px; display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+           justify-content:space-between; }
+  h1 { margin:0; font-size:1.3rem; }
+  main { padding:0 20px 30px; max-width:1200px; margin:0 auto; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-bottom:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; }
+  .card small { color:var(--muted); display:block; margin-bottom:4px; }
+  .card b { font-size:1.4rem; }
+  .card.red b { color:var(--red); }
+  .toolbar { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  button { font:inherit; cursor:pointer; border:1px solid var(--line); background:var(--card);
+           color:var(--text); border-radius:8px; padding:8px 12px; }
+  button.active { background:var(--blue); border-color:var(--blue); color:#fff; }
+  .wrap { overflow-x:auto; background:var(--card); border:1px solid var(--line); border-radius:12px; }
+  table { width:100%; border-collapse:collapse; min-width:900px; }
+  th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:.8rem; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); }
+  tr:last-child td { border-bottom:none; }
+  tr.fined { background:rgba(217,45,32,.07); }
+  .badge { display:inline-block; padding:2px 8px; border-radius:99px; font-size:.8rem; font-weight:600; }
+  .badge.fine { background:rgba(217,45,32,.15); color:var(--red); }
+  .badge.ok { background:rgba(18,161,80,.15); color:var(--green); }
+  .badge.paid { background:rgba(37,99,235,.15); color:var(--blue); }
+  .muted { color:var(--muted); }
+  .empty { padding:30px; text-align:center; color:var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>🛠️ Admin panel — test natijalari</h1>
+  <button onclick="load()">🔄 Yangilash</button>
+</header>
+<main>
+  <div class="cards" id="cards"></div>
+  <div class="toolbar" id="toolbar"></div>
+  <div class="wrap"><div id="table"></div></div>
+</main>
+
+<script>
+let RESULTS = [];
+let SUMMARY = null;
+let FILTER = "all";
+
+function esc(v) {
+  return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+function money(n) { return Number(n).toLocaleString("en-US").replace(/,/g, " ") + " so‘m"; }
+function fmtDate(s) {
+  var d = new Date(s);
+  return isNaN(d) ? esc(s) : d.toLocaleString("uz-UZ", { dateStyle: "short", timeStyle: "short" });
+}
+
+async function load() {
+  var box = document.getElementById("table");
+  try {
+    var r = await fetch("/api/admin/results", { cache: "no-store" });
+    if (!r.ok) throw new Error("status " + r.status);
+    var d = await r.json();
+    RESULTS = d.results; SUMMARY = d.summary;
+    render();
+  } catch (e) {
+    box.innerHTML = '<div class="empty">⚠️ Ma’lumotni yuklab bo‘lmadi. Sahifani yangilang.</div>';
+  }
+}
+
+function render() {
+  var s = SUMMARY;
+  document.getElementById("cards").innerHTML =
+    '<div class="card"><small>Jami natijalar</small><b>' + s.total_results + '</b></div>' +
+    '<div class="card red"><small>Jarimalar soni (&lt; ' + s.min_pass_score + ' ta to‘g‘ri)</small><b>' + s.fines_count + '</b></div>' +
+    '<div class="card red"><small>Jami jarima</small><b>' + money(s.fines_total) + '</b></div>' +
+    '<div class="card"><small>To‘lanmagan jarima</small><b>' + money(s.unpaid_total) + '</b></div>';
+
+  var filters = [["all", "Hammasi"], ["fined", "Faqat jarimalilar"], ["unpaid", "To‘lanmagan jarimalar"]];
+  document.getElementById("toolbar").innerHTML = filters.map(function (f) {
+    return '<button class="' + (FILTER === f[0] ? "active" : "") + '" onclick="setFilter(\'' + f[0] + '\')">' + f[1] + '</button>';
+  }).join("");
+
+  var rows = RESULTS.filter(function (r) {
+    if (FILTER === "fined") return r.fine > 0;
+    if (FILTER === "unpaid") return r.fine > 0 && !r.fine_paid;
+    return true;
+  });
+
+  if (!rows.length) {
+    document.getElementById("table").innerHTML = '<div class="empty">Bu bo‘limda yozuv yo‘q.</div>';
+    return;
+  }
+
+  document.getElementById("table").innerHTML =
+    '<table><thead><tr><th>Sana</th><th>O‘quvchi</th><th>Kurs</th><th>Natija</th>' +
+    '<th>Xabar</th><th>Jarima</th><th>Holat</th></tr></thead><tbody>' +
+    rows.map(function (r) {
+      var fineCell = r.fine > 0 ? '<span class="badge fine">' + money(r.fine) + '</span>' : '<span class="muted">—</span>';
+      var status = r.fine > 0
+        ? '<button onclick="togglePaid(' + r.id + ',' + (!r.fine_paid) + ')">' +
+          (r.fine_paid ? '<span class="badge paid">To‘langan ✓</span>' : '<span class="badge fine">To‘lanmagan</span>') + '</button>'
+        : '<span class="badge ok">Jarima yo‘q</span>';
+      return '<tr class="' + (r.fine > 0 ? "fined" : "") + '">' +
+        '<td class="muted">' + fmtDate(r.date) + '</td>' +
+        '<td><b>' + esc(r.name) + '</b></td>' +
+        '<td>' + esc(r.course_name) + '</td>' +
+        '<td><b>' + r.score + ' / ' + r.total + '</b> <span class="muted">(' + r.percent + '%)</span></td>' +
+        '<td>' + esc(r.message) + '</td>' +
+        '<td>' + fineCell + '</td>' +
+        '<td>' + status + '</td></tr>';
+    }).join("") + '</tbody></table>';
+}
+
+function setFilter(f) { FILTER = f; render(); }
+
+async function togglePaid(id, paid) {
+  try {
+    var r = await fetch("/api/admin/results/" + id + "/paid", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ paid: paid })
+    });
+    if (!r.ok) throw new Error("status " + r.status);
+    await load();
+  } catch (e) {
+    alert("Holatni o‘zgartirib bo‘lmadi. Qayta urinib ko‘ring.");
+  }
+}
+
+load();
+</script>
+</body>
+</html>
+{% endraw %}
