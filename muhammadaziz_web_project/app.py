@@ -30,6 +30,12 @@ PENALTIES = [
     {"amount": 0, "label": "Sinf doskasini 2 kun tozalash"},
 ]
 
+# ---- Qidiruv tizimlari (SEO) ----------------------------------------------
+# Sayt manzili o'zgarsa (masalan o'z domeningiz), Render'da SITE_URL ni yangilang.
+SITE_URL = os.getenv("SITE_URL", "https://muhammadaziz-web-sayti.onrender.com").strip().rstrip("/")
+# Google Search Console bergan tasdiqlash kodi (meta tag ichidagi content qiymati)
+GOOGLE_VERIFICATION = os.getenv("GOOGLE_SITE_VERIFICATION", "").strip()
+
 # ---- Admin panel paroli (Render'da Environment Variable sifatida qo'ying) --
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "").strip()
 
@@ -144,7 +150,37 @@ def admin_required(view):
 
 @app.get("/")
 def index():
-    return render_template("index.html")
+    return render_template(
+        "index.html",
+        site_url=SITE_URL,
+        google_verification=GOOGLE_VERIFICATION,
+    )
+
+
+@app.get("/robots.txt")
+def robots_txt():
+    body = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /admin\n"
+        "Disallow: /api/admin\n"
+        "\n"
+        f"Sitemap: {SITE_URL}/sitemap.xml\n"
+    )
+    return Response(body, mimetype="text/plain")
+
+
+@app.get("/sitemap.xml")
+def sitemap_xml():
+    today = datetime.now().date().isoformat()
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f'  <url><loc>{SITE_URL}/</loc><lastmod>{today}</lastmod>'
+        '<changefreq>weekly</changefreq><priority>1.0</priority></url>\n'
+        '</urlset>\n'
+    )
+    return Response(xml, mimetype="application/xml")
 
 
 @app.get("/health")
