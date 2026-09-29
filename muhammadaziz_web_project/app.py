@@ -157,6 +157,15 @@ def index():
     )
 
 
+@app.get("/googlef6cbbcf56781e5d8.html")
+def google_site_verification_file():
+    # Google Search Console "HTML-fayl" usuli bilan tasdiqlash uchun.
+    return Response(
+        "google-site-verification: googlef6cbbcf56781e5d8.html",
+        mimetype="text/html",
+    )
+
+
 @app.get("/robots.txt")
 def robots_txt():
     body = (
