@@ -227,6 +227,42 @@ def get_rating():
         conn.close()
 
 
+@app.get("/api/rating/overall")
+def get_rating_overall():
+    """Har bir o'quvchining barcha testlardagi (eski va yangi) natijalarini
+    bitta umumiy qatorga yig'ib, umumiy reyting sifatida qaytaradi."""
+    conn = get_conn()
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT name, score, total, xp FROM ratings")
+        rows = cur.fetchall()
+    finally:
+        conn.close()
+
+    agg = {}
+    for row in rows:
+        if is_postgres():
+            name, score, total, xp = row
+        else:
+            name = row["name"]; score = row["score"]; total = row["total"]; xp = row["xp"]
+        name = (name or "").strip()
+        if not name:
+            continue
+        key = name.lower()
+        entry = agg.setdefault(key, {"name": name, "score": 0, "total": 0, "xp": 0, "attempts": 0})
+        entry["name"] = name  # oxirgi yozilgan yozuvdagi ism ko'rinishi saqlanadi
+        entry["score"] += int(score or 0)
+        entry["total"] += int(total or 0)
+        entry["xp"] += int(xp or 0)
+        entry["attempts"] += 1
+
+    result = list(agg.values())
+    for r in result:
+        r["percent"] = round(r["score"] / r["total"] * 100) if r["total"] else 0
+    result.sort(key=lambda r: (-r["score"], -r["xp"], r["name"].lower()))
+    return jsonify(result[:100])
+
+
 @app.post("/api/rating")
 def add_rating():
     data = request.get_json(silent=True) or {}

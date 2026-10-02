@@ -5603,7 +5603,7 @@ async function renderRating(){
     const saved=localStorage.getItem("muhammadaziz_student_name")||"";
     if(input && saved) input.value=saved;
     try{
-        const response=await fetch('/api/rating',{cache:'no-store'});
+        const response=await fetch('/api/rating/overall',{cache:'no-store'});
         if(!response.ok) throw new Error('server');
         const data=await response.json();
         if(!data.length){
@@ -5611,12 +5611,12 @@ async function renderRating(){
             return;
         }
         box.innerHTML=`<div style="overflow-x:auto"><table class="rating-table">
-            <thead><tr><th>№</th><th>O‘quvchi</th><th>Kurs</th><th>Natija</th><th>Foiz</th><th>XP</th></tr></thead>
+            <thead><tr><th>№</th><th>O‘quvchi</th><th>Jami ball</th><th>Testlar soni</th><th>Foiz</th><th>Jami XP</th></tr></thead>
             <tbody>${data.slice(0,50).map((r,i)=>`<tr>
                 <td class="rating-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</td>
                 <td><b>${escapeRating(r.name)}</b></td>
-                <td>${courseTitle(r.course)}</td>
                 <td><b>${r.score} / ${r.total}</b></td>
+                <td>${r.attempts}</td>
                 <td>${r.percent}%</td>
                 <td>+${r.xp}</td>
             </tr>`).join('')}</tbody>
@@ -5643,7 +5643,7 @@ window.addEventListener("click",function(e){
 
 <section class="rating-section" id="rating">
     <h2>🏆 O‘quvchilar reytingi</h2>
-    <p>Test natijalari bo‘yicha umumiy reyting</p><div class="rating-online-badge">🌐 Umumiy online reyting — barcha qurilmalarda bir xil</div>
+    <p>Barcha testlardagi (eski va yangi) natijalar jamlanib ko‘rsatiladi</p><div class="rating-online-badge">🌐 Umumiy online reyting — barcha qurilmalarda bir xil</div>
     <div class="rating-box">
         <button class="rating-refresh" onclick="renderRating()">🔄 Reytingni yangilash</button>
         <div id="ratingContent"></div>
