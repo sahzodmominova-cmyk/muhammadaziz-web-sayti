@@ -109,7 +109,7 @@ function render() {
     '<table><thead><tr><th>Sana</th><th>O‘quvchi</th><th>Kurs</th><th>Natija</th>' +
     '<th>Xabar</th><th>Jarima</th><th>Holat</th></tr></thead><tbody>' +
     rows.map(function (r) {
-      var fineCell = r.penalty_label ? '<span class="badge fine">' + esc(r.penalty_label) + '</span>' : '<span class="muted">—</span>';
+      var fineCell = r.penalty_label ? '<span class="badge fine">' + esc(r.penalty_label) + '</span>' + (r.violation_reason ? '<div class="muted" style="margin-top:5px">Sabab: ' + esc(r.violation_reason) + '</div>' : '') : '<span class="muted">—</span>';
       var status = r.penalty_label
         ? '<button onclick="togglePaid(' + r.id + ',' + (!r.fine_paid) + ')">' +
           (r.fine_paid ? '<span class="badge paid">Bajarildi ✓</span>' : '<span class="badge fine">Bajarilmagan</span>') + '</button>'

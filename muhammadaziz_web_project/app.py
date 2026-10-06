@@ -1,3 +1,4 @@
+import json
 import hmac
 import os
 import random
@@ -79,6 +80,8 @@ def init_db():
             cur.execute("ALTER TABLE ratings ADD COLUMN IF NOT EXISTS fine INTEGER NOT NULL DEFAULT 0")
             cur.execute("ALTER TABLE ratings ADD COLUMN IF NOT EXISTS fine_paid INTEGER NOT NULL DEFAULT 0")
             cur.execute("ALTER TABLE ratings ADD COLUMN IF NOT EXISTS penalty_label TEXT NOT NULL DEFAULT ''")
+            cur.execute("ALTER TABLE ratings ADD COLUMN IF NOT EXISTS violation INTEGER NOT NULL DEFAULT 0")
+            cur.execute("ALTER TABLE ratings ADD COLUMN IF NOT EXISTS violation_reason TEXT NOT NULL DEFAULT ''")
         else:
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS ratings (
@@ -99,6 +102,10 @@ def init_db():
                 cur.execute("ALTER TABLE ratings ADD COLUMN fine_paid INTEGER NOT NULL DEFAULT 0")
             if "penalty_label" not in cols:
                 cur.execute("ALTER TABLE ratings ADD COLUMN penalty_label TEXT NOT NULL DEFAULT ''")
+            if "violation" not in cols:
+                cur.execute("ALTER TABLE ratings ADD COLUMN violation INTEGER NOT NULL DEFAULT 0")
+            if "violation_reason" not in cols:
+                cur.execute("ALTER TABLE ratings ADD COLUMN violation_reason TEXT NOT NULL DEFAULT ''")
         conn.commit()
     finally:
         conn.close()
@@ -278,10 +285,17 @@ def add_rating():
     total = TOTAL_QUESTIONS
     percent = round(score / total * 100)
     xp = score * 5
+    violation = bool(data.get("violation"))
+    violation_reason = str(data.get("violation_reason", "")).strip()[:200]
 
-    penalty = random.choice(PENALTIES) if score < MIN_PASS_SCORE else None
-    fine = penalty["amount"] if penalty else 0
-    penalty_label = penalty["label"] if penalty else ""
+    if violation:
+        # Qoidabuzarlikda test darhol bloklanadi va admin panelda alohida ko‘rinadi.
+        fine = 10000
+        penalty_label = "🚫 Test bloklandi — 10 000 so‘m jarima"
+    else:
+        penalty = random.choice(PENALTIES) if score < MIN_PASS_SCORE else None
+        fine = penalty["amount"] if penalty else 0
+        penalty_label = penalty["label"] if penalty else ""
 
     now = datetime.now().astimezone().isoformat(timespec="seconds")
 
@@ -290,14 +304,14 @@ def add_rating():
         cur = conn.cursor()
         if is_postgres():
             cur.execute("""
-                INSERT INTO ratings (name, course, score, total, percent, xp, fine, penalty_label)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            """, (name, course, score, total, percent, xp, fine, penalty_label))
+                INSERT INTO ratings (name, course, score, total, percent, xp, fine, penalty_label, violation, violation_reason)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (name, course, score, total, percent, xp, fine, penalty_label, int(violation), violation_reason))
         else:
             cur.execute("""
-                INSERT INTO ratings (name, course, score, total, percent, xp, created_at, fine, penalty_label)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (name, course, score, total, percent, xp, now, fine, penalty_label))
+                INSERT INTO ratings (name, course, score, total, percent, xp, created_at, fine, penalty_label, violation, violation_reason)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (name, course, score, total, percent, xp, now, fine, penalty_label, int(violation), violation_reason))
         conn.commit()
     finally:
         conn.close()
@@ -305,6 +319,8 @@ def add_rating():
         "ok": True,
         "fine": fine,
         "penalty_label": penalty_label,
+        "violation": violation,
+        "violation_reason": violation_reason,
         "message": build_message(name, course, score, total, penalty_label),
     })
 
@@ -326,7 +342,7 @@ def admin_results():
         cur = conn.cursor()
         cur.execute("""
             SELECT id, name, course, score, total, percent, xp, created_at,
-                   fine, fine_paid, penalty_label
+                   fine, fine_paid, penalty_label, violation, violation_reason
             FROM ratings
             ORDER BY id DESC
             LIMIT 500
@@ -334,7 +350,7 @@ def admin_results():
         results = []
         for row in cur.fetchall():
             (rid, name, course, score, total, percent, xp, created_at,
-             fine, fine_paid, penalty_label) = tuple(row)
+             fine, fine_paid, penalty_label, violation, violation_reason) = tuple(row)
             if hasattr(created_at, "isoformat"):
                 created_at = created_at.isoformat()
             results.append({
@@ -343,6 +359,8 @@ def admin_results():
                 "score": score, "total": total, "percent": percent, "xp": xp,
                 "date": created_at, "fine": fine, "fine_paid": bool(fine_paid),
                 "penalty_label": penalty_label or "",
+                "violation": bool(violation),
+                "violation_reason": violation_reason or "",
                 "message": build_message(name, course, score, total, penalty_label),
             })
 
@@ -401,3 +419,29 @@ with app.app_context():
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "5000"))
     app.run(host="0.0.0.0", port=port, debug=True)
+
+
+@app.post("/test-violation")
+def test_violation():
+    data = request.get_json(silent=True) or {}
+    record = {
+        "name": str(data.get("name", "Noma'lum"))[:100],
+        "course": str(data.get("course", ""))[:100],
+        "reason": str(data.get("reason", ""))[:300],
+        "time": str(data.get("time", ""))[:100],
+        "fine": 10000
+    }
+    log_path = os.path.join(app.root_path, "test_violations.json")
+    try:
+        existing = []
+        if os.path.exists(log_path):
+            with open(log_path, "r", encoding="utf-8") as f:
+                existing = json.load(f)
+        if not isinstance(existing, list):
+            existing = []
+        existing.append(record)
+        with open(log_path, "w", encoding="utf-8") as f:
+            json.dump(existing, f, ensure_ascii=False, indent=2)
+    except Exception:
+        pass
+    return jsonify({"ok": True, "fine": 10000})

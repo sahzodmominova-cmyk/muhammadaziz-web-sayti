@@ -40,6 +40,11 @@
 .test-result{text-align:center;padding:20px}
 .test-score{font-size:48px;font-weight:800;margin:15px 0}
 .test-close{float:right;background:none;border:0;color:#fff;font-size:30px;cursor:pointer}
+.test-security{margin:0 0 14px;padding:10px 14px;border-radius:10px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.25);color:#b9f7ff;font-size:.88rem}
+.test-violation{position:fixed;inset:0;z-index:100000;background:rgba(5,8,18,.96);display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
+.test-violation-card{width:min(520px,94vw);padding:30px;border-radius:20px;background:#111827;border:1px solid #ef4444;box-shadow:0 0 50px rgba(239,68,68,.25)}
+.test-violation-card h2{color:#f87171;margin:0 0 10px}
+
 
 .rating-section{padding:70px 6%;text-align:center}
 .rating-box{max-width:1000px;margin:25px auto;background:rgba(17,24,39,.92);border:1px solid rgba(34,211,238,.25);border-radius:22px;padding:25px;box-shadow:0 0 35px rgba(0,255,255,.10)}
@@ -193,6 +198,92 @@ html.lesson-open, body.lesson-open { overflow: hidden !important; }
     }
 }
 </style>
+<style>
+/* MUHAMMADAZIZ animation pack: based on Animatsiya namunalari */
+*{box-sizing:inherit}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+  h1,h2{margin:0 0 6px;font-weight:800}
+  .intro h1{font-size:1.5rem;background:linear-gradient(90deg,var(--cyan),var(--purple));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .intro p{color:var(--muted);margin:0}
+
+  /* 1) Yulduzli fon */
+  #mz-stars-canvas{position:absolute;inset:0;width:100%;height:100%}
+  .hero-title{position:relative;z-index:2;text-align:center}
+  .hero-title .eyebrow{font-size:.7rem;letter-spacing:.15em;color:var(--cyan);opacity:.85}
+  .hero-title h3{margin:6px 0 0;font-size:2rem;font-weight:900;
+    color:#eafcff;text-shadow:0 0 12px rgba(34,211,238,.9),0 0 36px rgba(102,126,234,.6)}
+
+  /* 2) Suzuvchi gradient dog'lar */
+  .mz-blobs-stage{position:relative}
+  .mz-blob{position:absolute;width:180px;height:180px;border-radius:50%;filter:blur(40px);opacity:.55}
+  .mz-blob.b1{background:var(--cyan);top:-40px;left:-30px;animation:float1 7s ease-in-out infinite}
+  .mz-blob.b2{background:var(--purple);bottom:-50px;right:-20px;animation:float2 9s ease-in-out infinite}
+  @keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+  @keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-25px)}}
+  .mz-blobs-stage span{position:relative;z-index:2;font-weight:800;font-size:1.3rem}
+
+  /* 3) Shimmer gradient matn */
+  .mz-shimmer{font-size:1.8rem;font-weight:900;
+    background:linear-gradient(90deg,var(--cyan),#fff,var(--purple),var(--cyan));
+    background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:shimmer 3.5s linear infinite}
+  @keyframes shimmer{to{background-position:300% center}}
+
+  /* 4) Yozuv effekti */
+  .mz-typewrite{font-size:1.3rem;font-weight:700;color:var(--cyan)}
+  .mz-typewrite .cursor{display:inline-block;width:2px;background:var(--cyan);margin-left:2px;
+    animation:blink 1s step-end infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* 5) Porlovchi tugma */
+  .mz-glow-btn{position:relative;padding:14px 30px;border-radius:12px;border:none;cursor:pointer;
+    font:inherit;font-weight:700;color:#06111e;
+    background:linear-gradient(90deg,var(--cyan),var(--purple));
+    box-shadow:0 0 18px rgba(34,211,238,.55);animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 14px rgba(34,211,238,.45)}
+    50%{box-shadow:0 0 30px rgba(102,126,234,.85)}}
+
+  /* 6) Ketma-ket paydo bo'lish */
+  .mz-stagger-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .mz-stagger-row .chip{background:var(--bg2);border:1px solid var(--line);border-radius:10px;
+    padding:10px 16px;font-size:.85rem;opacity:0;transform:translateY(14px);
+    animation:riseIn .5s ease forwards}
+  @keyframes riseIn{to{opacity:1;transform:translateY(0)}}
+
+  /* 7) Progress / yuklanish chizig'i */
+  .mz-progress-track{width:80%;height:8px;background:var(--bg2);border-radius:99px;overflow:hidden}
+  .mz-progress-fill{height:100%;width:0%;border-radius:99px;
+    background:linear-gradient(90deg,var(--cyan),var(--purple));
+    animation:fillbar 2.2s ease-in-out infinite}
+  @keyframes fillbar{0%{width:0%}60%{width:100%}100%{width:100%}}
+
+
+/* Site integration */
+.mz-hero-anim-bg {
+    position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0;
+    background: radial-gradient(circle at 20% 20%, rgba(34,211,238,.10), transparent 35%),
+                radial-gradient(circle at 80% 70%, rgba(102,126,234,.10), transparent 40%);
+}
+.mz-hero-anim-bg #mz-stars-canvas {position:absolute;inset:0;width:100%;height:100%;opacity:.75}
+.mz-hero-content-anim {position:relative;z-index:2}
+.mz-site-shimmer {
+    background:linear-gradient(90deg,#22d3ee,#fff,#667eea,#22d3ee);
+    background-size:300% auto;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:mzShimmer 3.5s linear infinite;
+}
+@keyframes mzShimmer {to{background-position:300% center}}
+.mz-glow-test {
+    animation:mzPulse 2.4s ease-in-out infinite;
+}
+@keyframes mzPulse {
+    0%,100%{box-shadow:0 0 10px rgba(34,211,238,.25)}
+    50%{box-shadow:0 0 25px rgba(102,126,234,.65)}
+}
+</style>
 </head>
 
 <body>
@@ -226,8 +317,11 @@ html.lesson-open, body.lesson-open { overflow: hidden !important; }
     <!-- ================= HERO ================= -->
 
     <section class="hero">
+    <div class="mz-hero-anim-bg" aria-hidden="true">
+        <canvas id="mz-stars-canvas"></canvas>
+    </div>
 
-        <h1>MUHAMMADAZIZ WEB SAYTI</h1>
+        <h1 class="mz-site-shimmer">MUHAMMADAZIZ WEB SAYTI</h1>
 
         <h2>💻 Kompyuter savodxonligi kursi</h2>
 
@@ -5356,8 +5450,73 @@ const questionBank = {
 };
 
 
-let testState = {course:null, questions:[], index:0, answers:[], score:0};
+let testState = {course:null, questions:[], index:0, answers:[], score:0, active:false, violation:false, violationReason:""};
 let testTimerId = null;
+
+let testSecurityLocked = false;
+
+function testViolation(reason){
+    if(!testState || !testState.questions || !testState.questions.length) return;
+    if(testState.finishing || testState.timedOut || testSecurityLocked) return;
+
+    testSecurityLocked = true;
+    testState.securityViolation = reason;
+    stopTestTimer();
+
+    const area = document.getElementById("testQuestionArea");
+    const modal = document.getElementById("testModal");
+
+    if(area){
+        area.innerHTML = `
+            <div style="text-align:center;padding:30px">
+                <div style="font-size:55px">🚫</div>
+                <h2 style="color:#f87171">Test bloklandi</h2>
+                <p>⚠️ Nojo‘ya harakat aniqlandi.</p>
+                <p>Sabab: <b>${reason}</b></p>
+                <p>Ushbu testni davom ettirish mumkin emas.</p>
+            </div>
+        `;
+    }
+    if(modal) modal.style.display="flex";
+
+    fetch("/test-violation",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            name:localStorage.getItem("muhammadaziz_student_name") || "Noma'lum",
+            course:testState.course || "",
+            reason:reason,
+            time:new Date().toISOString()
+        }),
+        keepalive:true
+    }).catch(()=>{});
+}
+
+document.addEventListener("visibilitychange",function(){
+    if(document.hidden) testViolation("Test sahifasidan chiqish yoki boshqa oynaga o'tish");
+});
+
+window.addEventListener("blur",function(){
+    if(testState && testState.questions && testState.questions.length &&
+       !testState.finishing && !testState.timedOut){
+        testViolation("Brauzer oynasi fokusini yo'qotdi");
+    }
+});
+
+document.addEventListener("keydown",function(e){
+    if(!testState || !testState.questions || !testState.questions.length) return;
+    if(testState.finishing || testState.timedOut) return;
+    if(
+        e.key === "F5" ||
+        e.key === "F11" ||
+        (e.ctrlKey && e.key.toLowerCase() === "r") ||
+        (e.ctrlKey && e.key.toLowerCase() === "w")
+    ){
+        e.preventDefault();
+        testViolation("Taqiqlangan klaviatura harakati");
+    }
+});
+
 const TEST_TIME_LIMIT_SECONDS = 20 * 60; // 20 daqiqa
 
 function formatTestTime(totalSeconds){
@@ -5409,6 +5568,116 @@ function shuffle(arr){
     return a;
 }
 
+function isTestActive(){
+    return !!testState.active && !testState.finishing && !testState.violation;
+}
+
+function requestTestFullscreen(){
+    const modal=document.getElementById("testModal");
+    if(modal && modal.requestFullscreen){
+        modal.requestFullscreen().catch(()=>{});
+    }
+}
+
+function exitTestFullscreen(){
+    if(document.fullscreenElement && document.exitFullscreen){
+        document.exitFullscreen().catch(()=>{});
+    }
+}
+
+function showSecurityViolation(reason){
+    if(!isTestActive()) return;
+    testState.violation=true;
+    testState.violationReason=reason || "Ruxsatsiz harakat aniqlandi.";
+    stopTestTimer();
+    testState.finishing=true;
+    exitTestFullscreen();
+
+    const modal=document.getElementById("testModal");
+    if(modal) modal.style.display="none";
+
+    const old=document.getElementById("testViolationOverlay");
+    if(old) old.remove();
+    const overlay=document.createElement("div");
+    overlay.id="testViolationOverlay";
+    overlay.className="test-violation";
+    overlay.innerHTML=`<div class="test-violation-card">
+        <h2>🚫 Test bloklandi</h2>
+        <p><b>Sabab:</b> ${escapeRating(testState.violationReason)}</p>
+        <p>Testni tark etish yoki ruxsatsiz harakat qilish aniqlandi. Natija admin paneliga yuboriladi.</p>
+        <button onclick="submitViolationAndClose()" style="padding:12px 20px;border:0;border-radius:10px;font-weight:700;cursor:pointer">Tushundim</button>
+    </div>`;
+    document.body.appendChild(overlay);
+    submitViolationResult();
+}
+
+let violationSubmitPromise=null;
+async function submitViolationResult(){
+    if(violationSubmitPromise) return violationSubmitPromise;
+    const name=(localStorage.getItem("muhammadaziz_student_name")||"Noma'lum").trim();
+    const course=testState.course;
+    const score=testState.questions.reduce((n,q,i)=>n+(testState.answers[i]===q.a?1:0),0);
+    testState.score=score;
+    violationSubmitPromise=(async()=>{
+        try{
+            const response=await fetch('/api/rating',{
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({name,course,score,violation:true,violation_reason:testState.violationReason})
+            });
+            if(!response.ok) throw new Error('server '+response.status);
+            return await response.json();
+        }catch(e){ return null; }
+    })();
+    return violationSubmitPromise;
+}
+
+async function submitViolationAndClose(){
+    await submitViolationResult();
+    const overlay=document.getElementById("testViolationOverlay");
+    if(overlay) overlay.remove();
+    testState.active=false;
+    testState.finishing=false;
+    violationSubmitPromise=null;
+    document.getElementById("testModal").style.display="none";
+    try{ await renderRating(); }catch(e){}
+}
+
+function installTestSecurity(){
+    if(window.__testSecurityInstalled) return;
+    window.__testSecurityInstalled=true;
+
+    document.addEventListener("visibilitychange",()=>{
+        if(document.hidden && isTestActive()) showSecurityViolation("Boshqa oyna yoki brauzer sahifasiga o‘tish aniqlandi.");
+    });
+    window.addEventListener("blur",()=>{
+        if(isTestActive()) setTimeout(()=>{ if(!document.hidden && isTestActive()) showSecurityViolation("Test oynasidan chiqish aniqlandi."); },150);
+    });
+    document.addEventListener("fullscreenchange",()=>{
+        if(isTestActive() && !document.fullscreenElement) showSecurityViolation("To‘liq ekran rejimidan chiqish aniqlandi.");
+    });
+    document.addEventListener("contextmenu",e=>{ if(isTestActive()) e.preventDefault(); });
+    document.addEventListener("copy",e=>{ if(isTestActive()) e.preventDefault(); });
+    document.addEventListener("cut",e=>{ if(isTestActive()) e.preventDefault(); });
+    document.addEventListener("paste",e=>{ if(isTestActive()) e.preventDefault(); });
+    document.addEventListener("keydown",e=>{
+        if(!isTestActive()) return;
+        const k=e.key.toLowerCase();
+        const blocked = e.key==="F12" ||
+            (e.ctrlKey && ["c","v","x","a","p","s","u","r","l","t","w","n"].includes(k)) ||
+            (e.ctrlKey && e.shiftKey && ["i","j","c","n"].includes(k)) ||
+            e.key==="F5" || e.key==="Escape";
+        if(blocked){ e.preventDefault(); e.stopPropagation(); }
+    },true);
+    window.addEventListener("beforeunload",e=>{
+        if(isTestActive()){
+            e.preventDefault();
+            e.returnValue="Test hali tugamagan.";
+        }
+    });
+}
+
+installTestSecurity();
+
 function startTest(courseName){
     const savedName = (localStorage.getItem("muhammadaziz_student_name") || "").trim();
     if(!savedName){
@@ -5428,6 +5697,10 @@ function startTest(courseName){
         answers:Array(25).fill(null),
         score:0,
         finishing:false,
+        active:true,
+        violation:false,
+        violationReason:"",
+        timedOut:false,
         endTime: Date.now() + TEST_TIME_LIMIT_SECONDS*1000
     };
     document.getElementById("testQuestionArea").style.display="block";
@@ -5438,6 +5711,7 @@ function startTest(courseName){
     testTimerId = setInterval(tickTestTimer, 250);
     startKeepAlive();
     renderQuestion();
+    requestTestFullscreen();
 }
 
 function renderQuestion(){
@@ -5564,6 +5838,8 @@ async function finishTest(){
     }else{
         setFine("⚠️ Natijani serverga yuborib bo‘lmadi. Internetni tekshirib, testni qayta topshiring.","#f59e0b");
     }
+    testState.active=false;
+    exitTestFullscreen();
 }
 
 function saveStudentName(){
@@ -5627,7 +5903,10 @@ async function renderRating(){
 }
 
 function closeTest(){
+    if(isTestActive()) return; // test tugamaguncha yopib bo'lmaydi
     stopTestTimer();
+    exitTestFullscreen();
+    testState.active=false;
     document.getElementById("testModal").style.display="none";
     document.getElementById("testQuestionArea").style.display="block";
     document.getElementById("testResult").style.display="none";
@@ -5635,7 +5914,7 @@ function closeTest(){
 
 window.addEventListener("click",function(e){
     const m=document.getElementById("testModal");
-    if(e.target===m) closeTest();
+    if(e.target===m && !isTestActive()) closeTest();
 });
 
 </script>
@@ -5652,13 +5931,14 @@ window.addEventListener("click",function(e){
 
 <div class="test-modal" id="testModal">
   <div class="test-box">
-    <button class="test-close" onclick="closeTest()">×</button>
+    <button class="test-close" onclick="closeTest()" title="Test tugamaguncha yopib bo‘lmaydi">×</button>
     <div class="test-top">
       <h2 id="testTitle">Test</h2>
       <strong id="testTimer" class="test-timer">⏳ 20:00</strong>
       <strong id="testNumber">Savol 1 / 25</strong>
     </div>
     <div class="test-progress"><div class="test-progress-bar" id="testProgressBar"></div></div>
+    <div class="test-security">🔒 Test davomida oynadan chiqish, boshqa sahifaga o‘tish, to‘liq ekrandan chiqish, nusxa olish va ayrim tezkor tugmalar taqiqlanadi. Qoidabuzarlik aniqlansa test darhol bloklanadi.</div>
 
     <div id="testQuestionArea">
       <h3 id="testQuestion"></h3>
@@ -5713,6 +5993,44 @@ window.addEventListener('DOMContentLoaded',function(){
  else if(input){ input.focus(); }
 });
 </script>
+
+<script>
+/* ===== MUHAMMADAZIZ animation integration ===== */
+(function(){
+  const c=document.getElementById('mz-stars-canvas');
+  if(!c) return;
+  const ctx=c.getContext('2d');
+  let w=0,h=0,stars=[];
+  function size(){
+    const r=c.getBoundingClientRect();
+    w=c.width=Math.max(1,Math.floor(r.width));
+    h=c.height=Math.max(1,Math.floor(r.height));
+    stars=Array.from({length:90},()=>({
+      x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.4+.3,
+      s:Math.random()*.4+.1,p:Math.random()*Math.PI*2
+    }));
+  }
+  function draw(t){
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#eafcff';
+    stars.forEach(st=>{
+      st.y-=st.s;
+      if(st.y<0) st.y=h;
+      const alpha=.4+Math.sin(t/600+st.p)*.4;
+      ctx.globalAlpha=Math.max(0,alpha);
+      ctx.beginPath();
+      ctx.arc(st.x,st.y,st.r,0,Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha=1;
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',size);
+  size();
+  requestAnimationFrame(draw);
+})();
+</script>
+
 </body>
 
 </html>
