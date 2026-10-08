@@ -1,285 +1,372 @@
 /* MUHAMMADAZIZ WEB SAYTI — 7 TA ANIMATSIYA */
 
-/* =========================
-   1. YULDUZLI FON
-========================= */
+/* ==================================================
+   1. ⭐ YULDUZLI FON
+   ================================================== */
 
 #stars-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
 
 .hero-title {
-  position: relative;
-  z-index: 2;
-  text-align: center;
+    position: relative;
+    z-index: 2;
+    text-align: center;
 }
 
 .hero-title .eyebrow {
-  font-size: 0.7rem;
-  letter-spacing: 0.15em;
-  color: var(--cyan);
-  opacity: 0.85;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--cyan);
+    opacity: 0.85;
 }
 
 .hero-title h3 {
-  margin: 6px 0 0;
-  font-size: 2rem;
-  font-weight: 900;
-  color: #eafcff;
-  text-shadow:
-    0 0 12px rgba(34, 211, 238, 0.9),
-    0 0 36px rgba(102, 126, 234, 0.6);
+    margin: 6px 0 0;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #eafcff;
+
+    text-shadow:
+        0 0 12px rgba(34, 211, 238, 0.9),
+        0 0 36px rgba(102, 126, 234, 0.6);
 }
 
 
-/* =========================
-   2. SUZUVCHI GRADIENT DOG'LAR
-========================= */
+/* ==================================================
+   2. 🌈 SUZUVCHI GRADIENT DOG'LAR
+   ================================================== */
 
 .blobs-stage {
-  position: relative;
+    position: relative;
+    overflow: hidden;
 }
 
 .blob {
-  position: absolute;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  filter: blur(40px);
-  opacity: 0.55;
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    border-radius: 50%;
+
+    filter: blur(40px);
+    opacity: 0.55;
+
+    pointer-events: none;
 }
 
 .blob.b1 {
-  background: var(--cyan);
-  top: -40px;
-  left: -30px;
-  animation: float1 7s ease-in-out infinite;
+    background: var(--cyan);
+
+    top: -40px;
+    left: -30px;
+
+    animation: float1 7s ease-in-out infinite;
 }
 
 .blob.b2 {
-  background: var(--purple);
-  bottom: -50px;
-  right: -20px;
-  animation: float2 9s ease-in-out infinite;
+    background: var(--purple);
+
+    bottom: -50px;
+    right: -20px;
+
+    animation: float2 9s ease-in-out infinite;
 }
 
 @keyframes float1 {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
 
-  50% {
-    transform: translate(40px, 30px);
-  }
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(40px, 30px);
+    }
 }
 
 @keyframes float2 {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
 
-  50% {
-    transform: translate(-30px, -25px);
-  }
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(-30px, -25px);
+    }
 }
 
 .blobs-stage span {
-  position: relative;
-  z-index: 2;
-  font-weight: 800;
-  font-size: 1.3rem;
+    position: relative;
+    z-index: 2;
+
+    font-weight: 800;
+    font-size: 1.3rem;
 }
 
 
-/* =========================
-   3. SHIMMER GRADIENT MATN
-========================= */
+/* ==================================================
+   3. ✨ SHIMMER GRADIENT MATN
+   ================================================== */
 
 .shimmer {
-  font-size: 1.8rem;
-  font-weight: 900;
+    font-size: 1.8rem;
+    font-weight: 900;
 
-  background: linear-gradient(
-    90deg,
-    var(--cyan),
-    #fff,
-    var(--purple),
-    var(--cyan)
-  );
+    background: linear-gradient(
+        90deg,
+        var(--cyan),
+        #fff,
+        var(--purple),
+        var(--cyan)
+    );
 
-  background-size: 300% auto;
+    background-size: 300% auto;
 
-  -webkit-background-clip: text;
-  background-clip: text;
+    -webkit-background-clip: text;
+    background-clip: text;
 
-  color: transparent;
+    color: transparent;
 
-  animation: shimmer 3.5s linear infinite;
+    animation: shimmer 3.5s linear infinite;
 }
 
 @keyframes shimmer {
-  to {
-    background-position: 300% center;
-  }
+
+    to {
+        background-position: 300% center;
+    }
 }
 
 
-/* =========================
-   4. TYPEWRITER
-========================= */
+/* ==================================================
+   4. ⌨️ TYPEWRITER
+   ================================================== */
 
 .typewrite {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--cyan);
+    font-size: 1.3rem;
+    font-weight: 700;
+
+    color: var(--cyan);
 }
 
 .typewrite .cursor {
-  display: inline-block;
-  width: 2px;
-  background: var(--cyan);
-  margin-left: 2px;
+    display: inline-block;
 
-  animation: blink 1s step-end infinite;
+    width: 2px;
+
+    background: var(--cyan);
+
+    margin-left: 2px;
+
+    animation: blink 1s step-end infinite;
 }
 
 @keyframes blink {
-  50% {
-    opacity: 0;
-  }
+
+    50% {
+        opacity: 0;
+    }
 }
 
 
-/* =========================
-   5. PORLOVCHI TUGMA
-========================= */
+/* ==================================================
+   5. 🔆 PORLOVCHI TUGMA
+   ================================================== */
 
 .glow-btn {
-  position: relative;
+    position: relative;
 
-  padding: 14px 30px;
+    padding: 14px 30px;
 
-  border-radius: 12px;
-  border: none;
+    border-radius: 12px;
+    border: none;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  font: inherit;
-  font-weight: 700;
+    font: inherit;
+    font-weight: 700;
 
-  color: #06111e;
+    color: #06111e;
 
-  background: linear-gradient(
-    90deg,
-    var(--cyan),
-    var(--purple)
-  );
+    background: linear-gradient(
+        90deg,
+        var(--cyan),
+        var(--purple)
+    );
 
-  box-shadow:
-    0 0 18px rgba(34, 211, 238, 0.55);
+    box-shadow:
+        0 0 18px rgba(34, 211, 238, 0.55);
 
-  animation:
-    pulse 2.4s ease-in-out infinite;
+    animation:
+        pulse 2.4s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%,
-  100% {
-    box-shadow:
-      0 0 14px rgba(34, 211, 238, 0.45);
-  }
 
-  50% {
-    box-shadow:
-      0 0 30px rgba(102, 126, 234, 0.85);
-  }
+    0%,
+    100% {
+        box-shadow:
+            0 0 14px rgba(34, 211, 238, 0.45);
+    }
+
+    50% {
+        box-shadow:
+            0 0 30px rgba(102, 126, 234, 0.85);
+    }
 }
 
 
-/* =========================
-   6. KETMA-KET PAYDO BO'LISH
-========================= */
+/* ==================================================
+   6. 🧩 KETMA-KET PAYDO BO'LISH
+   ================================================== */
 
 .stagger-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
 }
 
 .stagger-row .chip {
-  background: var(--bg2);
+    background: var(--bg2);
 
-  border: 1px solid var(--line);
+    border: 1px solid var(--line);
 
-  border-radius: 10px;
+    border-radius: 10px;
 
-  padding: 10px 16px;
+    padding: 10px 16px;
 
-  font-size: 0.85rem;
+    font-size: 0.85rem;
 
-  opacity: 0;
+    opacity: 0;
 
-  transform: translateY(14px);
+    transform: translateY(14px);
 
-  animation:
-    riseIn 0.5s ease forwards;
+    animation:
+        riseIn 0.5s ease forwards;
+}
+
+.stagger-row .chip:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.stagger-row .chip:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.stagger-row .chip:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.stagger-row .chip:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.stagger-row .chip:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.stagger-row .chip:nth-child(6) {
+    animation-delay: 0.6s;
 }
 
 @keyframes riseIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0);
+    }
 }
 
 
-/* =========================
-   7. PROGRESS / YUKLANISH
-========================= */
+/* ==================================================
+   7. 📊 PROGRESS / YUKLANISH
+   ================================================== */
 
 .progress-track {
-  width: 80%;
-  height: 8px;
+    width: 80%;
 
-  background: var(--bg2);
+    height: 8px;
 
-  border-radius: 99px;
+    background: var(--bg2);
 
-  overflow: hidden;
+    border-radius: 99px;
+
+    overflow: hidden;
 }
 
 .progress-fill {
-  height: 100%;
-  width: 0%;
+    height: 100%;
 
-  border-radius: 99px;
+    width: 0%;
 
-  background: linear-gradient(
-    90deg,
-    var(--cyan),
-    var(--purple)
-  );
+    border-radius: 99px;
 
-  animation:
-    fillbar 2.2s ease-in-out infinite;
+    background: linear-gradient(
+        90deg,
+        var(--cyan),
+        var(--purple)
+    );
+
+    animation:
+        fillbar 2.2s ease-in-out infinite;
 }
 
 @keyframes fillbar {
-  0% {
-    width: 0%;
-  }
 
-  60% {
-    width: 100%;
-  }
+    0% {
+        width: 0%;
+    }
 
-  100% {
-    width: 100%;
-  }
+    60% {
+        width: 100%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+
+/* ==================================================
+   MOBIL
+   ================================================== */
+
+@media (max-width: 600px) {
+
+    .hero-title h3 {
+        font-size: 1.5rem;
+    }
+
+    .shimmer {
+        font-size: 1.4rem;
+    }
+
+    .typewrite {
+        font-size: 1rem;
+    }
+
+    .glow-btn {
+        padding: 12px 22px;
+    }
+
+    .blob {
+        width: 130px;
+        height: 130px;
+    }
+
+    .progress-track {
+        width: 90%;
+    }
 }
