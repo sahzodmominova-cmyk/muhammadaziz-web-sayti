@@ -1,216 +1,285 @@
-<!DOCTYPE html>
-<html lang="uz">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Animatsiya namunalari — MUHAMMADAZIZ WEB SAYTI</title>
-<style>
-  :root{
-    --bg:#07111f; --bg2:#0b1830; --card:#0f1e36; --line:#1d3152;
-    --text:#eaf2ff; --muted:#93a4c3;
-    --cyan:#22d3ee; --purple:#667eea; --purple2:#764ba2;
-    box-sizing:border-box;
-    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
-  }
-  *{box-sizing:inherit}
-  html{scroll-padding-top:env(safe-area-inset-top,0px)}
-  body{margin:0;background:var(--bg);color:var(--text);
-    font-family:-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
-  h1,h2{margin:0 0 6px;font-weight:800}
-  .wrap{max-width:860px;margin:0 auto;padding:28px 18px 60px}
-  .intro{margin-bottom:34px}
-  .intro h1{font-size:1.5rem;background:linear-gradient(90deg,var(--cyan),var(--purple));
-    -webkit-background-clip:text;background-clip:text;color:transparent}
-  .intro p{color:var(--muted);margin:0}
-  .demo{background:var(--card);border:1px solid var(--line);border-radius:16px;
-    padding:0;margin-bottom:22px;overflow:hidden}
-  .demo-stage{position:relative;height:220px;display:flex;align-items:center;justify-content:center;
-    overflow:hidden;background:#060d19}
-  .demo-info{padding:14px 18px}
-  .demo-info h2{font-size:1.05rem}
-  .demo-info p{color:var(--muted);font-size:.9rem;margin:0}
-  .tag{display:inline-block;font-size:.72rem;color:var(--cyan);border:1px solid var(--cyan);
-    border-radius:99px;padding:2px 10px;margin-bottom:8px}
-  button.replay{margin-top:10px;background:transparent;border:1px solid var(--line);color:var(--text);
-    border-radius:8px;padding:6px 14px;font:inherit;cursor:pointer}
-  button.replay:hover{border-color:var(--cyan)}
+/* MUHAMMADAZIZ WEB SAYTI — 7 TA ANIMATSIYA */
 
-  /* 1) Yulduzli fon */
-  #stars-canvas{position:absolute;inset:0;width:100%;height:100%}
-  .hero-title{position:relative;z-index:2;text-align:center}
-  .hero-title .eyebrow{font-size:.7rem;letter-spacing:.15em;color:var(--cyan);opacity:.85}
-  .hero-title h3{margin:6px 0 0;font-size:2rem;font-weight:900;
-    color:#eafcff;text-shadow:0 0 12px rgba(34,211,238,.9),0 0 36px rgba(102,126,234,.6)}
+/* =========================
+   1. YULDUZLI FON
+========================= */
 
-  /* 2) Suzuvchi gradient dog'lar */
-  .blobs-stage{position:relative}
-  .blob{position:absolute;width:180px;height:180px;border-radius:50%;filter:blur(40px);opacity:.55}
-  .blob.b1{background:var(--cyan);top:-40px;left:-30px;animation:float1 7s ease-in-out infinite}
-  .blob.b2{background:var(--purple);bottom:-50px;right:-20px;animation:float2 9s ease-in-out infinite}
-  @keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
-  @keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,-25px)}}
-  .blobs-stage span{position:relative;z-index:2;font-weight:800;font-size:1.3rem}
-
-  /* 3) Shimmer gradient matn */
-  .shimmer{font-size:1.8rem;font-weight:900;
-    background:linear-gradient(90deg,var(--cyan),#fff,var(--purple),var(--cyan));
-    background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
-    animation:shimmer 3.5s linear infinite}
-  @keyframes shimmer{to{background-position:300% center}}
-
-  /* 4) Yozuv effekti */
-  .typewrite{font-size:1.3rem;font-weight:700;color:var(--cyan)}
-  .typewrite .cursor{display:inline-block;width:2px;background:var(--cyan);margin-left:2px;
-    animation:blink 1s step-end infinite}
-  @keyframes blink{50%{opacity:0}}
-
-  /* 5) Porlovchi tugma */
-  .glow-btn{position:relative;padding:14px 30px;border-radius:12px;border:none;cursor:pointer;
-    font:inherit;font-weight:700;color:#06111e;
-    background:linear-gradient(90deg,var(--cyan),var(--purple));
-    box-shadow:0 0 18px rgba(34,211,238,.55);animation:pulse 2.4s ease-in-out infinite}
-  @keyframes pulse{0%,100%{box-shadow:0 0 14px rgba(34,211,238,.45)}
-    50%{box-shadow:0 0 30px rgba(102,126,234,.85)}}
-
-  /* 6) Ketma-ket paydo bo'lish */
-  .stagger-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-  .stagger-row .chip{background:var(--bg2);border:1px solid var(--line);border-radius:10px;
-    padding:10px 16px;font-size:.85rem;opacity:0;transform:translateY(14px);
-    animation:riseIn .5s ease forwards}
-  @keyframes riseIn{to{opacity:1;transform:translateY(0)}}
-
-  /* 7) Progress / yuklanish chizig'i */
-  .progress-track{width:80%;height:8px;background:var(--bg2);border-radius:99px;overflow:hidden}
-  .progress-fill{height:100%;width:0%;border-radius:99px;
-    background:linear-gradient(90deg,var(--cyan),var(--purple));
-    animation:fillbar 2.2s ease-in-out infinite}
-  @keyframes fillbar{0%{width:0%}60%{width:100%}100%{width:100%}}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <div class="intro">
-    <h1>Animatsiya namunalari</h1>
-    <p>Yuborgan videongizdagi uslubga mos 7 ta variant. Har birini ko‘rib, saytga qaysilarini qo‘shishni ayting — raqamini yozsangiz bo‘ldi.</p>
-  </div>
-
-  <div class="demo">
-    <div class="demo-stage">
-      <canvas id="stars-canvas"></canvas>
-      <div class="hero-title">
-        <div class="eyebrow">FUTURE INTERFACE</div>
-        <h3>MUHAMMADAZIZ</h3>
-      </div>
-    </div>
-    <div class="demo-info">
-      <span class="tag">1-namuna</span>
-      <h2>Yulduzli fon + neon sarlavha</h2>
-      <p>Videodagi asosiy effekt. Orqa fonda sekin suzuvchi yulduzlar, sarlavha atrofida yumshoq porlash.</p>
-    </div>
-  </div>
-
-  <div class="demo">
-    <div class="demo-stage blobs-stage">
-      <div class="blob b1"></div><div class="blob b2"></div>
-      <span>Suzuvchi nurli dog'lar</span>
-    </div>
-    <div class="demo-info">
-      <span class="tag">2-namuna</span>
-      <h2>Gradient "blob" fon</h2>
-      <p>Fon ortida sekin harakatlanuvchi, xira rangli dog'lar — zamonaviy sayt fonlarida ko'p ishlatiladi.</p>
-    </div>
-  </div>
-
-  <div class="demo">
-    <div class="demo-stage"><div class="shimmer">Kompyuter darslari</div></div>
-    <div class="demo-info">
-      <span class="tag">3-namuna</span>
-      <h2>Porlab oqadigan matn</h2>
-      <p>Sarlavhadagi rang chapdan o'ngga doimiy oqib turadi. Diqqatni tortadi, lekin ko'zni charchatmaydi.</p>
-    </div>
-  </div>
-
-  <div class="demo">
-    <div class="demo-stage"><div class="typewrite" id="tw"><span id="twText"></span><span class="cursor">&nbsp;</span></div></div>
-    <div class="demo-info">
-      <span class="tag">4-namuna</span>
-      <h2>Yozuv (typewriter) effekti</h2>
-      <p>Matn harf-harflab "yozilib" chiqadi. Sahifa ochilganda bir marta ishlaydi.</p>
-      <button class="replay" onclick="playTypewriter()">🔁 Qayta ko'rish</button>
-    </div>
-  </div>
-
-  <div class="demo">
-    <div class="demo-stage"><button class="glow-btn">Testni boshlash</button></div>
-    <div class="demo-info">
-      <span class="tag">5-namuna</span>
-      <h2>Porlab turuvchi tugma</h2>
-      <p>Muhim tugmalar (masalan "Testni boshlash") sekin nafas oladigan nur bilan ajralib turadi.</p>
-    </div>
-  </div>
-
-  <div class="demo">
-    <div class="demo-stage"><div class="stagger-row" id="chips"></div></div>
-    <div class="demo-info">
-      <span class="tag">6-namuna</span>
-      <h2>Kartalarning ketma-ket chiqishi</h2>
-      <p>Kurs kartalari bittama-bitta, bir-biridan sal kech bo'lib sahifaga "ko'tarilib" chiqadi.</p>
-      <button class="replay" onclick="playChips()">🔁 Qayta ko'rish</button>
-    </div>
-  </div>
-
-  <div class="demo">
-    <div class="demo-stage"><div class="progress-track"><div class="progress-fill"></div></div></div>
-    <div class="demo-info">
-      <span class="tag">7-namuna</span>
-      <h2>Yuklanish chizig'i</h2>
-      <p>Test natijasi serverga yuborilayotganda shu chiziq bilan ko'rsatish mumkin.</p>
-    </div>
-  </div>
-</div>
-
-<script>
-// 1) Yulduzli fon
-(function(){
-  const c=document.getElementById('stars-canvas'), ctx=c.getContext('2d');
-  let w,h,stars=[];
-  function size(){ w=c.width=c.offsetWidth; h=c.height=c.offsetHeight;
-    stars=Array.from({length:90},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.4+.3,
-      s:Math.random()*.4+.1, p:Math.random()*Math.PI*2})); }
-  function draw(t){
-    ctx.clearRect(0,0,w,h);
-    ctx.fillStyle='#eafcff';
-    stars.forEach(st=>{
-      st.y-=st.s; if(st.y<0) st.y=h;
-      const alpha=.4+Math.sin(t/600+st.p)*.4;
-      ctx.globalAlpha=Math.max(0,alpha);
-      ctx.beginPath(); ctx.arc(st.x,st.y,st.r,0,7); ctx.fill();
-    });
-    ctx.globalAlpha=1;
-    requestAnimationFrame(draw);
-  }
-  window.addEventListener('resize',size); size(); requestAnimationFrame(draw);
-})();
-
-// 4) Typewriter
-const TW_TEXT="Kompyuter savodxonligi — kelajak kaliti";
-function playTypewriter(){
-  const el=document.getElementById('twText'); el.textContent='';
-  let i=0;
-  const id=setInterval(()=>{ el.textContent+=TW_TEXT[i]; i++; if(i>=TW_TEXT.length) clearInterval(id); },55);
+#stars-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
-playTypewriter();
 
-// 6) Stagger chips
-function playChips(){
-  const box=document.getElementById('chips'); box.innerHTML='';
-  ['💻 Kompyuter','⌨️ Klaviatura','📝 Word','📊 Excel','🌐 Internet'].forEach((t,i)=>{
-    const d=document.createElement('div'); d.className='chip'; d.textContent=t;
-    d.style.animationDelay=(i*0.12)+'s';
-    box.appendChild(d);
-  });
+.hero-title {
+  position: relative;
+  z-index: 2;
+  text-align: center;
 }
-playChips();
-</script>
-</body>
-</html>
+
+.hero-title .eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--cyan);
+  opacity: 0.85;
+}
+
+.hero-title h3 {
+  margin: 6px 0 0;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #eafcff;
+  text-shadow:
+    0 0 12px rgba(34, 211, 238, 0.9),
+    0 0 36px rgba(102, 126, 234, 0.6);
+}
+
+
+/* =========================
+   2. SUZUVCHI GRADIENT DOG'LAR
+========================= */
+
+.blobs-stage {
+  position: relative;
+}
+
+.blob {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.55;
+}
+
+.blob.b1 {
+  background: var(--cyan);
+  top: -40px;
+  left: -30px;
+  animation: float1 7s ease-in-out infinite;
+}
+
+.blob.b2 {
+  background: var(--purple);
+  bottom: -50px;
+  right: -20px;
+  animation: float2 9s ease-in-out infinite;
+}
+
+@keyframes float1 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(40px, 30px);
+  }
+}
+
+@keyframes float2 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-30px, -25px);
+  }
+}
+
+.blobs-stage span {
+  position: relative;
+  z-index: 2;
+  font-weight: 800;
+  font-size: 1.3rem;
+}
+
+
+/* =========================
+   3. SHIMMER GRADIENT MATN
+========================= */
+
+.shimmer {
+  font-size: 1.8rem;
+  font-weight: 900;
+
+  background: linear-gradient(
+    90deg,
+    var(--cyan),
+    #fff,
+    var(--purple),
+    var(--cyan)
+  );
+
+  background-size: 300% auto;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+
+  animation: shimmer 3.5s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: 300% center;
+  }
+}
+
+
+/* =========================
+   4. TYPEWRITER
+========================= */
+
+.typewrite {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+.typewrite .cursor {
+  display: inline-block;
+  width: 2px;
+  background: var(--cyan);
+  margin-left: 2px;
+
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+
+/* =========================
+   5. PORLOVCHI TUGMA
+========================= */
+
+.glow-btn {
+  position: relative;
+
+  padding: 14px 30px;
+
+  border-radius: 12px;
+  border: none;
+
+  cursor: pointer;
+
+  font: inherit;
+  font-weight: 700;
+
+  color: #06111e;
+
+  background: linear-gradient(
+    90deg,
+    var(--cyan),
+    var(--purple)
+  );
+
+  box-shadow:
+    0 0 18px rgba(34, 211, 238, 0.55);
+
+  animation:
+    pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 14px rgba(34, 211, 238, 0.45);
+  }
+
+  50% {
+    box-shadow:
+      0 0 30px rgba(102, 126, 234, 0.85);
+  }
+}
+
+
+/* =========================
+   6. KETMA-KET PAYDO BO'LISH
+========================= */
+
+.stagger-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.stagger-row .chip {
+  background: var(--bg2);
+
+  border: 1px solid var(--line);
+
+  border-radius: 10px;
+
+  padding: 10px 16px;
+
+  font-size: 0.85rem;
+
+  opacity: 0;
+
+  transform: translateY(14px);
+
+  animation:
+    riseIn 0.5s ease forwards;
+}
+
+@keyframes riseIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================
+   7. PROGRESS / YUKLANISH
+========================= */
+
+.progress-track {
+  width: 80%;
+  height: 8px;
+
+  background: var(--bg2);
+
+  border-radius: 99px;
+
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+
+  border-radius: 99px;
+
+  background: linear-gradient(
+    90deg,
+    var(--cyan),
+    var(--purple)
+  );
+
+  animation:
+    fillbar 2.2s ease-in-out infinite;
+}
+
+@keyframes fillbar {
+  0% {
+    width: 0%;
+  }
+
+  60% {
+    width: 100%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
