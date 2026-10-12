@@ -1,0 +1,127 @@
+/* ===== MUHAMMADAZIZ WEB SAYTI — 7 ta animatsiya ===== */
+
+/* 1) Hero: ketma-ket paydo bo'lish (fade-up) */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.hero h1{animation:fadeUp .8s cubic-bezier(.2,.7,.2,1) backwards,shimmer 6s linear infinite}
+.hero h2{animation:fadeUp .8s .15s cubic-bezier(.2,.7,.2,1) backwards}
+.hero p{animation:fadeUp .8s .3s cubic-bezier(.2,.7,.2,1) backwards}
+.hero button{animation:fadeUp .8s .45s cubic-bezier(.2,.7,.2,1) backwards,pulseGlow 2.4s 1.5s ease-in-out infinite}
+
+/* 2) Hero sarlavhasi: gradient yaltirashi */
+@keyframes shimmer{to{background-position:200% center}}
+.hero h1{background-size:200% auto}
+
+/* 3) Kurs kartochkalari: skroll paytida chiqishi (JS .reveal / .in qo'shadi) */
+.reveal{opacity:0;transform:translateY(34px) scale(.97);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)!important}
+.reveal.in{opacity:1;transform:none}
+
+/* 4) "Boshlash" tugmasi: yorug'lik pulsatsiyasi */
+@keyframes pulseGlow{0%,100%{box-shadow:0 8px 24px rgba(34,211,238,.14)}50%{box-shadow:0 0 0 8px rgba(34,211,238,.12),0 10px 34px rgba(34,211,238,.45)}}
+
+/* 5) Test oynasi: ochilish animatsiyasi */
+@keyframes modalFade{from{opacity:0}to{opacity:1}}
+@keyframes boxPop{from{opacity:0;transform:translateY(30px) scale(.92)}to{opacity:1;transform:none}}
+.test-modal{animation:modalFade .25s ease}
+.test-box{animation:boxPop .4s cubic-bezier(.2,.8,.2,1)}
+
+/* 6) Natija balli: "pop" effekti (sanash JS orqali) */
+@keyframes scorePop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.test-score.counting{animation:scorePop .6s ease-out both}
+
+/* 7) Menyu: pastidan chiziq chiqishi + logo yorug'ligi */
+nav a{position:relative;padding-bottom:4px}
+nav a::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--cyan);transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+nav a:hover::after{transform:scaleX(1)}
+@keyframes logoGlow{0%,100%{text-shadow:0 0 14px rgba(34,211,238,.25)}50%{text-shadow:0 0 28px rgba(34,211,238,.75)}}
+.logo{animation:logoGlow 3s ease-in-out infinite}
+
+/* Animatsiyani sezmaydigan/o'chirgan foydalanuvchilar uchun */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+
+
+/* =====================================================
+   QO'SHIMCHA: DARSLAR VA TEST OYNALARI
+   ===================================================== */
+
+/* 8) Darslar ro'yxati: ketma-ket sirpanib kirish (ro'yxat qayta chizilganda ham ishlaydi) */
+@keyframes lessonIn{from{opacity:0;transform:translateX(-36px) scale(.98)}to{opacity:1;transform:none}}
+.lesson,.lesson-card{animation:lessonIn .55s cubic-bezier(.2,.8,.2,1) backwards;transition:transform .25s,border-color .25s,box-shadow .25s}
+.lesson:nth-child(1),.lesson-card:nth-child(1){animation-delay:.04s}
+.lesson:nth-child(2),.lesson-card:nth-child(2){animation-delay:.10s}
+.lesson:nth-child(3),.lesson-card:nth-child(3){animation-delay:.16s}
+.lesson:nth-child(4),.lesson-card:nth-child(4){animation-delay:.22s}
+.lesson:nth-child(5),.lesson-card:nth-child(5){animation-delay:.28s}
+.lesson:nth-child(6),.lesson-card:nth-child(6){animation-delay:.34s}
+.lesson:nth-child(7),.lesson-card:nth-child(7){animation-delay:.40s}
+.lesson:nth-child(8),.lesson-card:nth-child(8){animation-delay:.46s}
+.lesson:nth-child(9),.lesson-card:nth-child(9){animation-delay:.52s}
+.lesson:nth-child(n+10),.lesson-card:nth-child(n+10){animation-delay:.58s}
+.lesson:hover,.lesson-card:hover{transform:translateX(6px);border-color:rgba(34,211,238,.45);box-shadow:0 14px 34px rgba(0,0,0,.28),0 0 0 1px rgba(34,211,238,.15)}
+.lesson>span,.lesson-card .lesson-num{transition:transform .3s,text-shadow .3s}
+.lesson:hover>span,.lesson-card:hover .lesson-num{transform:scale(1.18) rotate(-4deg);text-shadow:0 0 18px rgba(34,211,238,.8)}
+.lesson button,.lesson-card button{transition:transform .2s,box-shadow .2s,filter .2s}
+.lesson button:hover,.lesson-card button:hover{transform:translateX(4px);box-shadow:0 8px 22px rgba(34,211,238,.35);filter:brightness(1.1)}
+
+/* 9) Dars progress chizig'i: harakatlanuvchi yo'l-yo'l effekt */
+.lesson-progress-bar{background-image:linear-gradient(90deg,#22d3ee,#667eea),repeating-linear-gradient(45deg,rgba(255,255,255,.22) 0 10px,transparent 10px 20px);background-blend-mode:overlay;background-size:100% 100%,28px 28px;animation:stripes 1s linear infinite;box-shadow:0 0 14px rgba(34,211,238,.45)}
+@keyframes stripes{to{background-position:0 0,28px 0}}
+
+/* 10) Dars oynasi: fon xiralashishi + quti pastdan chiqishi, ichki kartochkalar ketma-ket */
+@keyframes lessonBoxIn{from{opacity:0;transform:translateY(60px) scale(.94)}to{opacity:1;transform:none}}
+#lessonModal{animation:modalFade .3s ease;backdrop-filter:blur(6px)}
+#lessonModal .lesson-box{animation:lessonBoxIn .5s cubic-bezier(.2,.8,.2,1) backwards}
+#lessonModal #lessonTitle{animation:fadeUp .6s .15s cubic-bezier(.2,.7,.2,1) backwards}
+#lessonContent>*,#lessonContent .pro-card{animation:fadeUp .6s cubic-bezier(.2,.7,.2,1) backwards}
+#lessonContent>*:nth-child(1){animation-delay:.2s}
+#lessonContent>*:nth-child(2){animation-delay:.3s}
+#lessonContent>*:nth-child(3){animation-delay:.4s}
+#lessonContent .pro-card:nth-of-type(1){animation-delay:.25s}
+#lessonContent .pro-card:nth-of-type(2){animation-delay:.35s}
+#lessonContent .pro-card:nth-of-type(3){animation-delay:.45s}
+#lessonContent .pro-card:nth-of-type(4){animation-delay:.55s}
+#lessonContent .pro-card:nth-of-type(n+5){animation-delay:.65s}
+.lesson-complete-btn.done{animation:scorePop .5s ease-out}
+
+/* 11) Test tanlash tugmalari: yaltirash (shine) va ko'tarilish */
+.test-courses button{position:relative;overflow:hidden}
+.test-courses button::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:left .6s ease}
+.test-courses button:hover::after{left:140%}
+
+/* 12) Test oynasi: chiroyli ochilish, yorug' ramka, savol almashinuvi */
+@keyframes boxGlow{0%,100%{box-shadow:0 0 30px rgba(34,211,238,.15)}50%{box-shadow:0 0 55px rgba(102,126,234,.38)}}
+.test-modal{backdrop-filter:blur(7px)}
+.test-box{animation:boxPop .5s cubic-bezier(.2,.8,.2,1),boxGlow 4s 0.5s ease-in-out infinite}
+@keyframes qSwap{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+#testQuestion.swap{animation:qSwap .4s cubic-bezier(.2,.8,.2,1)}
+#testNumber.swap{animation:scorePop .4s ease-out}
+@keyframes optionIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.test-option{animation:optionIn .45s cubic-bezier(.2,.8,.2,1) backwards;transition:transform .2s,border-color .2s,background .2s,box-shadow .2s}
+.test-option:nth-child(1){animation-delay:.05s}
+.test-option:nth-child(2){animation-delay:.12s}
+.test-option:nth-child(3){animation-delay:.19s}
+.test-option:nth-child(4){animation-delay:.26s}
+.test-option:hover{transform:translateX(7px);box-shadow:0 6px 18px rgba(34,211,238,.18)}
+@keyframes optionSelect{0%{transform:scale(1)}40%{transform:scale(1.035)}100%{transform:scale(1)}}
+.test-option.selected{animation:optionSelect .35s ease-out;box-shadow:0 0 0 2px rgba(34,211,238,.35),0 8px 22px rgba(34,211,238,.22)}
+
+/* 13) Test progress: yo'l-yo'l harakat + yorug'lik, silliqroq o'sish */
+.test-progress-bar{transition:width .5s cubic-bezier(.2,.8,.2,1)!important;background-image:linear-gradient(90deg,#22d3ee,#667eea),repeating-linear-gradient(45deg,rgba(255,255,255,.25) 0 10px,transparent 10px 20px);background-blend-mode:overlay;background-size:100% 100%,28px 28px;animation:stripes 1s linear infinite;box-shadow:0 0 12px rgba(34,211,238,.6)}
+
+/* 14) Test natijasi: paydo bo'lish, sarlavha sakrashi, konfetti, jarima titrashi */
+@keyframes resultIn{from{opacity:0;transform:scale(.85) translateY(20px)}to{opacity:1;transform:none}}
+@keyframes bounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-14px)}60%{transform:translateY(-5px)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+#testResult{animation:resultIn .6s cubic-bezier(.2,.8,.2,1)}
+#testResult h2{animation:bounce 1s .3s ease}
+#resultMessage{animation:fadeUp .6s .9s backwards}
+#resultFine.shake{animation:shake .5s}
+.confetti-piece{position:fixed;top:-12px;width:9px;height:14px;z-index:10001;pointer-events:none;opacity:.95;animation:confettiFall linear forwards}
+@keyframes confettiFall{to{transform:translate3d(var(--dx),105vh,0) rotate(var(--rot));opacity:.9}}
+
+/* 15) Kirish oynasi (ism so'rash): yumshoq paydo bo'lish */
+@keyframes cardIn{from{opacity:0;transform:translateY(40px) scale(.9)}to{opacity:1;transform:none}}
+.entry-name-overlay{animation:modalFade .4s ease}
+.entry-name-card{animation:cardIn .6s .1s cubic-bezier(.2,.8,.2,1) backwards}
