@@ -1,0 +1,5 @@
+/* Animations shared by the main website */
+.neo-reveal{opacity:0;transform:translateY(18px) scale(.99);transition:opacity .55s ease var(--reveal-delay,0ms),transform .55s cubic-bezier(.2,.7,.2,1) var(--reveal-delay,0ms)}
+.neo-reveal.neo-visible{opacity:1;transform:translateY(0) scale(1)}
+.course{background-image:radial-gradient(circle at var(--pointer-x,100%) var(--pointer-y,0%),rgba(35,163,255,.12),transparent 150px),linear-gradient(145deg,rgba(11,36,80,.92),rgba(7,16,41,.94))!important}
+.nav-current{background:linear-gradient(120deg,#0757d9,#4726a8)!important;border-color:#3b9bff!important;box-shadow:0 0 20px #167bff66!important}

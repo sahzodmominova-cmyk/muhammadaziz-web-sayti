@@ -1,0 +1,78 @@
+
+/* Muhammadaziz futuristic redesign — presentation layer only */
+:root{color-scheme:dark;--neo-bg:#030b1d;--neo-panel:rgba(7,22,51,.88);--neo-line:rgba(52,145,255,.42);--neo-blue:#168bff;--neo-cyan:#26dcff;--neo-violet:#9855ff;--neo-text:#eaf4ff;--neo-muted:#a9c4e8}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0!important;color:var(--neo-text)!important;background:radial-gradient(ellipse at 15% 0%,#112b62 0,transparent 36%),radial-gradient(ellipse at 88% 22%,#211052 0,transparent 30%),linear-gradient(180deg,#020817,#06132b 58%,#020817)!important;font-family:Inter,"Segoe UI",Arial,sans-serif!important;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(2px 2px at 20px 30px,#fff 55%,transparent),radial-gradient(1px 1px at 80px 120px,#54cfff 55%,transparent),radial-gradient(1.5px 1.5px at 160px 70px,#b69aff 55%,transparent),radial-gradient(1px 1px at 240px 180px,#fff 55%,transparent);background-size:280px 230px;opacity:.35;animation:star-drift 55s linear infinite}
+header{position:sticky!important;top:0;z-index:1000!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:22px!important;padding:13px clamp(18px,4vw,64px)!important;background:rgba(2,9,27,.82)!important;border-bottom:1px solid rgba(54,143,255,.42)!important;backdrop-filter:blur(18px)!important;box-shadow:0 10px 35px #0004!important}
+.logo{color:#f5f9ff!important;font-weight:900!important;letter-spacing:.8px!important;font-size:clamp(17px,1.6vw,22px)!important;text-shadow:0 0 22px #178cff77}
+nav{display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:center!important;gap:7px!important}
+nav a{color:#d8eaff!important;text-decoration:none!important;font-weight:650!important;font-size:14px!important;padding:10px 13px!important;border:1px solid transparent!important;border-radius:30px!important;transition:transform .25s,background .25s,box-shadow .25s!important}
+nav a:hover,nav a:focus-visible{background:linear-gradient(120deg,#0757d9,#4726a8)!important;border-color:#3b9bff!important;box-shadow:0 0 22px #167bff77!important;transform:translateY(-2px)}
+nav .edustar-nav{background:#191b45!important;border-color:#764dff66!important}nav .edustar-nav span{font-size:10px;background:linear-gradient(90deg,#8a45ff,#d34dff);padding:3px 7px;border-radius:12px;margin-left:4px}
+.hero{position:relative!important;isolation:isolate;min-height:310px!important;display:flex!important;align-items:center!important;overflow:hidden!important;padding:clamp(40px,6vw,78px) clamp(22px,7.5vw,120px)!important;background:radial-gradient(ellipse at 76% 55%,#1649a866,transparent 35%),radial-gradient(ellipse at 95% 15%,#752fff55,transparent 28%),linear-gradient(110deg,#061735,#071a3a 52%,#0b1030)!important;border-bottom:1px solid #2089ff55!important}
+.hero:before{content:"";position:absolute;z-index:-1;inset:-30%;background:repeating-linear-gradient(132deg,transparent 0 90px,#16aaff0d 91px 93px,transparent 94px 180px);animation:nebula-pan 32s linear infinite}
+.hero:after{content:"✦   ·     ✧        ·   ✦       ·       ✧";position:absolute;inset:15px 2% auto;color:#7ad8ff;letter-spacing:clamp(18px,5vw,70px);white-space:nowrap;font-size:19px;text-shadow:0 0 14px #20bfff;opacity:.7;animation:twinkle 4s ease-in-out infinite alternate;pointer-events:none}
+.hero-content{max-width:760px!important;position:relative;z-index:1}
+.hero-eyebrow{font-size:12px;letter-spacing:2.5px;color:#63dfff;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:9px}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:#37e9ff;box-shadow:0 0 13px #37e9ff;animation:pulse-dot 1.6s infinite}
+.hero h1{font-size:clamp(34px,5vw,66px)!important;line-height:1.04!important;letter-spacing:-1.5px!important;font-weight:950!important;color:#f3f8ff!important;margin:0 0 12px!important;text-shadow:0 0 35px #178cff4d!important}
+.hero h1 span{display:block;background:linear-gradient(90deg,#fff,#78caff 42%,#bd8aff 80%);background-clip:text;-webkit-background-clip:text;color:transparent}
+.hero .hero-subtitle{font-size:clamp(17px,2vw,24px)!important;color:#8ddfff!important;margin:0 0 13px!important}
+.hero p{max-width:650px;color:#c2d8f4!important;font-size:16px!important;line-height:1.7!important}
+.hero button,.hero .hero-content button{margin-top:14px!important;border:1px solid #8acbff55!important;border-radius:28px!important;padding:14px 24px!important;color:white!important;font-weight:800!important;background:linear-gradient(110deg,#5c36ef,#087fff,#13c8e8)!important;box-shadow:0 8px 28px #087bff55!important;transition:transform .25s,box-shadow .25s!important}
+.hero button:hover{transform:translateY(-4px) scale(1.025)!important;box-shadow:0 12px 36px #168dff99!important}
+.courses-section,.lesson-section,.rating-section{position:relative;margin:0!important;padding:clamp(28px,4vw,48px) clamp(18px,3vw,46px)!important;background:transparent!important;color:var(--neo-text)!important}
+.courses-section>h2,.lesson-section>h2,.rating-section>h2{color:#eff7ff!important;font-size:clamp(22px,2.2vw,29px)!important;font-weight:850!important;margin:0 0 8px!important}
+.courses-section>p,.lesson-section>p,.rating-section>p{color:var(--neo-muted)!important;margin:0 0 22px!important}
+.course-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))!important;gap:16px!important}
+.course{position:relative!important;overflow:hidden!important;min-height:170px!important;text-align:left!important;padding:20px!important;border:1px solid var(--neo-line)!important;border-radius:15px!important;background:linear-gradient(145deg,rgba(11,36,80,.92),rgba(7,16,41,.94))!important;color:var(--neo-text)!important;box-shadow:inset 0 1px #ffffff0b,0 8px 26px #0002!important;transition:transform .3s,border-color .3s,box-shadow .3s!important}
+.course:before{content:"";position:absolute;width:130px;height:130px;right:-55px;top:-65px;border-radius:50%;background:#1b8dff20;filter:blur(5px);transition:transform .4s}
+.course:hover{transform:translateY(-7px)!important;border-color:#39c7ff!important;box-shadow:0 14px 34px #007eff2e,0 0 0 1px #2aaeff24!important}
+.course:hover:before{transform:scale(1.7)}
+.course-icon{display:flex!important;align-items:center!important;justify-content:center!important;width:52px!important;height:52px!important;margin-bottom:14px!important;border-radius:14px!important;background:linear-gradient(145deg,#087df2,#5428d6)!important;box-shadow:0 0 22px #167bff55!important;font-size:26px!important}
+.course h3{position:relative;color:#f0f7ff!important;font-size:17px!important;margin:0 0 7px!important}
+.course p{position:relative;color:#a9c6eb!important;line-height:1.5!important;font-size:13px!important}
+.course span{position:relative;color:#39d8ff!important;font-size:12px!important;font-weight:750!important}
+.lesson-list{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr))!important;gap:14px!important}
+.lesson-item,.lesson-card,.rating-section #ratingList>*,#courseTestButtons>*{color:#e8f3ff!important;background:linear-gradient(145deg,rgba(9,29,65,.94),rgba(5,15,38,.97))!important;border:1px solid #267bd65c!important;border-radius:14px!important;box-shadow:0 8px 24px #0002!important;transition:transform .25s,border-color .25s,box-shadow .25s!important}
+.lesson-item:hover,#courseTestButtons>*:hover{transform:translateY(-3px)!important;border-color:#42cfff!important;box-shadow:0 10px 28px #007bff24!important}
+.rating-section button,.lesson-section button,.lesson-item button{border:1px solid #4b9dff55!important;border-radius:11px!important;color:white!important;background:linear-gradient(100deg,#154dc9,#087dff)!important;padding:11px 15px!important;transition:transform .2s,filter .2s!important}
+.rating-section button:hover,.lesson-section button:hover{transform:translateY(-2px)!important;filter:brightness(1.15)}
+#ratingList{color:#c4daf5!important}
+.lesson-modal{background:#020817d9!important;backdrop-filter:blur(12px)!important}
+.lesson-box,.welcome-box{color:#eaf4ff!important;background:linear-gradient(145deg,#0b2045,#071127)!important;border:1px solid #398eff80!important;box-shadow:0 20px 80px #0009,0 0 35px #147bff22!important;border-radius:22px!important}
+.lesson-content-box{color:#d7e8ff!important}
+.example-box,.practice-box,.tip-box,.important-box,.lesson-progress{background:#0d2344!important;color:#dcecff!important;border-color:#278fff!important}
+.test-option{color:#e5f2ff!important;background:#0a1b38!important;border-color:#315a8a!important}
+.test-option:hover{background:#102c53!important}
+.welcome-box p{color:#b9d1f2!important}.welcome-box input{color:#eff7ff!important;background:#06142d!important;border-color:#35659a!important}
+footer{background:#030a1b!important;color:#b9d4f5!important;border-top:1px solid #267bd666!important}
+@keyframes star-drift{from{transform:translateY(0)}to{transform:translateY(-230px)}}
+@keyframes nebula-pan{from{transform:translateX(-3%)}to{transform:translateX(3%)}}
+@keyframes twinkle{from{opacity:.28}to{opacity:.8}}
+@keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 6px #37e9ff}50%{opacity:.45;box-shadow:0 0 18px #37e9ff}}
+@media(max-width:760px){header{align-items:flex-start!important;flex-direction:column!important;gap:9px!important}nav{justify-content:flex-start!important}nav a{padding:8px 10px!important;font-size:12px!important}.hero{min-height:270px!important;padding:48px 22px!important}.hero:after{letter-spacing:18px}.course{min-height:145px!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* VISIBLE MOTION LAYER: animated stars, floating glows, reveal and card shine */
+.hero{isolation:isolate}
+.hero .neo-particle{position:absolute;z-index:0;display:block;width:var(--particle-size,4px);height:var(--particle-size,4px);left:var(--particle-left);top:var(--particle-top);border-radius:50%;background:var(--particle-color,#48cfff);box-shadow:0 0 9px 2px var(--particle-color,#48cfff);opacity:.1;pointer-events:none;animation:neo-float var(--particle-duration,7s) ease-in-out var(--particle-delay,0s) infinite alternate}
+.hero .neo-particle:nth-child(3n){width:3px;height:3px}
+.hero .neo-particle:nth-child(4n){animation-name:neo-twinkle}
+.hero-content{animation:hero-enter .9s cubic-bezier(.2,.8,.2,1) both}
+.hero h1{animation:title-glow 4s ease-in-out infinite alternate}
+.course,.lesson-item,#courseTestButtons>*{position:relative;isolation:isolate}
+.course:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background:linear-gradient(115deg,transparent 20%,#8eeaff14 42%,#ffffff16 50%,transparent 60%);transform:translateX(-130%);transition:transform .8s ease}
+.course:hover:after{transform:translateX(130%)}
+.course-icon{animation:icon-hover 4s ease-in-out infinite}
+.course:nth-child(2n) .course-icon{animation-delay:-1.4s}.course:nth-child(3n) .course-icon{animation-delay:-2.5s}
+nav a.nav-current{background:linear-gradient(120deg,#0757d9,#4726a8)!important;border-color:#3b9bff!important;box-shadow:0 0 22px #167bff77!important}
+.neo-reveal{opacity:0;transform:translateY(24px) scale(.985);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1);transition-delay:var(--reveal-delay,0ms)}
+.neo-reveal.neo-visible{opacity:1;transform:translateY(0) scale(1)}
+@keyframes neo-float{0%{transform:translate3d(0,0,0) scale(.7);opacity:.15}50%{opacity:.95}100%{transform:translate3d(var(--particle-dx,20px),var(--particle-dy,-28px),0) scale(1.35);opacity:.45}}
+@keyframes neo-twinkle{0%,100%{opacity:.1;transform:scale(.7)}50%{opacity:1;transform:scale(1.7)}}
+@keyframes hero-enter{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes title-glow{from{text-shadow:0 0 15px #178cff28}to{text-shadow:0 0 34px #178cff88,0 0 54px #9b59ff33}}
+@keyframes icon-hover{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(2deg)}}
+@media(prefers-reduced-motion:reduce){.hero .neo-particle,.hero-content,.hero h1,.course-icon{animation:none!important}.neo-reveal{opacity:1;transform:none;transition:none}}

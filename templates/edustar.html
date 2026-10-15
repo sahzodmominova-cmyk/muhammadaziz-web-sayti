@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#06132b"><title>EduStar — bilim sari yo‘l</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='edustar.css') }}">
+</head><body>
+
+<header><div class="container nav">
+<a class="logo" href="#bosh">⭐ EduStar</a>
+<nav class="navlinks"><a href="#bosh">Bosh sahifa</a><a href="#fanlar">Fanlar</a><a href="#imkoniyatlar">Imkoniyatlar</a><a href="#battle">EduStar Battle</a><button class="btn secondary" id="themeBtn" type="button">☀️ / 🌙</button></nav>
+</div></header>
+<main>
+<section class="hero" id="bosh"><div class="container hero-grid"><div>
+<span class="pill">🚀 Yangi avlod ta'lim platformasi</span>
+<h1>Bilim ol. O‘s. <span class="gradient">Yulduz bo‘l!</span></h1>
+<p>EduStar — darslarni o‘rganish, test ishlash va bilimlaringni mustahkamlash uchun yagona ta'lim platformasi. Har kuni yangi bilim va yangi imkoniyat!</p>
+<div class="hero-actions"><a class="btn" href="#fanlar">📚 Fanlarni o‘rganish</a><a class="btn secondary" href="#imkoniyatlar">Platforma imkoniyatlari</a></div>
+</div><div class="hero-card"><div class="hero-icon">🎓</div><h3>Yosh bilimdon</h3><p style="text-align:center">Kelajak sari birinchi qadam</p>
+<div class="stats"><div class="stat"><strong id="subjectCount">16</strong><span>O‘quv fani</span></div><div class="stat"><strong>10</strong><span>Ta'limiy o‘yin g‘oyasi</span></div><div class="stat"><strong id="totalTests">0</strong><span>Ishlangan test</span></div><div class="stat"><strong id="totalPoints">0</strong><span>Yig‘ilgan ball</span></div></div></div></div></section>
+<section id="fanlar"><div class="container"><div class="section-head"><h2>📚 O‘quv fanlari</h2><p>O‘zingga kerakli fanni tanla va o‘rganishni boshla.</p></div>
+<div class="toolbar"><select class="field" id="sinfTanlash" aria-label="Sinf tanlash"><option value="5">5-sinf</option><option value="6">6-sinf</option><option value="7">7-sinf</option><option value="8">8-sinf</option><option value="9" selected>9-sinf</option><option value="10">10-sinf</option><option value="11">11-sinf</option></select>
+<select class="field" id="chorakTanlash" aria-label="Chorak tanlash"><option value="1">1-chorak</option><option value="2">2-chorak</option><option value="3">3-chorak</option><option value="4">4-chorak</option></select><input class="field search" id="qidiruv" placeholder="🔎 Fan qidirish..." aria-label="Fan qidirish"></div>
+<div class="grid" id="fanRoyxati"></div>
+<div class="panel hidden" id="mavzuPanel"><div class="panel-head"><div><h2 id="fanSarlavha">Fan mavzulari</h2><p id="fanTavsif"></p></div><button class="btn secondary" id="backSubjects" type="button">← Fanlarga qaytish</button></div><div class="topic-list" id="mavzularRoyxati"></div></div>
+<div class="panel hidden" id="darsPanel"><div class="panel-head"><div><h2 id="darsSarlavha">Dars</h2><p id="darsMeta"></p></div><button class="btn secondary" id="backTopics" type="button">← Mavzularga qaytish</button></div><div class="lesson-content" id="darsMatni"></div><button class="btn" id="markLesson" type="button">✓ Darsni tugatdim</button> <button class="btn secondary" id="startTest" type="button">📝 Testni boshlash</button><div class="notice" id="lessonNotice"></div></div>
+<div class="panel hidden" id="testPanel"><div class="panel-head"><div><h2 id="testSarlavha">📝 Bilimingni sinab ko‘r</h2><p id="testMeta"></p></div><button class="btn secondary" id="backLesson" type="button">← Darsga qaytish</button></div>
+<form id="quizForm"><div id="savollarRoyxati"></div><button class="btn" type="submit" id="submitTest">Natijani tekshirish</button> <button class="btn secondary" type="button" id="resetTest">Testni qayta ishlash</button></form><div class="quiz-result hidden" id="quizResult" aria-live="polite"></div></div>
+<div class="panel"><div class="panel-head"><div><h3>📈 O‘rganish jarayoni</h3><p>Darslarni tugatib, bilimlaringni rivojlantir.</p></div><strong id="lessonProgressText">0 ta dars</strong></div><div class="progress-track"><div class="progress-bar" id="lessonProgress"></div></div></div>
+</div></section>
+<section id="battle"><div class="container"><div class="section-head"><h2>🏆 EduStar Battle</h2><p>Guruhlar bilim bellashuvi. Musobaqalar serverda saqlanadi.</p></div><div class="panel"><div class="toolbar"><button class="btn" id="loadBattle" type="button">🏆 Faol musobaqaga kirish</button></div><div id="battleStatus" aria-live="polite">Musobaqani ko‘rish uchun tugmani bosing. ID kiritish shart emas.</div><div class="grid" id="battleGroups"></div></div></div></section>
+<section id="imkoniyatlar"><div class="container"><div class="section-head"><h2>✨ Platforma imkoniyatlari</h2><p>Bilimni sinash va rivojlantirish uchun yaratilgan bo‘limlar.</p></div><div class="grid">
+<div class="feature"><div class="emoji">📝</div><h3>Testlar</h3><p>Savollarga javob berib, natijangni aniqlash va bilimlaringni mustahkamlash.</p></div>
+<div class="feature"><div class="emoji">🎮</div><h3>Ta'limiy o‘yinlar</h3><p>Qiziqarli topshiriqlar orqali o‘rganish va mantiqiy fikrlashni rivojlantirish.</p></div>
+<div class="feature"><div class="emoji">🏆</div><h3>Reyting va yutuqlar</h3><p>Testlarda qatnashib ball to‘pla va o‘z rivojlanishingni kuzat.</p></div>
+<div class="feature"><div class="emoji">📚</div><h3>Darslar</h3><p>Mavzularni o‘qib, asosiy tushunchalarni o‘zlashtir va bilimlaringni tekshir.</p></div>
+</div></div></section></main>
+<footer><div class="container"><strong>⭐ EduStar — bilim sari yo‘l.</strong><p class="small">© <span id="year"></span> EduStar. O‘rganish hech qachon to‘xtamaydi.</p></div></footer>
+
+
+<script src="{{ url_for('static', filename='edustar.js') }}" defer></script>
+<script>
+(function(){
+ const btn=document.getElementById('loadBattle'); if(!btn)return;
+ async function loadBattle(){
+  const status=document.getElementById('battleStatus'), groups=document.getElementById('battleGroups');
+  status.textContent='Faol musobaqa qidirilmoqda…'; groups.innerHTML=''; btn.disabled=true;
+  try{const r=await fetch('/api/edustar/battle/latest');const d=await r.json();if(!r.ok)throw Error(d.error||'Xatolik');
+   status.textContent=d.battle.title+' — holati: '+d.battle.status+' — '+d.questions.length+'/30 savol';
+   groups.innerHTML=d.groups.map(g=>'<div class="feature"><h3>'+String(g.name).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</h3><p>Ball: '+g.score+' · To‘g‘ri: '+g.correct+' · Noto‘g‘ri: '+g.wrong+'</p></div>').join('');
+   if(d.battle.status!=='active')status.textContent+=' — Hozir faol emas. Yangi musobaqa boshlanishini kuting.';
+  }catch(e){status.textContent=e.message==='Faol musobaqa topilmadi'?'Hozircha musobaqa yo‘q. Administrator yangi musobaqani boshlagach, shu tugma orqali ID-siz kirishingiz mumkin.':'Musobaqani yuklab bo‘lmadi: '+e.message;}
+  finally{btn.disabled=false;}
+ }
+ btn.addEventListener('click',loadBattle); loadBattle();
+})();
+</script>
+</body></html>
