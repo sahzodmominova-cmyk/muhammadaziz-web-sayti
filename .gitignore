@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+rating.db
+.env
+.DS_Store
+edustar.db
+rating.db
+test_violations.json
+__pycache__/
+*.pyc
+.env

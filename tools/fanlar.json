@@ -1,0 +1,122 @@
+[
+ {
+  "id": "ona-tili",
+  "emoji": "✍️",
+  "nom": "Ona tili",
+  "izoh": "Imlo, grammatika va nutq madaniyati."
+ },
+ {
+  "id": "oqish",
+  "emoji": "📚",
+  "nom": "O‘qish",
+  "izoh": "O‘qish texnikasi, ertak va she’rlar."
+ },
+ {
+  "id": "adabiyot",
+  "emoji": "📖",
+  "nom": "Adabiyot",
+  "izoh": "Asarlar, adiblar va badiiy tafakkur."
+ },
+ {
+  "id": "matematika",
+  "emoji": "📐",
+  "nom": "Matematika",
+  "izoh": "Hisoblash, kasrlar, tenglamalar va masalalar."
+ },
+ {
+  "id": "algebra",
+  "emoji": "➗",
+  "nom": "Algebra",
+  "izoh": "Ifodalar, tenglamalar, funksiyalar va tahlil asoslari."
+ },
+ {
+  "id": "geometriya",
+  "emoji": "📏",
+  "nom": "Geometriya",
+  "izoh": "Shakllar, burchaklar, yuzlar va jismlar."
+ },
+ {
+  "id": "tabiatshunoslik",
+  "emoji": "🌱",
+  "nom": "Tabiatshunoslik",
+  "izoh": "Atrofimizdagi olam va tabiat hodisalari."
+ },
+ {
+  "id": "fizika",
+  "emoji": "⚛️",
+  "nom": "Fizika",
+  "izoh": "Tabiat hodisalari va fizik qonunlar."
+ },
+ {
+  "id": "kimyo",
+  "emoji": "🧪",
+  "nom": "Kimyo",
+  "izoh": "Moddalar, reaksiyalar va tajribalar."
+ },
+ {
+  "id": "biologiya",
+  "emoji": "🧬",
+  "nom": "Biologiya",
+  "izoh": "Tirik organizmlar va tabiat olami."
+ },
+ {
+  "id": "geografiya",
+  "emoji": "🗺️",
+  "nom": "Geografiya",
+  "izoh": "Materiklar, davlatlar va geografik xaritalar."
+ },
+ {
+  "id": "jahon-tarixi",
+  "emoji": "🏛️",
+  "nom": "Jahon tarixi",
+  "izoh": "Dunyo xalqlari tarixi va tarixiy shaxslar."
+ },
+ {
+  "id": "ozbekiston-tarixi",
+  "emoji": "🏰",
+  "nom": "O‘zbekiston tarixi",
+  "izoh": "Vatanimiz o‘tmishi va mustaqillik yillari."
+ },
+ {
+  "id": "informatika",
+  "emoji": "💻",
+  "nom": "Informatika",
+  "izoh": "Kompyuter, algoritmlar va dasturlash."
+ },
+ {
+  "id": "ingliz",
+  "emoji": "🌍",
+  "nom": "Ingliz tili",
+  "izoh": "Yangi so‘zlar, grammatika va o‘qish."
+ },
+ {
+  "id": "rus-tili",
+  "emoji": "🔤",
+  "nom": "Rus tili",
+  "izoh": "So‘z boyligi va grammatik qoidalar."
+ },
+ {
+  "id": "huquq",
+  "emoji": "⚖️",
+  "nom": "Huquq",
+  "izoh": "Qonunlar, huquqlar va majburiyatlar."
+ },
+ {
+  "id": "iqtisod",
+  "emoji": "📊",
+  "nom": "Iqtisod",
+  "izoh": "Pul, bozor va iqtisodiy fikrlash."
+ },
+ {
+  "id": "astronomiya",
+  "emoji": "🪐",
+  "nom": "Astronomiya",
+  "izoh": "Koinot, sayyoralar va yulduzlar."
+ },
+ {
+  "id": "chizmachilik",
+  "emoji": "✏️",
+  "nom": "Chizmachilik",
+  "izoh": "Chizmalar va fazoviy tasavvur."
+ }
+]
